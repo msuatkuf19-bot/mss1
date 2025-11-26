@@ -1,0 +1,241 @@
+'use client';
+
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { DashboardLayout } from '@/components/DashboardLayout';
+import { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api-client';
+
+interface DashboardStats {
+  categories: number;
+  products: number;
+  qrCodes: number;
+  views: number;
+}
+
+interface Restaurant {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  _count: {
+    categories: number;
+    qrCodes: number;
+  };
+  categories: Array<{
+    id: string;
+    name: string;
+    _count: { products: number };
+  }>;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: { name: string };
+  isAvailable: boolean;
+}
+
+export default function RestaurantDashboard() {
+  const [stats, setStats] = useState<DashboardStats>({
+    categories: 0,
+    products: 0,
+    qrCodes: 0,
+    views: 0,
+  });
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+
+      // Kendi restoranını getir
+      const restaurantRes = await apiClient.getMyRestaurant();
+      const restaurantData = restaurantRes.data;
+      setRestaurant(restaurantData);
+
+      // Kategorileri ve ürünleri say
+      const totalCategories = restaurantData.categories?.length || 0;
+      let totalProducts = 0;
+      restaurantData.categories?.forEach((cat: any) => {
+        totalProducts += cat._count?.products || 0;
+      });
+
+      // Ürün listesini getir
+      try {
+        const productsRes = await apiClient.getProducts(restaurantData.id);
+        setRecentProducts(productsRes.data?.slice(0, 5) || []);
+      } catch (err) {
+        console.log('Ürünler yüklenemedi:', err);
+      }
+
+      // Analytics verileri
+      let totalViews = 0;
+      try {
+        const analyticsRes = await apiClient.getRestaurantAnalytics(restaurantData.id);
+        totalViews = analyticsRes.data?.length || 0;
+      } catch (err) {
+        console.log('Analytics verisi alınamadı:', err);
+      }
+
+      setStats({
+        categories: totalCategories,
+        products: totalProducts,
+        qrCodes: restaurantData._count?.qrCodes || 0,
+        views: totalViews,
+      });
+    } catch (error) {
+      console.error('Dashboard verileri yüklenemedi:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ProtectedRoute allowedRoles={['RESTAURANT_ADMIN']}>
+      <DashboardLayout title="🏪 Restoran Yönetim Paneli">
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Yükleniyor...</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Restaurant Info */}
+            {restaurant && (
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 mb-8 shadow-lg">
+                <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
+                <p className="text-blue-100 mb-3">{restaurant.description || 'Restoranınızın açıklaması'}</p>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="px-3 py-1 bg-white/20 rounded-full">/{restaurant.slug}</span>
+                  <span className="px-3 py-1 bg-white/20 rounded-full">Menü Linki</span>
+                </div>
+              </div>
+            )}
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-gray-600">Kategoriler</h3>
+                  <span className="text-3xl">📁</span>
+                </div>
+                <p className="text-3xl font-bold text-blue-600">{stats.categories}</p>
+                <p className="text-xs text-gray-500 mt-2">Aktif kategoriler</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-gray-600">Ürünler</h3>
+                  <span className="text-3xl">🍽️</span>
+                </div>
+                <p className="text-3xl font-bold text-green-600">{stats.products}</p>
+                <p className="text-xs text-gray-500 mt-2">Toplam ürün</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-gray-600">QR Kodlar</h3>
+                  <span className="text-3xl">🎯</span>
+                </div>
+                <p className="text-3xl font-bold text-purple-600">{stats.qrCodes}</p>
+                <p className="text-xs text-gray-500 mt-2">Aktif QR kodlar</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-gray-600">Görüntülenme</h3>
+                  <span className="text-3xl">👁️</span>
+                </div>
+                <p className="text-3xl font-bold text-orange-600">{stats.views}</p>
+                <p className="text-xs text-gray-500 mt-2">Toplam erişim</p>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              <a
+                href="/restaurant/menu"
+                className="bg-white p-6 rounded-xl shadow-sm border-2 border-gray-100 hover:border-blue-500 transition group"
+              >
+                <div className="text-4xl mb-3">➕</div>
+                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 mb-2">
+                  Yeni Ürün Ekle
+                </h3>
+                <p className="text-sm text-gray-600">Menünüze yeni ürün ekleyin</p>
+              </a>
+
+              <a
+                href="/restaurant/categories"
+                className="bg-white p-6 rounded-xl shadow-sm border-2 border-gray-100 hover:border-green-500 transition group"
+              >
+                <div className="text-4xl mb-3">📂</div>
+                <h3 className="text-lg font-bold text-gray-900 group-hover:text-green-600 mb-2">
+                  Kategori Yönet
+                </h3>
+                <p className="text-sm text-gray-600">Kategorileri düzenleyin</p>
+              </a>
+
+              <a
+                href="/restaurant/qr-codes"
+                className="bg-white p-6 rounded-xl shadow-sm border-2 border-gray-100 hover:border-purple-500 transition group"
+              >
+                <div className="text-4xl mb-3">🎯</div>
+                <h3 className="text-lg font-bold text-gray-900 group-hover:text-purple-600 mb-2">
+                  QR Kod Oluştur
+                </h3>
+                <p className="text-sm text-gray-600">Yeni QR kod oluşturun</p>
+              </a>
+            </div>
+
+            {/* Recent Products */}
+            {recentProducts.length > 0 && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-gray-900">Son Eklenen Ürünler</h2>
+                  <a href="/restaurant/menu" className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                    Tümünü Gör →
+                  </a>
+                </div>
+
+                <div className="space-y-3">
+                  {recentProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                    >
+                      <div>
+                        <h4 className="font-medium text-gray-900">{product.name}</h4>
+                        <p className="text-sm text-gray-500">{product.category.name}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-green-600">{product.price.toFixed(2)} ₺</span>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            product.isAvailable
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {product.isAvailable ? 'Mevcut' : 'Tükendi'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </DashboardLayout>
+    </ProtectedRoute>
+  );
+}

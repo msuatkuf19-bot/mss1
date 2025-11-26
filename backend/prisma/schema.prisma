@@ -1,0 +1,267 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enum tanımlamaları
+enum UserRole {
+  SUPER_ADMIN
+  RESTAURANT_ADMIN
+  CUSTOMER
+}
+
+enum ImageType {
+  LOGO
+  PRODUCT
+  CATEGORY
+  OTHER
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email    String   @unique
+  password String
+  name     String
+  role     UserRole @default(CUSTOMER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // İlişkiler
+  restaurants Restaurant[] @relation("RestaurantOwner")
+
+  @@map("users")
+}
+
+model Restaurant {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  address     String?
+  phone       String?
+  email       String?
+  logo        String?
+  
+  // Header görseli
+  headerImage String?
+  
+  // Sosyal medya linkleri
+  instagramUrl String?
+  facebookUrl  String?
+  
+  // Çalışma saatleri (JSON string formatında)
+  workingHours String? // JSON string
+  
+  // Tema ayarları (deprecated - use themeSettings)
+  themeColor  String?   @default("#3B82F6")
+  
+  // Yeni tema ayarları sistemi (JSON string formatında)
+  themeSettings String? // JSON: { preset, primaryColor, secondaryColor, backgroundColor, headerBackgroundType, headerImageUrl, showHeaderOverlay, cardRadius, showProductImages }
+  
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // İlişkiler
+  ownerId     String
+  owner       User      @relation("RestaurantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  categories  Category[]
+  qrCodes     QRCode[]
+  analytics   Analytics[]
+  images      Image[]
+  menuViews   MenuView[]
+  productViews ProductView[]
+  dailyStats  RestaurantStatDaily[]
+
+  @@index([ownerId])
+  @@index([slug])
+  @@map("restaurants")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  image       String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // İlişkiler
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  products     Product[]
+
+  @@index([restaurantId])
+  @@index([order])
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  image       String? // Deprecated - use imageUrl instead
+  imageUrl    String? // New field for product images
+  
+  // Özel etiketler
+  isNew       Boolean  @default(false)
+  isPopular   Boolean  @default(false)
+  isDiscount  Boolean  @default(false)
+  discountPrice Float?
+  
+  // Stok durumu
+  isAvailable Boolean  @default(true)
+  
+  // İçerik ve Alerjen bilgileri
+  ingredients String? // İçindekiler (virgülle ayrılmış)
+  allergens   String? // Alerjen uyarıları (virgülle ayrılmış)
+  
+  // Diyet ve Özellik etiketleri
+  isVegetarian Boolean @default(false)
+  isVegan      Boolean @default(false)
+  isGlutenFree Boolean @default(false)
+  isSpicy      Boolean @default(false)
+  
+  // Sıralama
+  order       Int      @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // İlişkiler
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  analytics   Analytics[]
+  productViews ProductView[]
+
+  @@index([categoryId])
+  @@index([order])
+  @@index([isAvailable])
+  @@map("products")
+}
+
+model QRCode {
+  id           String   @id @default(uuid())
+  code         String   @unique
+  tableNumber  String?
+  imageUrl     String?  // QR code image URL
+  scanCount    Int      @default(0)
+  isActive     Boolean  @default(true)
+  lastScannedAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // İlişkiler
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId])
+  @@index([code])
+  @@map("qr_codes")
+}
+
+model Analytics {
+  id        String   @id @default(uuid())
+  date      DateTime @default(now())
+  viewCount Int      @default(1)
+  
+  // İlişkiler
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  productId    String?
+  product      Product?   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([restaurantId, date], name: "restaurantId_date")
+  @@unique([restaurantId, productId, date], name: "restaurantId_productId_date")
+  @@index([restaurantId, date])
+  @@index([productId])
+  @@map("analytics")
+}
+
+model Image {
+  id        String    @id @default(uuid())
+  url       String
+  filename  String
+  mimetype  String
+  size      Int
+  type      ImageType @default(OTHER)
+  createdAt DateTime  @default(now())
+
+  // İlişkiler
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId])
+  @@map("images")
+}
+
+// Analytics: Menu View Tracking
+model MenuView {
+  id           String   @id @default(uuid())
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  tableId      String?  // QR table number (nullable)
+  userAgent    String?
+  deviceType   String?  // mobile, tablet, desktop
+  ip           String?
+  referrer     String?
+  currentPath  String?
+  
+  createdAt    DateTime @default(now())
+
+  @@index([restaurantId, createdAt])
+  @@index([createdAt])
+  @@map("menu_views")
+}
+
+// Analytics: Product View Tracking
+model ProductView {
+  id           String   @id @default(uuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  createdAt    DateTime @default(now())
+
+  @@index([productId, createdAt])
+  @@index([restaurantId, createdAt])
+  @@map("product_views")
+}
+
+// Analytics: Daily Statistics (aggregated)
+model RestaurantStatDaily {
+  id                  String   @id @default(uuid())
+  restaurantId        String
+  restaurant          Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  date                DateTime  // Date without time
+  totalViews          Int       @default(0)
+  totalProductViews   Int       @default(0)
+  uniqueVisitors      Int       @default(0) // Approximate based on IP
+  
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@unique([restaurantId, date])
+  @@index([restaurantId, date])
+  @@map("restaurant_stats_daily")
+}

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Menü Sistemi - Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .test-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { border-color: #28a745; background: #d4edda; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .info { border-color: #17a2b8; background: #d1ecf1; }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-ok { background: #28a745; color: white; }
+        .status-error { background: #dc3545; color: white; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 QR Menü Sistemi - API Test</h1>
+            <p>Backend: <strong>http://localhost:5000</strong> <span id="backend-status" class="status">Kontrol ediliyor...</span></p>
+            <p>Frontend: <strong>http://localhost:3000</strong> <span id="frontend-status" class="status">Kontrol ediliyor...</span></p>
+        </div>
+
+        <div class="test-section">
+            <h2>1️⃣ Health Check</h2>
+            <div class="grid">
+                <button onclick="testHealth()">Backend Health</button>
+                <button onclick="testFrontend()">Frontend Check</button>
+            </div>
+            <div id="health-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2️⃣ Authentication</h2>
+            <div class="grid">
+                <button onclick="testLogin('admin@qrmenu.com', 'admin123', 'SUPER_ADMIN')">Login as Super Admin</button>
+                <button onclick="testLogin('restaurant1@example.com', 'password123', 'RESTAURANT_ADMIN')">Login as Restaurant Admin</button>
+            </div>
+            <div id="auth-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3️⃣ Restaurant Operations</h2>
+            <div class="grid">
+                <button onclick="testMyRestaurant()">Get My Restaurant</button>
+                <button onclick="testCategories()">Get Categories</button>
+                <button onclick="testProducts()">Get Products</button>
+                <button onclick="testQRCodes()">Get QR Codes</button>
+            </div>
+            <div id="restaurant-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4️⃣ Public Menu Test</h2>
+            <button onclick="testPublicMenu()">Test Public Menu (lezzetli-lokanta)</button>
+            <div id="public-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>5️⃣ Create QR Code</h2>
+            <div class="grid">
+                <button onclick="createQRCode('RESTAURANT')">Create Restaurant QR</button>
+                <button onclick="createQRCode('TABLE', 5)">Create Table 5 QR</button>
+            </div>
+            <div id="qr-result" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        const FRONTEND_URL = 'http://localhost:3000';
+        let accessToken = null;
+
+        // Status check
+        async function checkStatus() {
+            try {
+                const res = await fetch(`${API_URL}/health`);
+                document.getElementById('backend-status').className = 'status status-ok';
+                document.getElementById('backend-status').textContent = 'ONLINE';
+            } catch (e) {
+                document.getElementById('backend-status').className = 'status status-error';
+                document.getElementById('backend-status').textContent = 'OFFLINE';
+            }
+
+            try {
+                const res = await fetch(FRONTEND_URL);
+                document.getElementById('frontend-status').className = 'status status-ok';
+                document.getElementById('frontend-status').textContent = 'ONLINE';
+            } catch (e) {
+                document.getElementById('frontend-status').className = 'status status-error';
+                document.getElementById('frontend-status').textContent = 'OFFLINE';
+            }
+        }
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Testing...';
+            
+            try {
+                const res = await fetch(`${API_URL}/health`);
+                const data = await res.json();
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Backend Health Check\nStatus: ${data.status}\nMessage: ${data.message}`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testFrontend() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Testing...';
+            
+            try {
+                const res = await fetch(FRONTEND_URL);
+                if (res.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Frontend is running\nStatus: ${res.status}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testLogin(email, password, expectedRole) {
+            const resultDiv = document.getElementById('auth-result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Logging in...';
+            
+            try {
+                const res = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    accessToken = data.data.accessToken;
+                    const user = data.data.user;
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Login Successful\n\nUser: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nUser ID: ${user.id}\n\nToken: ${accessToken.substring(0, 50)}...`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Login Failed: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testMyRestaurant() {
+            const resultDiv = document.getElementById('restaurant-result');
+            resultDiv.style.display = 'block';
+            
+            if (!accessToken) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Please login first!';
+                return;
+            }
+            
+            resultDiv.textContent = 'Fetching restaurant...';
+            
+            try {
+                const res = await fetch(`${API_URL}/api/restaurants/my`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    const rest = data.data;
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ My Restaurant\n\n${JSON.stringify(rest, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testCategories() {
+            const resultDiv = document.getElementById('restaurant-result');
+            resultDiv.style.display = 'block';
+            
+            if (!accessToken) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Please login first!';
+                return;
+            }
+            
+            resultDiv.textContent = 'Fetching categories...';
+            
+            try {
+                // First get restaurant
+                const restRes = await fetch(`${API_URL}/api/restaurants/my`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                const restData = await restRes.json();
+                const restaurantId = restData.data.id;
+                
+                // Then get categories
+                const res = await fetch(`${API_URL}/api/menu/categories/${restaurantId}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Categories (${data.data.length})\n\n${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testProducts() {
+            const resultDiv = document.getElementById('restaurant-result');
+            resultDiv.style.display = 'block';
+            
+            if (!accessToken) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Please login first!';
+                return;
+            }
+            
+            resultDiv.textContent = 'Fetching products...';
+            
+            try {
+                const restRes = await fetch(`${API_URL}/api/restaurants/my`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                const restData = await restRes.json();
+                const restaurantId = restData.data.id;
+                
+                const res = await fetch(`${API_URL}/api/menu/products/${restaurantId}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Products (${data.data.length})\n\n${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testQRCodes() {
+            const resultDiv = document.getElementById('restaurant-result');
+            resultDiv.style.display = 'block';
+            
+            if (!accessToken) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Please login first!';
+                return;
+            }
+            
+            resultDiv.textContent = 'Fetching QR codes...';
+            
+            try {
+                const restRes = await fetch(`${API_URL}/api/restaurants/my`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                const restData = await restRes.json();
+                const restaurantId = restData.data.id;
+                
+                const res = await fetch(`${API_URL}/api/qr/restaurant/${restaurantId}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ QR Codes (${data.data.length})\n\n${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testPublicMenu() {
+            const resultDiv = document.getElementById('public-result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Fetching public menu...';
+            
+            try {
+                const res = await fetch(`${API_URL}/api/public/menu/lezzetli-lokanta?table=5`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Public Menu\n\nRestaurant: ${data.data.restaurant.name}\nCategories: ${data.data.categories.length}\nTable: ${data.data.tableNumber}\n\n${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function createQRCode(type, tableNumber) {
+            const resultDiv = document.getElementById('qr-result');
+            resultDiv.style.display = 'block';
+            
+            if (!accessToken) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Please login first!';
+                return;
+            }
+            
+            resultDiv.textContent = 'Creating QR code...';
+            
+            try {
+                const restRes = await fetch(`${API_URL}/api/restaurants/my`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                const restData = await restRes.json();
+                const restaurantId = restData.data.id;
+                
+                const body = {
+                    restaurantId,
+                    type,
+                    ...(tableNumber && { tableNumber })
+                };
+                
+                const res = await fetch(`${API_URL}/api/qr`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ QR Code Created\n\n${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Auto check on load
+        checkStatus();
+        setInterval(checkStatus, 10000);
+    </script>
+</body>
+</html>

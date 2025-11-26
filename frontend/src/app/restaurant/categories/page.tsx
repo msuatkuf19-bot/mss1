@@ -1,0 +1,243 @@
+'use client';
+
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { DashboardLayout } from '@/components/DashboardLayout';
+import { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api-client';
+
+interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  displayOrder: number;
+  _count?: {
+    products: number;
+  };
+}
+
+export default function RestaurantCategories() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    displayOrder: 0,
+  });
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      setLoading(true);
+      const restaurantRes = await apiClient.getMyRestaurant();
+      const restaurant = restaurantRes.data;
+      const categoriesRes = await apiClient.getCategories(restaurant.id);
+      setCategories(categoriesRes.data || []);
+    } catch (error) {
+      console.error('Kategoriler yüklenemedi:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const restaurantRes = await apiClient.getMyRestaurant();
+      const restaurantId = restaurantRes.data.id;
+
+      if (editingCategory) {
+        await apiClient.updateCategory(editingCategory.id, formData);
+      } else {
+        await apiClient.createCategory({ ...formData, restaurantId });
+      }
+      setShowModal(false);
+      resetForm();
+      loadCategories();
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Bir hata oluştu');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Bu kategoriyi silmek istediğinizden emin misiniz?')) return;
+    try {
+      await apiClient.deleteCategory(id);
+      loadCategories();
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Silinemedi');
+    }
+  };
+
+  const openEditModal = (category: Category) => {
+    setEditingCategory(category);
+    setFormData({
+      name: category.name,
+      description: category.description || '',
+      displayOrder: category.displayOrder,
+    });
+    setShowModal(true);
+  };
+
+  const resetForm = () => {
+    setEditingCategory(null);
+    setFormData({
+      name: '',
+      description: '',
+      displayOrder: 0,
+    });
+  };
+
+  return (
+    <ProtectedRoute allowedRoles={['RESTAURANT_ADMIN']}>
+      <DashboardLayout title="📁 Kategori Yönetimi">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <p className="text-gray-600">Menü kategorilerinizi düzenleyin</p>
+          </div>
+          <button
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2"
+          >
+            <span>➕</span>
+            <span>Yeni Kategori</span>
+          </button>
+        </div>
+
+        {/* Categories Grid */}
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        ) : categories.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-12">
+            <p className="text-gray-500 text-lg">Henüz kategori eklenmemiş</p>
+            <p className="text-gray-400 text-sm mt-2">Başlamak için yukarıdan "Yeni Kategori" butonuna tıklayın</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((category) => (
+              <div
+                key={category.id}
+                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{category.name}</h3>
+                    {category.description && (
+                      <p className="text-sm text-gray-600 mb-3">{category.description}</p>
+                    )}
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <span className="flex items-center gap-1">
+                        📦 <strong>{category._count?.products || 0}</strong> ürün
+                      </span>
+                      <span className="flex items-center gap-1">
+                        🔢 Sıra: <strong>{category.displayOrder}</strong>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2 pt-4 border-t">
+                  <button
+                    onClick={() => openEditModal(category)}
+                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium"
+                  >
+                    Düzenle
+                  </button>
+                  <button
+                    onClick={() => handleDelete(category.id)}
+                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm font-medium"
+                  >
+                    Sil
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Modal */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  {editingCategory ? 'Kategori Düzenle' : 'Yeni Kategori Ekle'}
+                </h2>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Kategori Adı *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="Örn: Ana Yemekler"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Açıklama
+                    </label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                      rows={3}
+                      placeholder="Kategori açıklaması..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Sıralama
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.displayOrder}
+                      onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) })}
+                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="0"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Menüde gösterilme sırası (küçükten büyüğe)</p>
+                  </div>
+
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      type="submit"
+                      className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                    >
+                      {editingCategory ? 'Güncelle' : 'Oluştur'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowModal(false);
+                        resetForm();
+                      }}
+                      className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+                    >
+                      İptal
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+      </DashboardLayout>
+    </ProtectedRoute>
+  );
+}
