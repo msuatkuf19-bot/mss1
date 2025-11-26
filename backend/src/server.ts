@@ -183,7 +183,8 @@ app.use(errorHandler);
  * Railway otomatik olarak PORT değişkenini sağlar
  */
 const PORT = config.port;
-const server = app.listen(PORT, () => {
+const HOST = '0.0.0.0'; // Railway için gerekli
+const server = app.listen(PORT, HOST, () => {
   logger.info(`🚀 Server başlatıldı - Port: ${PORT}`);
   logger.info(`📝 Ortam: ${config.nodeEnv}`);
   logger.info(`🗄️  Veritabanı: PostgreSQL`);

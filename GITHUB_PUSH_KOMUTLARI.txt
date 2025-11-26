@@ -1,0 +1,23 @@
+# GitHub'a Push Etme Komutları
+
+# 1. GitHub'da repository oluşturun: https://github.com/new
+# Repository adı: qr-menu-system
+
+# 2. Aşağıdaki komutları KULLANICI_ADIN yerine kendi GitHub kullanıcı adınızı yazarak çalıştırın:
+
+# Git remote ekle
+git remote add origin https://github.com/KULLANICI_ADIN/qr-menu-system.git
+
+# Ana branch'i main yap
+git branch -M main
+
+# GitHub'a push et
+git push -u origin main
+
+# GitHub kullanıcı adı ve şifreniz istenecek
+# Not: Artık personal access token gerekiyor
+# Token oluşturmak için: https://github.com/settings/tokens
+# Token scope: repo (full control)
+
+# Push başarılı olduktan sonra Railway'e gidin:
+# Railway Dashboard → New Project → Deploy from GitHub repo
