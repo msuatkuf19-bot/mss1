@@ -46,35 +46,21 @@ const app: Application = express();
 
 /**
  * CORS Ayarları
- * Production ve Development için farklı origin'ler
- * Railway'de FRONTEND_URL environment variable'ı ile dinamik ayar
+ * Vercel serverless için optimize edildi
  */
-const allowedOrigins = config.nodeEnv === 'production' 
-  ? [config.frontendUrl] 
-  : ['http://localhost:3000', 'http://localhost:3001'];
-
 const corsOptions = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Development'ta veya origin yoksa herkese izin ver
-    if (config.nodeEnv === 'development' || !origin) {
-      callback(null, true);
-    } else if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      // Production'da bilinmeyen origin'lere de izin ver (Railway health check için)
-      logger.warn(`CORS uyarı (izin verildi): ${origin}`);
-      callback(null, true);
-    }
-  },
+  origin: true, // Tüm origin'lere izin ver
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  maxAge: 600, // 10 dakika preflight cache
+  maxAge: 600,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Preflight istekleri için
+app.options('*', cors(corsOptions));
 
 // Security middleware
 app.use(helmetConfig);
