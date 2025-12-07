@@ -96,16 +96,16 @@ export default function RestaurantCategories() {
     <ProtectedRoute allowedRoles={['RESTAURANT_ADMIN']}>
       <DashboardLayout title="📁 Kategori Yönetimi">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <p className="text-gray-600">Menü kategorilerinizi düzenleyin</p>
+            <p className="text-gray-600 text-sm sm:text-base">Menü kategorilerinizi düzenleyin</p>
           </div>
           <button
             onClick={() => {
               resetForm();
               setShowModal(true);
             }}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center gap-2 text-sm sm:text-base"
           >
             <span>➕</span>
             <span>Yeni Kategori</span>
@@ -123,7 +123,7 @@ export default function RestaurantCategories() {
             <p className="text-gray-400 text-sm mt-2">Başlamak için yukarıdan "Yeni Kategori" butonuna tıklayın</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {categories.map((category) => (
               <div
                 key={category.id}

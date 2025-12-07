@@ -121,10 +121,10 @@ export default function RestaurantDashboard() {
           <>
             {/* Restaurant Info */}
             {restaurant && (
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 mb-8 shadow-lg">
-                <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
-                <p className="text-blue-100 mb-3">{restaurant.description || 'Restoranınızın açıklaması'}</p>
-                <div className="flex items-center gap-2 text-sm">
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-lg">
+                <h2 className="text-xl sm:text-2xl font-bold mb-2">{restaurant.name}</h2>
+                <p className="text-blue-100 mb-3 text-sm sm:text-base">{restaurant.description || 'Restoranınızın açıklaması'}</p>
+                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
                   <span className="px-3 py-1 bg-white/20 rounded-full">/{restaurant.slug}</span>
                   <span className="px-3 py-1 bg-white/20 rounded-full">Menü Linki</span>
                 </div>
@@ -132,46 +132,46 @@ export default function RestaurantDashboard() {
             )}
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Kategoriler</h3>
-                  <span className="text-3xl">📁</span>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Kategoriler</h3>
+                  <span className="text-xl sm:text-3xl">📁</span>
                 </div>
-                <p className="text-3xl font-bold text-blue-600">{stats.categories}</p>
-                <p className="text-xs text-gray-500 mt-2">Aktif kategoriler</p>
+                <p className="text-xl sm:text-3xl font-bold text-blue-600">{stats.categories}</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Aktif kategoriler</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Ürünler</h3>
-                  <span className="text-3xl">🍽️</span>
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Ürünler</h3>
+                  <span className="text-xl sm:text-3xl">🍽️</span>
                 </div>
-                <p className="text-3xl font-bold text-green-600">{stats.products}</p>
-                <p className="text-xs text-gray-500 mt-2">Toplam ürün</p>
+                <p className="text-xl sm:text-3xl font-bold text-green-600">{stats.products}</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Toplam ürün</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">QR Kodlar</h3>
-                  <span className="text-3xl">🎯</span>
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">QR Kodlar</h3>
+                  <span className="text-xl sm:text-3xl">🎯</span>
                 </div>
-                <p className="text-3xl font-bold text-purple-600">{stats.qrCodes}</p>
-                <p className="text-xs text-gray-500 mt-2">Aktif QR kodlar</p>
+                <p className="text-xl sm:text-3xl font-bold text-purple-600">{stats.qrCodes}</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Aktif QR kodlar</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Görüntülenme</h3>
-                  <span className="text-3xl">👁️</span>
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Görüntülenme</h3>
+                  <span className="text-xl sm:text-3xl">👁️</span>
                 </div>
-                <p className="text-3xl font-bold text-orange-600">{stats.views}</p>
-                <p className="text-xs text-gray-500 mt-2">Toplam erişim</p>
+                <p className="text-xl sm:text-3xl font-bold text-orange-600">{stats.views}</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Toplam erişim</p>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <a
                 href="/restaurant/menu"
                 className="bg-white p-6 rounded-xl shadow-sm border-2 border-gray-100 hover:border-blue-500 transition group"

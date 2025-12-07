@@ -118,23 +118,23 @@ export default function AdminRestaurants() {
     <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
       <DashboardLayout title="🏪 Restoran Yönetimi">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <p className="text-gray-600">Tüm restoranları yönetin</p>
+            <p className="text-gray-600 text-sm sm:text-base">Tüm restoranları yönetin</p>
           </div>
           <button
             onClick={() => {
               resetForm();
               setShowModal(true);
             }}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center gap-2"
           >
             <span>➕</span>
             <span>Yeni Restoran</span>
           </button>
         </div>
 
-        {/* Restaurants Table */}
+        {/* Restaurants - Mobile Cards / Desktop Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
           {loading ? (
             <div className="flex items-center justify-center h-64">
@@ -145,7 +145,49 @@ export default function AdminRestaurants() {
               <p className="text-gray-500 text-lg">Henüz restoran eklenmemiş</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards */}
+              <div className="lg:hidden divide-y">
+                {restaurants.map((restaurant) => (
+                  <div key={restaurant.id} className="p-4 space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-medium text-gray-900">{restaurant.name}</h3>
+                        <p className="text-sm text-gray-500">/{restaurant.slug}</p>
+                      </div>
+                      <div className="flex gap-1">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                          {restaurant._count.categories} Kat
+                        </span>
+                        <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">
+                          {restaurant._count.qrCodes} QR
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <p>👤 {restaurant.owner.name}</p>
+                      {restaurant.phone && <p>📞 {restaurant.phone}</p>}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => openEditModal(restaurant)}
+                        className="flex-1 px-3 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium"
+                      >
+                        Düzenle
+                      </button>
+                      <button
+                        onClick={() => handleDelete(restaurant.id)}
+                        className="flex-1 px-3 py-2 bg-red-500 text-white rounded-lg text-sm font-medium"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table */}
+              <div className="hidden lg:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>
@@ -219,7 +261,8 @@ export default function AdminRestaurants() {
                   ))}
                 </tbody>
               </table>
-            </div>
+              </div>
+            </>
           )}
         </div>
 

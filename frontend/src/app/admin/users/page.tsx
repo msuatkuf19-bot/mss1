@@ -143,16 +143,16 @@ export default function AdminUsers() {
     <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
       <DashboardLayout title="👥 Kullanıcı Yönetimi">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <p className="text-gray-600">Tüm kullanıcıları yönetin</p>
+            <p className="text-gray-600 text-sm sm:text-base">Tüm kullanıcıları yönetin</p>
           </div>
           <button
             onClick={() => {
               resetForm();
               setShowModal(true);
             }}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center gap-2 text-sm sm:text-base"
           >
             <span>➕</span>
             <span>Yeni Kullanıcı</span>
@@ -170,7 +170,56 @@ export default function AdminUsers() {
               <p className="text-gray-500 text-lg">Henüz kullanıcı eklenmemiş</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Card View */}
+              <div className="block md:hidden">
+                <div className="divide-y divide-gray-100">
+                  {users.map((user) => (
+                    <div key={user.id} className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <div className="font-medium text-gray-900">{user.name}</div>
+                          <div className="text-sm text-gray-500">{user.email}</div>
+                        </div>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            user.isActive
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {user.isActive ? 'Aktif' : 'Pasif'}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}>
+                          {getRoleLabel(user.role)}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {new Date(user.createdAt).toLocaleDateString('tr-TR')}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => openEditModal(user)}
+                          className="flex-1 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium"
+                        >
+                          Düzenle
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user.id)}
+                          className="flex-1 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm font-medium"
+                        >
+                          Sil
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>
@@ -229,7 +278,8 @@ export default function AdminUsers() {
                   ))}
                 </tbody>
               </table>
-            </div>
+              </div>
+            </>
           )}
         </div>
 

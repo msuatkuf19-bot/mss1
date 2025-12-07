@@ -7,8 +7,8 @@ import CustomCursor from '@/components/CustomCursor';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'QR Menü Yönetim Sistemi',
-  description: 'Restoran menü yönetimi ve QR kod erişim sistemi',
+  title: 'Menü Ben - Dijital QR Menü Sistemi',
+  description: 'Menü Ben - Restoran menü yönetimi ve QR kod erişim sistemi',
 };
 
 export default function RootLayout({

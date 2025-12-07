@@ -133,16 +133,16 @@ export default function RestaurantQRCodes() {
     <ProtectedRoute allowedRoles={['RESTAURANT_ADMIN']}>
       <DashboardLayout title="🎯 QR Kod Yönetimi">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <p className="text-gray-600">QR kodlarınızı oluşturun ve yönetin</p>
+            <p className="text-gray-600 text-sm sm:text-base">QR kodlarınızı oluşturun ve yönetin</p>
           </div>
           <button
             onClick={() => {
               resetForm();
               setShowModal(true);
             }}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center gap-2"
           >
             <span>➕</span>
             <span>Yeni QR Kod</span>
@@ -155,16 +155,16 @@ export default function RestaurantQRCodes() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
         ) : qrCodes.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-12">
-            <p className="text-gray-500 text-lg">Henüz QR kod oluşturulmamış</p>
-            <p className="text-gray-400 text-sm mt-2">Başlamak için "Yeni QR Kod" butonuna tıklayın</p>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-8 sm:py-12 px-4">
+            <p className="text-gray-500 text-base sm:text-lg">Henüz QR kod oluşturulmamış</p>
+            <p className="text-gray-400 text-xs sm:text-sm mt-2">Başlamak için "Yeni QR Kod" butonuna tıklayın</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {qrCodes.map((qr) => (
               <div
                 key={qr.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition"
+                className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>

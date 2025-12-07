@@ -140,12 +140,10 @@ export default function LoginPage() {
               <div className="px-6 py-8 space-y-6">
                 {/* Logo & Title */}
                 <div className="text-center space-y-3 animate-slideDown">
-                  <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-orange-500 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg animate-pulse">
-                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/>
-                    </svg>
+                  <div className="w-20 h-20 mx-auto rounded-3xl overflow-hidden shadow-lg animate-pulse">
+                    <img src="/benmedya.png" alt="Menü Ben" className="w-full h-full object-contain brightness-0 invert" />
                   </div>
-                  <h3 className="text-white font-bold text-xl">BEN MENÜ</h3>
+                  <h3 className="text-white font-bold text-xl">Menü Ben</h3>
                   <p className="text-gray-400 text-sm">Masa #12</p>
                 </div>
 

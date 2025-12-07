@@ -23,22 +23,15 @@ export default function Home() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-pink-500 rounded-lg blur opacity-75"></div>
-                <div className="relative bg-gradient-to-br from-orange-400 to-pink-500 p-2 rounded-lg">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/>
-                  </svg>
-                </div>
-              </div>
+            <div className="flex items-center gap-4">
+              <img src="/benmedya.png" alt="Menü Ben" className="h-16 w-auto brightness-0 invert" />
               <div>
-                <h1 className="text-lg font-bold gradient-text">
-                  BEN MENÜ
+                <h1 className="text-2xl font-bold gradient-text">
+                  Menü Ben
                 </h1>
                 <div className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                  <p className="text-[10px] text-gray-400">Dijital QR Menü SaaS</p>
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <p className="text-xs text-gray-400">Dijital QR Menü SaaS</p>
                 </div>
               </div>
             </div>
@@ -263,7 +256,7 @@ export default function Home() {
               <span className="text-sm text-orange-400 font-medium">Özellikler</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Neden <span className="gradient-text">Resto Menüm</span>?
+              Neden <span className="gradient-text">Menü Ben</span>?
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
               Modern restoran yönetimi için ihtiyacınız olan her şey
@@ -380,7 +373,7 @@ export default function Home() {
               <span className="text-sm text-pink-400 font-medium">Demo Menüler</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              QR Menü <span className="gradient-text">Referanslarımız</span>
+              Menü Ben <span className="gradient-text">Referanslarımız</span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
               Aşağıdaki QR kodlarını akıllı telefonunuz ile okutarak referans menülerimize göz atabilirsiniz
@@ -884,17 +877,13 @@ export default function Home() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-gradient-to-br from-orange-400 to-pink-500 p-2 rounded-lg">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/>
-                  </svg>
-                </div>
+                <img src="/benmedya.png" alt="Menü Ben" className="h-10 w-auto brightness-0 invert" />
                 <div>
-                  <h1 className="text-lg font-bold gradient-text">BEN MENÜ</h1>
+                  <h1 className="text-lg font-bold gradient-text">Menü Ben</h1>
                 </div>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Modern restoranlar için dijital QR menü çözümü. Hızlı, güvenli ve kullanıcı dostu.
+                Menü Ben - Modern restoranlar için dijital QR menü çözümü. Hızlı, güvenli ve kullanıcı dostu.
               </p>
             </div>
 
@@ -936,7 +925,7 @@ export default function Home() {
 
           {/* Bottom Bar */}
           <div className="pt-8 border-t border-white/5 text-center text-gray-500 text-sm">
-            <p>© 2025 BEN MENÜ. Tüm hakları saklıdır.</p>
+            <p>© 2025 Menü Ben. Tüm hakları saklıdır.</p>
           </div>
         </div>
       </footer>

@@ -328,12 +328,12 @@ export default function RegisterPage() {
                 <h4 className="text-lg font-bold text-white mb-3">KVKK Aydınlatma Metni</h4>
                 <div className="max-h-48 overflow-y-auto text-sm text-gray-400 leading-relaxed space-y-3 mb-4 pr-2">
                   <p>
-                    <strong className="text-gray-300">BEN MENÜ</strong> olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında, 
+                    <strong className="text-gray-300">Menü Ben</strong> olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında, 
                     kişisel verilerinizin işlenmesi, saklanması ve korunması konusunda sizi bilgilendirmek isteriz.
                   </p>
                   
                   <p>
-                    <strong className="text-gray-300">Veri Sorumlusu:</strong> BEN MENÜ, kişisel verilerinizin işlenme amaçlarını ve 
+                    <strong className="text-gray-300">Veri Sorumlusu:</strong> Menü Ben, kişisel verilerinizin işlenme amaçlarını ve 
                     vasıtalarını belirleyen, veri kayıt sisteminin kurulmasından ve yönetilmesinden sorumlu olan veri sorumlusudur.
                   </p>
                   

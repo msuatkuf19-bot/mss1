@@ -156,7 +156,7 @@ export default function RestaurantSettingsPage() {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Logo Upload */}
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <div className="flex items-center gap-2 mb-4">

@@ -96,50 +96,50 @@ export default function AdminDashboard() {
         ) : (
           <>
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Toplam Restoran</h3>
-                  <span className="text-3xl">🏪</span>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Toplam Restoran</h3>
+                  <span className="text-xl sm:text-3xl">🏪</span>
                 </div>
-                <p className="text-3xl font-bold text-blue-600">{stats.restaurants}</p>
-                <p className="text-xs text-gray-500 mt-2">{stats.activeRestaurants} aktif</p>
+                <p className="text-xl sm:text-3xl font-bold text-blue-600">{stats.restaurants}</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">{stats.activeRestaurants} aktif</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Toplam Kullanıcı</h3>
-                  <span className="text-3xl">👥</span>
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Toplam Kullanıcı</h3>
+                  <span className="text-xl sm:text-3xl">👥</span>
                 </div>
-                <p className="text-3xl font-bold text-green-600">{stats.users}</p>
-                <p className="text-xs text-gray-500 mt-2">Tüm roller</p>
+                <p className="text-xl sm:text-3xl font-bold text-green-600">{stats.users}</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Tüm roller</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">QR Tarama</h3>
-                  <span className="text-3xl">📊</span>
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">QR Tarama</h3>
+                  <span className="text-xl sm:text-3xl">📊</span>
                 </div>
-                <p className="text-3xl font-bold text-purple-600">{stats.qrScans}</p>
-                <p className="text-xs text-gray-500 mt-2">Toplam görüntülenme</p>
+                <p className="text-xl sm:text-3xl font-bold text-purple-600">{stats.qrScans}</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Toplam görüntülenme</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Aktif Oran</h3>
-                  <span className="text-3xl">📈</span>
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Aktif Oran</h3>
+                  <span className="text-xl sm:text-3xl">📈</span>
                 </div>
-                <p className="text-3xl font-bold text-orange-600">
+                <p className="text-xl sm:text-3xl font-bold text-orange-600">
                   {stats.restaurants > 0 ? Math.round((stats.activeRestaurants / stats.restaurants) * 100) : 0}%
                 </p>
-                <p className="text-xs text-gray-500 mt-2">Menüsü olan</p>
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Menüsü olan</p>
               </div>
             </div>
 
             {/* Recent Restaurants */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Son Eklenen Restoranlar</h2>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900">Son Eklenen Restoranlar</h2>
                 <a href="/admin/restaurants" className="text-blue-600 hover:text-blue-700 font-medium text-sm">
                   Tümünü Gör →
                 </a>
