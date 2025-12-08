@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayarlar - Restoran - Menü Ben</title>
+  <script src="../tailwind.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, #f97316 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824]">
+  
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 glass-effect border-r border-white/10 z-50">
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-8">
+        <img src="../benmedya.png" alt="Menü Ben" class="h-10 w-auto brightness-0 invert">
+        <div>
+          <h1 class="text-lg font-bold gradient-text">Menü Ben</h1>
+          <p class="text-xs text-gray-400">Restoran Paneli</p>
+        </div>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+        <a href="categories.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Kategoriler
+        </a>
+        <a href="menu.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Menü Ürünleri
+        </a>
+        <a href="qr-codes.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+          QR Kodlar
+        </a>
+        <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500/20 to-pink-500/20 text-white border border-orange-500/30">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          Ayarlar
+        </a>
+      </nav>
+    </div>
+    
+    <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10">
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        Çıkış Yap
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-white">Restoran Ayarları</h1>
+      <p class="text-gray-400">Restoran bilgilerini ve görünümünü düzenleyin</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+      <!-- General Settings -->
+      <div class="glass-effect rounded-2xl p-8 border border-white/10">
+        <h2 class="text-xl font-bold text-white mb-6">Genel Bilgiler</h2>
+        <form id="settingsForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Restoran Adı</label>
+            <input type="text" id="name" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Açıklama</label>
+            <textarea id="description" rows="3" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 resize-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Adres</label>
+            <textarea id="address" rows="2" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 resize-none"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm text-gray-400 mb-2">Telefon</label>
+              <input type="tel" id="phone" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-400 mb-2">Email</label>
+              <input type="email" id="email" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Web Sitesi</label>
+            <input type="url" id="website" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Logo URL</label>
+            <input type="url" id="logo" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all">
+            Kaydet
+          </button>
+        </form>
+      </div>
+
+      <!-- Theme Settings -->
+      <div class="glass-effect rounded-2xl p-8 border border-white/10">
+        <h2 class="text-xl font-bold text-white mb-6">Menü Teması</h2>
+        <form id="themeForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Tema Seçimi</label>
+            <select id="theme" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500">
+              <option value="default">Varsayılan</option>
+              <option value="dark">Koyu</option>
+              <option value="light">Açık</option>
+              <option value="elegant">Elegant</option>
+              <option value="modern">Modern</option>
+              <option value="classic">Klasik</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Ana Renk</label>
+            <div class="flex gap-2">
+              <input type="color" id="primaryColor" value="#f97316" class="w-12 h-12 rounded-xl border border-white/10 cursor-pointer">
+              <input type="text" id="primaryColorText" value="#f97316" class="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">İkincil Renk</label>
+            <div class="flex gap-2">
+              <input type="color" id="secondaryColor" value="#ec4899" class="w-12 h-12 rounded-xl border border-white/10 cursor-pointer">
+              <input type="text" id="secondaryColorText" value="#ec4899" class="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Arka Plan</label>
+            <input type="url" id="backgroundImage" placeholder="Arka plan resmi URL" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all">
+            Temayı Kaydet
+          </button>
+        </form>
+      </div>
+
+      <!-- Social Media -->
+      <div class="glass-effect rounded-2xl p-8 border border-white/10">
+        <h2 class="text-xl font-bold text-white mb-6">Sosyal Medya</h2>
+        <form id="socialForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Instagram</label>
+            <input type="url" id="instagram" placeholder="https://instagram.com/..." class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Facebook</label>
+            <input type="url" id="facebook" placeholder="https://facebook.com/..." class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Twitter</label>
+            <input type="url" id="twitter" placeholder="https://twitter.com/..." class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all">
+            Kaydet
+          </button>
+        </form>
+      </div>
+
+      <!-- Working Hours -->
+      <div class="glass-effect rounded-2xl p-8 border border-white/10">
+        <h2 class="text-xl font-bold text-white mb-6">Çalışma Saatleri</h2>
+        <form id="hoursForm" class="space-y-3">
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-gray-400">Pazartesi</span>
+            <input type="time" id="mon_open" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+            <span class="text-gray-400">-</span>
+            <input type="time" id="mon_close" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-gray-400">Salı</span>
+            <input type="time" id="tue_open" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+            <span class="text-gray-400">-</span>
+            <input type="time" id="tue_close" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-gray-400">Çarşamba</span>
+            <input type="time" id="wed_open" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+            <span class="text-gray-400">-</span>
+            <input type="time" id="wed_close" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-gray-400">Perşembe</span>
+            <input type="time" id="thu_open" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+            <span class="text-gray-400">-</span>
+            <input type="time" id="thu_close" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-gray-400">Cuma</span>
+            <input type="time" id="fri_open" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+            <span class="text-gray-400">-</span>
+            <input type="time" id="fri_close" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-gray-400">Cumartesi</span>
+            <input type="time" id="sat_open" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+            <span class="text-gray-400">-</span>
+            <input type="time" id="sat_close" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-gray-400">Pazar</span>
+            <input type="time" id="sun_open" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+            <span class="text-gray-400">-</span>
+            <input type="time" id="sun_close" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all mt-4">
+            Kaydet
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = 'https://menuben-api.onrender.com/api';
+    let restaurant = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        window.location.href = '../login.html';
+        return;
+      }
+      loadRestaurantInfo();
+      
+      // Color picker sync
+      document.getElementById('primaryColor').addEventListener('change', (e) => {
+        document.getElementById('primaryColorText').value = e.target.value;
+      });
+      document.getElementById('secondaryColor').addEventListener('change', (e) => {
+        document.getElementById('secondaryColorText').value = e.target.value;
+      });
+    });
+    
+    async function loadRestaurantInfo() {
+      const token = localStorage.getItem('accessToken');
+      
+      try {
+        const res = await fetch(`${API_URL}/restaurants/my-restaurant`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        if (data.success && data.data) {
+          restaurant = data.data;
+          
+          // Fill form
+          document.getElementById('name').value = restaurant.name || '';
+          document.getElementById('description').value = restaurant.description || '';
+          document.getElementById('address').value = restaurant.address || '';
+          document.getElementById('phone').value = restaurant.phone || '';
+          document.getElementById('email').value = restaurant.email || '';
+          document.getElementById('website').value = restaurant.website || '';
+          document.getElementById('logo').value = restaurant.logo || '';
+          
+          // Theme
+          if (restaurant.settings) {
+            const settings = restaurant.settings;
+            document.getElementById('theme').value = settings.theme || 'default';
+            if (settings.primaryColor) {
+              document.getElementById('primaryColor').value = settings.primaryColor;
+              document.getElementById('primaryColorText').value = settings.primaryColor;
+            }
+            if (settings.secondaryColor) {
+              document.getElementById('secondaryColor').value = settings.secondaryColor;
+              document.getElementById('secondaryColorText').value = settings.secondaryColor;
+            }
+            document.getElementById('backgroundImage').value = settings.backgroundImage || '';
+          }
+          
+          // Social
+          if (restaurant.socialMedia) {
+            document.getElementById('instagram').value = restaurant.socialMedia.instagram || '';
+            document.getElementById('facebook').value = restaurant.socialMedia.facebook || '';
+            document.getElementById('twitter').value = restaurant.socialMedia.twitter || '';
+          }
+        }
+      } catch (error) {
+        console.error('Load restaurant error:', error);
+      }
+    }
+    
+    document.getElementById('settingsForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('accessToken');
+      
+      const body = {
+        name: document.getElementById('name').value,
+        description: document.getElementById('description').value,
+        address: document.getElementById('address').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        website: document.getElementById('website').value,
+        logo: document.getElementById('logo').value
+      };
+      
+      try {
+        const res = await fetch(`${API_URL}/restaurants/${restaurant.id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          alert('Ayarlar kaydedildi!');
+          loadRestaurantInfo();
+        } else {
+          alert(data.message || 'Kayıt başarısız');
+        }
+      } catch (error) {
+        alert('Bir hata oluştu');
+      }
+    });
+    
+    document.getElementById('themeForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('accessToken');
+      
+      const settings = {
+        theme: document.getElementById('theme').value,
+        primaryColor: document.getElementById('primaryColorText').value,
+        secondaryColor: document.getElementById('secondaryColorText').value,
+        backgroundImage: document.getElementById('backgroundImage').value
+      };
+      
+      try {
+        const res = await fetch(`${API_URL}/restaurants/${restaurant.id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ settings })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          alert('Tema kaydedildi!');
+        } else {
+          alert(data.message || 'Kayıt başarısız');
+        }
+      } catch (error) {
+        alert('Bir hata oluştu');
+      }
+    });
+    
+    document.getElementById('socialForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('accessToken');
+      
+      const socialMedia = {
+        instagram: document.getElementById('instagram').value,
+        facebook: document.getElementById('facebook').value,
+        twitter: document.getElementById('twitter').value
+      };
+      
+      try {
+        const res = await fetch(`${API_URL}/restaurants/${restaurant.id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ socialMedia })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          alert('Sosyal medya kaydedildi!');
+        } else {
+          alert(data.message || 'Kayıt başarısız');
+        }
+      } catch (error) {
+        alert('Bir hata oluştu');
+      }
+    });
+    
+    function logout() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      window.location.href = '../login.html';
+    }
+  </script>
+</body>
+</html>

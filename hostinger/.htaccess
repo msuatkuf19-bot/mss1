@@ -1,0 +1,14 @@
+# .htaccess for Hostinger with SSL
+
+# Default index file
+DirectoryIndex index.html
+
+# Enable rewrite engine
+RewriteEngine On
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Custom error page
+ErrorDocument 404 /index.html

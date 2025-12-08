@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Kodlar - Restoran - Menü Ben</title>
+  <script src="../tailwind.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, #f97316 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824]">
+  
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 glass-effect border-r border-white/10 z-50">
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-8">
+        <img src="../benmedya.png" alt="Menü Ben" class="h-10 w-auto brightness-0 invert">
+        <div>
+          <h1 class="text-lg font-bold gradient-text">Menü Ben</h1>
+          <p class="text-xs text-gray-400">Restoran Paneli</p>
+        </div>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+        <a href="categories.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Kategoriler
+        </a>
+        <a href="menu.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Menü Ürünleri
+        </a>
+        <a href="qr-codes.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500/20 to-pink-500/20 text-white border border-orange-500/30">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+          QR Kodlar
+        </a>
+        <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          Ayarlar
+        </a>
+      </nav>
+    </div>
+    
+    <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10">
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        Çıkış Yap
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-white">QR Kodlar</h1>
+      <p class="text-gray-400">Restoranınız için QR kod oluşturun ve indirin</p>
+    </div>
+
+    <!-- QR Code Generator -->
+    <div class="glass-effect rounded-2xl p-8 border border-white/10 max-w-2xl">
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- QR Code Display -->
+        <div class="flex flex-col items-center justify-center">
+          <div class="bg-white p-4 rounded-2xl mb-4">
+            <div id="qrCode" class="w-48 h-48"></div>
+          </div>
+          <button onclick="downloadQR()" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            PNG İndir
+          </button>
+        </div>
+        
+        <!-- Options -->
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Menü Linki</label>
+            <div class="flex gap-2">
+              <input type="text" id="menuUrl" readonly class="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none">
+              <button onclick="copyUrl()" class="px-4 py-3 bg-white/10 rounded-xl text-white hover:bg-white/20 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">QR Kod Boyutu</label>
+            <select id="qrSize" onchange="generateQR()" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500">
+              <option value="200">Küçük (200x200)</option>
+              <option value="300" selected>Orta (300x300)</option>
+              <option value="400">Büyük (400x400)</option>
+              <option value="500">Çok Büyük (500x500)</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Masa Numarası (Opsiyonel)</label>
+            <input type="number" id="tableNumber" min="1" placeholder="Masa numarası" onchange="generateQR()" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+          </div>
+          
+          <div class="pt-4 border-t border-white/10">
+            <h4 class="text-white font-semibold mb-3">Bilgi</h4>
+            <ul class="text-sm text-gray-400 space-y-2">
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                QR kodu masalara yapıştırın
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Müşteriler telefonla tarayarak menüye ulaşabilir
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Her masa için farklı QR kod oluşturabilirsiniz
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR Codes List -->
+    <div class="mt-8">
+      <h2 class="text-xl font-bold text-white mb-4">Oluşturulan QR Kodlar</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="qrList">
+        <!-- Masa QR kodları buraya gelecek -->
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = 'https://menuben-api.onrender.com/api';
+    let restaurantSlug = '';
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        window.location.href = '../login.html';
+        return;
+      }
+      loadRestaurantInfo();
+    });
+    
+    async function loadRestaurantInfo() {
+      const token = localStorage.getItem('accessToken');
+      
+      try {
+        const res = await fetch(`${API_URL}/restaurants/my-restaurant`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        if (data.success && data.data) {
+          restaurantSlug = data.data.slug;
+          generateQR();
+        }
+      } catch (error) {
+        console.error('Load restaurant error:', error);
+      }
+    }
+    
+    function generateQR() {
+      const size = parseInt(document.getElementById('qrSize').value);
+      const tableNumber = document.getElementById('tableNumber').value;
+      
+      let url = `https://menuben.com/menu/${restaurantSlug}`;
+      if (tableNumber) {
+        url += `?table=${tableNumber}`;
+      }
+      
+      document.getElementById('menuUrl').value = url;
+      
+      const qrContainer = document.getElementById('qrCode');
+      qrContainer.innerHTML = '';
+      
+      QRCode.toCanvas(document.createElement('canvas'), url, {
+        width: size,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      }, function(error, canvas) {
+        if (error) console.error(error);
+        qrContainer.appendChild(canvas);
+        canvas.style.width = '192px';
+        canvas.style.height = '192px';
+      });
+    }
+    
+    function downloadQR() {
+      const size = parseInt(document.getElementById('qrSize').value);
+      const tableNumber = document.getElementById('tableNumber').value;
+      
+      let url = `https://menuben.com/menu/${restaurantSlug}`;
+      if (tableNumber) {
+        url += `?table=${tableNumber}`;
+      }
+      
+      QRCode.toDataURL(url, {
+        width: size,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      }, function(error, dataUrl) {
+        if (error) console.error(error);
+        
+        const link = document.createElement('a');
+        link.download = `qr-menu${tableNumber ? '-masa-' + tableNumber : ''}.png`;
+        link.href = dataUrl;
+        link.click();
+      });
+    }
+    
+    function copyUrl() {
+      const url = document.getElementById('menuUrl').value;
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Link kopyalandı!');
+      });
+    }
+    
+    function logout() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      window.location.href = '../login.html';
+    }
+  </script>
+</body>
+</html>

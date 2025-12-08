@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restoran Dashboard - Menü Ben</title>
+  <script src="../tailwind.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, #f97316 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824]">
+  
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-0 h-full w-64 glass-effect border-r border-white/10 z-50">
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-8">
+        <img src="../benmedya.png" alt="Menü Ben" class="h-10 w-auto brightness-0 invert">
+        <div>
+          <h1 class="text-lg font-bold gradient-text">Menü Ben</h1>
+          <p class="text-xs text-gray-400">Restoran Paneli</p>
+        </div>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500/20 to-pink-500/20 text-white border border-orange-500/30">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+        <a href="categories.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          Kategoriler
+        </a>
+        <a href="menu.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Menü Ürünleri
+        </a>
+        <a href="qr-codes.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+          QR Kodlar
+        </a>
+        <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          Ayarlar
+        </a>
+      </nav>
+    </div>
+    
+    <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold" id="userInitial">R</div>
+        <div>
+          <p class="text-white text-sm font-medium" id="userName">Restoran</p>
+          <p class="text-gray-400 text-xs" id="userEmail">-</p>
+        </div>
+      </div>
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        Çıkış Yap
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-white">Dashboard</h1>
+        <p class="text-gray-400">Restoran istatistiklerinizi görüntüleyin</p>
+      </div>
+      <div class="flex items-center gap-2 px-4 py-2 glass-effect rounded-xl border border-green-500/30">
+        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        <span class="text-green-400 text-sm">Menü Aktif</span>
+      </div>
+    </div>
+
+    <!-- Restaurant Info -->
+    <div class="glass-effect rounded-2xl p-6 border border-white/10 mb-8">
+      <div class="flex items-center gap-6">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold" id="restaurantInitial">R</div>
+        <div>
+          <h2 class="text-2xl font-bold text-white" id="restaurantName">Restoran</h2>
+          <p class="text-gray-400" id="restaurantSlug">-</p>
+          <a href="#" id="menuLink" target="_blank" class="text-orange-400 hover:text-orange-300 text-sm mt-1 inline-block">Menüyü Görüntüle →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="glass-effect rounded-2xl p-6 border border-white/10">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          </div>
+        </div>
+        <h3 class="text-2xl font-bold text-white" id="totalCategories">0</h3>
+        <p class="text-gray-400 text-sm">Kategori</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-6 border border-white/10">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          </div>
+        </div>
+        <h3 class="text-2xl font-bold text-white" id="totalProducts">0</h3>
+        <p class="text-gray-400 text-sm">Ürün</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-6 border border-white/10">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+          </div>
+        </div>
+        <h3 class="text-2xl font-bold text-white" id="totalQRCodes">0</h3>
+        <p class="text-gray-400 text-sm">QR Kod</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-6 border border-white/10">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+          </div>
+        </div>
+        <h3 class="text-2xl font-bold text-white" id="totalViews">0</h3>
+        <p class="text-gray-400 text-sm">Görüntüleme</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <a href="categories.html" class="glass-effect rounded-2xl p-6 border border-white/10 hover:border-orange-500/30 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Kategori Ekle</h3>
+        <p class="text-gray-400 text-sm">Yeni kategori oluşturun</p>
+      </a>
+      
+      <a href="menu.html" class="glass-effect rounded-2xl p-6 border border-white/10 hover:border-orange-500/30 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Ürün Ekle</h3>
+        <p class="text-gray-400 text-sm">Menüye ürün ekleyin</p>
+      </a>
+      
+      <a href="qr-codes.html" class="glass-effect rounded-2xl p-6 border border-white/10 hover:border-orange-500/30 transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">QR Kod Oluştur</h3>
+        <p class="text-gray-400 text-sm">Masalar için QR oluşturun</p>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = 'https://menuben-api.onrender.com/api';
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('accessToken');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      if (!token) {
+        window.location.href = '../login.html';
+        return;
+      }
+      
+      document.getElementById('userName').textContent = user.name || 'Restoran';
+      document.getElementById('userEmail').textContent = user.email || '';
+      document.getElementById('userInitial').textContent = (user.name || 'R').charAt(0);
+      
+      loadDashboardData();
+    });
+    
+    async function loadDashboardData() {
+      const token = localStorage.getItem('accessToken');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      try {
+        // Load restaurant info
+        if (user.restaurantId) {
+          const resRes = await fetch(`${API_URL}/restaurants/${user.restaurantId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const resData = await resRes.json();
+          
+          if (resData.success && resData.data) {
+            const restaurant = resData.data;
+            document.getElementById('restaurantName').textContent = restaurant.name || 'Restoran';
+            document.getElementById('restaurantSlug').textContent = restaurant.slug || '';
+            document.getElementById('restaurantInitial').textContent = (restaurant.name || 'R').charAt(0);
+            document.getElementById('menuLink').href = `../menu/${restaurant.slug}.html`;
+            
+            // Store for other pages
+            localStorage.setItem('restaurant', JSON.stringify(restaurant));
+          }
+        }
+        
+        // Load menu data
+        const menuRes = await fetch(`${API_URL}/menu`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const menuData = await menuRes.json();
+        
+        if (menuData.success && menuData.data) {
+          document.getElementById('totalCategories').textContent = menuData.data.categories?.length || 0;
+          
+          let totalProducts = 0;
+          (menuData.data.categories || []).forEach(cat => {
+            totalProducts += cat.items?.length || 0;
+          });
+          document.getElementById('totalProducts').textContent = totalProducts;
+        }
+        
+        // Load QR codes
+        const qrRes = await fetch(`${API_URL}/qr`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const qrData = await qrRes.json();
+        
+        if (qrData.success && qrData.data) {
+          document.getElementById('totalQRCodes').textContent = qrData.data.length || 0;
+        }
+        
+        // Set dummy views for now
+        document.getElementById('totalViews').textContent = '0';
+        
+      } catch (error) {
+        console.error('Dashboard data load error:', error);
+      }
+    }
+    
+    function logout() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('restaurant');
+      window.location.href = '../login.html';
+    }
+  </script>
+</body>
+</html>
