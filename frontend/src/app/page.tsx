@@ -24,7 +24,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-4">
-              <img src="/benmedya.png" alt="Menü Ben" className="h-16 w-auto brightness-0 invert" />
+              <img src="/benmedya.png" alt="Menü Ben" className="h-20 w-auto brightness-0 invert" />
               <div>
                 <h1 className="text-2xl font-bold gradient-text">
                   Menü Ben
@@ -40,9 +40,6 @@ export default function Home() {
             <div className="hidden lg:flex items-center gap-8">
               <a href="#ozellikler" className="text-gray-300 hover:text-orange-400 font-medium transition-colors">
                 Özellikler
-              </a>
-              <a href="#referanslar" className="text-gray-300 hover:text-orange-400 font-medium transition-colors">
-                Referanslar
               </a>
               <a href="#nasil-calisir" className="text-gray-300 hover:text-orange-400 font-medium transition-colors">
                 Nasıl Çalışır?
@@ -87,7 +84,6 @@ export default function Home() {
           {mobileMenuOpen && (
             <div className="lg:hidden mt-4 pb-4 space-y-3 animate-slideDown">
               <a href="#ozellikler" className="block text-gray-300 hover:text-orange-400 py-2">Özellikler</a>
-              <a href="#referanslar" className="block text-gray-300 hover:text-orange-400 py-2">Referanslar</a>
               <a href="#nasil-calisir" className="block text-gray-300 hover:text-orange-400 py-2">Nasıl Çalışır?</a>
               <a href="#fiyatlandirma" className="block text-gray-300 hover:text-orange-400 py-2">Fiyatlandırma</a>
               <a href="#iletisim" className="block text-gray-300 hover:text-orange-400 py-2">İletişim</a>
@@ -145,12 +141,12 @@ export default function Home() {
               {/* Stats */}
               <div className="flex items-center gap-8 text-sm">
                 <div>
-                  <div className="text-2xl font-bold gradient-text">150+</div>
+                  <div className="text-2xl font-bold gradient-text">1500+</div>
                   <div className="text-gray-500">Aktif Restoran</div>
                 </div>
                 <div className="w-px h-12 bg-gray-700"></div>
                 <div>
-                  <div className="text-2xl font-bold gradient-text">50K+</div>
+                  <div className="text-2xl font-bold gradient-text">500K+</div>
                   <div className="text-gray-500">Menü Görüntüleme</div>
                 </div>
                 <div className="w-px h-12 bg-gray-700"></div>
@@ -178,69 +174,97 @@ export default function Home() {
                 <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span>Şu an 150+ restoran tarafından kullanılmakta</span>
+                <span>Şu an 1500+ restoran tarafından kullanılmakta</span>
               </div>
             </div>
 
             {/* Right - Phone Mockup */}
-            <div className="relative flex justify-center lg:justify-end animate-float">
-              {/* Glow Effects */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-pink-500 blur-[100px] opacity-20"></div>
-              
-              {/* Phone Frame */}
-              <div className="relative z-10">
-                <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] p-3 shadow-2xl border border-white/10">
-                  {/* Screen */}
-                  <div className="bg-[#0C111C] rounded-[2.5rem] overflow-hidden">
-                    {/* Status Bar */}
-                    <div className="bg-[#05070B] h-8 rounded-t-[2.5rem] flex items-center justify-center">
-                      <div className="w-24 h-5 bg-gray-900 rounded-full"></div>
-                    </div>
-                    
-                    {/* Menu Content */}
-                    <div className="p-4 space-y-4 h-[500px] overflow-hidden">
-                      {/* Header */}
-                      <div className="text-center space-y-2">
-                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center">
-                          <span className="text-2xl">🍽️</span>
-                        </div>
-                        <h3 className="text-white font-bold text-lg">Resto Demo</h3>
-                        <p className="text-gray-400 text-xs">Masa #12</p>
-                      </div>
-
-                      {/* Categories */}
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { name: 'Ana Yemekler', emoji: '🍖', color: 'from-orange-500 to-red-500' },
-                          { name: 'İçecekler', emoji: '🥤', color: 'from-blue-500 to-cyan-500' },
-                          { name: 'Tatlılar', emoji: '🍰', color: 'from-pink-500 to-purple-500' },
-                          { name: 'Atıştırmalık', emoji: '🍟', color: 'from-yellow-500 to-orange-500' },
-                          { name: 'Kahvaltı', emoji: '☕', color: 'from-green-500 to-emerald-500' },
-                          { name: 'Çaylar', emoji: '🍵', color: 'from-purple-500 to-pink-500' }
-                        ].map((cat, i) => (
-                          <div key={i} className={`relative h-24 rounded-xl overflow-hidden group cursor-pointer`}>
-                            <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-90 group-hover:opacity-100 transition-opacity`}></div>
-                            <div className="relative h-full flex flex-col items-center justify-center p-2 text-center">
-                              <span className="text-3xl mb-1">{cat.emoji}</span>
-                              <p className="text-white text-[10px] font-bold">{cat.name}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Animated Background Orbs */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="absolute top-10 left-10 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '0s', animationDuration: '3s'}}></div>
+                  <div className="absolute bottom-20 right-10 w-40 h-40 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s', animationDuration: '4s'}}></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 bg-purple-500/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s', animationDuration: '5s'}}></div>
                 </div>
 
-                {/* Floating QR Card */}
-                <div className="absolute -right-8 -bottom-8 bg-gradient-to-br from-gray-800 to-gray-900 p-4 rounded-2xl shadow-2xl border border-white/10 animate-float" style={{animationDelay: '0.5s'}}>
-                  <div className="bg-white p-3 rounded-xl">
-                    <div className="w-24 h-24 bg-gray-900 rounded-lg flex items-center justify-center">
-                      <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
-                      </svg>
+                {/* Phone Mockup */}
+                <div className="relative animate-float z-10 hover:scale-105 transition-transform duration-500">
+                  {/* Multi-layer Glow Effects */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/30 via-pink-500/30 to-purple-500/30 blur-[100px] animate-pulse"></div>
+                  <div className="absolute inset-0 bg-gradient-to-tl from-blue-500/20 via-transparent to-pink-500/20 blur-[80px] animate-pulse" style={{animationDelay: '1s'}}></div>
+                  
+                  {/* Phone Frame */}
+                  <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3.5rem] p-4 shadow-2xl border border-white/10">
+                    {/* Screen */}
+                    <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] rounded-[3rem] overflow-hidden w-[280px] h-[580px]">
+                      {/* Status Bar */}
+                      <div className="h-8 flex items-center justify-center">
+                        <div className="w-28 h-6 bg-black rounded-full"></div>
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="px-6 py-8 space-y-6">
+                        {/* Logo & Title */}
+                        <div className="text-center space-y-3 animate-slideDown">
+                          <div className="w-20 h-20 mx-auto rounded-3xl overflow-hidden shadow-lg animate-pulse">
+                            <img src="/benmedya.png" alt="Menü Ben" className="w-full h-full object-contain brightness-0 invert" />
+                          </div>
+                          <h3 className="text-white font-bold text-xl">Menü Ben</h3>
+                          <p className="text-gray-400 text-sm">Masa #12</p>
+                        </div>
+
+                        {/* Category Cards */}
+                        <div className="grid grid-cols-2 gap-3">
+                          {[
+                            { name: 'Ana Yemekler', icon: '🍽️', color: 'from-orange-500 to-red-500' },
+                            { name: 'İçecekler', icon: '🥤', color: 'from-blue-500 to-cyan-500' },
+                            { name: 'Tatlılar', icon: '🍰', color: 'from-pink-500 to-purple-500' },
+                            { name: 'Atıştırmalık', icon: '🍟', color: 'from-yellow-500 to-orange-500' },
+                            { name: 'Kahvaltı', icon: '☕', color: 'from-green-500 to-emerald-500' }
+                          ].map((cat, i) => (
+                            <div 
+                              key={i} 
+                              className={`relative h-24 rounded-2xl overflow-hidden animate-slideUp`}
+                              style={{animationDelay: `${i * 0.15}s`}}
+                            >
+                              <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-90`}></div>
+                              <div className="relative h-full flex flex-col items-center justify-center p-2 text-center">
+                                <span className="text-3xl mb-1">{cat.icon}</span>
+                                <p className="text-white text-[10px] font-bold leading-tight">{cat.name}</p>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          {/* QR Scan Button */}
+                          <div className="relative h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-white/20 animate-slideUp" style={{animationDelay: '0.75s'}}>
+                            <div className="h-full flex flex-col items-center justify-center">
+                              <svg className="w-12 h-12 text-white mb-1" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
+                              </svg>
+                              <p className="text-white text-[9px] font-bold">Masanızı Tarayın</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-center text-xs text-gray-400 mt-2">Masanızı Tarayın</p>
+
+                  {/* Enhanced Floating Elements */}
+                  <div className="absolute -top-6 -right-6 w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center animate-float shadow-lg shadow-orange-500/50 hover:rotate-12 transition-transform duration-300" style={{animationDelay: '0.5s'}}>
+                    <span className="text-2xl animate-pulse">🎉</span>
+                  </div>
+                  <div className="absolute -bottom-6 -left-6 w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center animate-float shadow-lg shadow-green-500/50 hover:rotate-12 transition-transform duration-300" style={{animationDelay: '1s'}}>
+                    <span className="text-2xl animate-pulse" style={{animationDelay: '0.5s'}}>✨</span>
+                  </div>
+                  
+                  {/* Additional Floating Icons */}
+                  <div className="absolute top-1/4 -right-12 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center animate-float shadow-lg shadow-blue-500/50" style={{animationDelay: '1.5s', animationDuration: '3.5s'}}>
+                    <span className="text-xl">🍔</span>
+                  </div>
+                  <div className="absolute bottom-1/4 -left-12 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center animate-float shadow-lg shadow-purple-500/50" style={{animationDelay: '2s', animationDuration: '4s'}}>
+                    <span className="text-xl">🍕</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -356,84 +380,6 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* QR Referanslar Section */}
-      <section id="referanslar" className="py-20 px-6 relative overflow-hidden">
-        {/* Background Effect */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-full bg-gradient-to-b from-orange-500/5 to-transparent"></div>
-        
-        <div className="container mx-auto relative z-10">
-          <div className="text-center mb-16 animate-slideUp">
-            <div className="inline-block px-4 py-2 glass-effect rounded-full border border-pink-500/20 mb-4">
-              <span className="text-sm text-pink-400 font-medium">Demo Menüler</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Menü Ben <span className="gradient-text">Referanslarımız</span>
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Aşağıdaki QR kodlarını akıllı telefonunuz ile okutarak referans menülerimize göz atabilirsiniz
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              { 
-                name: 'Luxury Restaurant', 
-                gradient: 'from-purple-600 via-purple-500 to-pink-500',
-                emoji: '🍽️',
-                cuisine: 'Fine Dining'
-              },
-              { 
-                name: 'Coffee Corner', 
-                gradient: 'from-yellow-600 via-orange-500 to-red-500',
-                emoji: '☕',
-                cuisine: 'Cafe & Kahve'
-              },
-              { 
-                name: 'Pizza House', 
-                gradient: 'from-gray-700 via-gray-800 to-black',
-                emoji: '🍕',
-                cuisine: 'Fast Food'
-              }
-            ].map((restaurant, i) => (
-              <div 
-                key={i} 
-                className="group animate-slideUp"
-                style={{animationDelay: `${i * 0.2}s`}}
-              >
-                <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-br ${restaurant.gradient} p-1`}>
-                  <div className="bg-[#0C111C] rounded-3xl p-8">
-                    {/* Restaurant Badge */}
-                    <div className="flex items-center justify-center gap-3 mb-6">
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${restaurant.gradient} flex items-center justify-center text-3xl shadow-lg`}>
-                        {restaurant.emoji}
-                      </div>
-                    </div>
-
-                    <div className="text-center space-y-2 mb-6">
-                      <h3 className="text-white font-bold text-xl">{restaurant.name}</h3>
-                      <p className="text-gray-400 text-sm">{restaurant.cuisine}</p>
-                    </div>
-
-                    {/* QR Code Placeholder */}
-                    <div className="bg-white rounded-2xl p-6 mb-6">
-                      <div className="aspect-square bg-gray-100 rounded-xl flex items-center justify-center">
-                        <svg className="w-32 h-32 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
-                        </svg>
-                      </div>
-                    </div>
-
-                    <button className={`w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r ${restaurant.gradient} hover:shadow-lg hover:shadow-orange-500/50 transition-all duration-300 group-hover:scale-105`}>
-                      QR Menüyü Görüntüle
-                    </button>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
@@ -575,13 +521,13 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-12 text-center">
               {[
                 { 
-                  number: '150+', 
+                  number: '1.500+', 
                   label: 'Aktif Restoran',
                   description: 'Ülke genelinde hizmet veriyor',
                   icon: '🏪'
                 },
                 { 
-                  number: '50,000+', 
+                  number: '500.000+', 
                   label: 'Menü Görüntüleme',
                   description: 'Aylık müşteri etkileşimi',
                   icon: '👥'
@@ -796,7 +742,7 @@ export default function Home() {
                   </div>
                 </a>
 
-                <a href="mailto:info@restomenum.com" className="flex items-center gap-4 p-4 glass-effect rounded-xl hover:bg-white/10 transition-all group">
+                <a href="mailto:info@menuben.com" className="flex items-center gap-4 p-4 glass-effect rounded-xl hover:bg-white/10 transition-all group">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -804,7 +750,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">E-posta</p>
-                    <p className="text-white font-semibold text-lg">info@restomenum.com</p>
+                    <p className="text-white font-semibold text-lg">info@menuben.com</p>
                   </div>
                 </a>
 
@@ -877,7 +823,7 @@ export default function Home() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src="/benmedya.png" alt="Menü Ben" className="h-10 w-auto brightness-0 invert" />
+                <img src="/benmedya.png" alt="Menü Ben" className="h-14 w-auto brightness-0 invert" />
                 <div>
                   <h1 className="text-lg font-bold gradient-text">Menü Ben</h1>
                 </div>
