@@ -120,19 +120,19 @@ function PhoneMockup() {
       <motion.div
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative bg-gradient-to-br from-gray-700 to-gray-900 rounded-[3rem] p-3 shadow-2xl border border-white/20"
+        className="relative bg-gradient-to-br from-gray-700 to-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-2 md:p-3 shadow-2xl border border-white/20"
       >
         {/* Screen */}
-        <div className="bg-[#050814] rounded-[2.5rem] overflow-hidden w-[280px] md:w-[320px] h-[560px] md:h-[620px]">
+        <div className="bg-[#050814] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden w-[240px] md:w-[280px] lg:w-[320px] h-[420px] md:h-[500px] lg:h-[580px]">
           {/* Notch */}
-          <div className="h-8 flex items-center justify-center">
+          <div className="h-6 md:h-8 flex items-center justify-center">
             <div className="w-20 h-6 bg-black rounded-full relative">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-gray-800 border border-gray-700" />
             </div>
           </div>
 
           {/* Content */}
-          <div className="px-6 py-6 space-y-6">
+          <div className="px-4 md:px-5 lg:px-6 py-3 md:py-4 lg:py-6 space-y-3 md:space-y-4 lg:space-y-6">
             {/* Title */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -140,21 +140,21 @@ function PhoneMockup() {
               transition={{ delay: 0.5 }}
               className="text-center"
             >
-              <h3 className="text-white font-bold text-lg md:text-xl">Demo Panelin Hazırlanıyor</h3>
+              <h3 className="text-white font-bold text-sm md:text-lg lg:text-xl">Demo Panelin Hazırlanıyor</h3>
             </motion.div>
 
             {/* Progress Steps */}
-            <div className="space-y-4">
+            <div className="space-y-2 md:space-y-3 lg:space-y-4">
               {steps.map((step, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7 + i * 0.2 }}
-                  className="flex items-center gap-3"
+                  className="flex items-center gap-2 md:gap-3"
                 >
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    className={`w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       step.done
                         ? 'bg-green-500'
                         : step.loading
@@ -163,7 +163,7 @@ function PhoneMockup() {
                     }`}
                   >
                     {step.done ? (
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     ) : step.loading ? (
@@ -171,7 +171,7 @@ function PhoneMockup() {
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       >
-                        <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3 md:w-4 md:h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </motion.div>
@@ -179,7 +179,7 @@ function PhoneMockup() {
                       <div className="w-2 h-2 rounded-full bg-gray-500" />
                     )}
                   </div>
-                  <span className={`text-sm ${step.done ? 'text-green-400' : step.loading ? 'text-orange-400' : 'text-gray-500'}`}>
+                  <span className={`text-xs md:text-sm ${step.done ? 'text-green-400' : step.loading ? 'text-orange-400' : 'text-gray-500'}`}>
                     {step.text}
                   </span>
                 </motion.div>
@@ -194,10 +194,10 @@ function PhoneMockup() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.3 }}
-              className="space-y-3"
+              className="space-y-2 md:space-y-3"
             >
-              <p className="text-gray-400 text-xs text-center">Admin Panel Önizleme</p>
-              <div className="grid grid-cols-2 gap-3">
+              <p className="text-gray-400 text-[10px] md:text-xs text-center">Admin Panel Önizleme</p>
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 {dashboardCards.map((card, i) => (
                   <motion.div
                     key={card.name}
@@ -205,12 +205,12 @@ function PhoneMockup() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.5 + i * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    className={`relative h-20 rounded-xl overflow-hidden bg-gradient-to-br ${card.gradient} p-3 cursor-pointer`}
+                    className={`relative h-14 md:h-16 lg:h-20 rounded-lg md:rounded-xl overflow-hidden bg-gradient-to-br ${card.gradient} p-2 md:p-3 cursor-pointer`}
                   >
                     <div className="absolute inset-0 bg-black/20" />
                     <div className="relative h-full flex flex-col justify-between">
-                      <span className="text-2xl">{card.icon}</span>
-                      <p className="text-white text-xs font-semibold">{card.name}</p>
+                      <span className="text-lg md:text-xl lg:text-2xl">{card.icon}</span>
+                      <p className="text-white text-[10px] md:text-xs font-semibold">{card.name}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -224,16 +224,16 @@ function PhoneMockup() {
       <motion.div
         animate={{ y: [0, -12, 0], rotate: [0, 5, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -top-4 -right-4 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-lg shadow-orange-500/50"
+        className="absolute -top-2 -right-2 md:-top-4 md:-right-4 w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-lg shadow-orange-500/50"
       >
-        <span className="text-2xl">🚀</span>
+        <span className="text-lg md:text-2xl">🚀</span>
       </motion.div>
       <motion.div
         animate={{ y: [0, 12, 0], rotate: [0, -5, 0] }}
         transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-        className="absolute -bottom-4 -left-4 w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/50"
+        className="absolute -bottom-2 -left-2 md:-bottom-4 md:-left-4 w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/50"
       >
-        <span className="text-2xl">✨</span>
+        <span className="text-lg md:text-2xl">✨</span>
       </motion.div>
     </motion.div>
   );
@@ -280,10 +280,10 @@ function StickyFormBand() {
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.5, duration: 0.6, ease: 'easeOut' }}
-      className="fixed bottom-0 left-0 right-0 z-50"
+      className="relative lg:fixed lg:bottom-0 lg:left-0 lg:right-0 z-50"
     >
       <div className="relative bg-[#05070a]/95 backdrop-blur-xl border-t-2 border-[#EF742C]">
-        <div className="container mx-auto px-4 py-6 lg:py-8">
+        <div className="container mx-auto px-4 py-4 md:py-6 lg:py-8">
           <AnimatePresence mode="wait">
             {isSubmitted ? (
               <motion.div
@@ -315,12 +315,12 @@ function StickyFormBand() {
               >
                 {/* Left - Text */}
                 <div className="flex-shrink-0 lg:max-w-sm">
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-1 md:mb-2">
                     Sana özel{' '}
                     <span className="text-[#EF742C]">QR Menü demo paneli</span>{' '}
                     oluşturalım
                   </h3>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-gray-400 text-xs md:text-sm">
                     1 dakikada formu doldur, demo panelin otomatik oluşsun.
                   </p>
                   {isSubmitting && (
@@ -340,7 +340,7 @@ function StickyFormBand() {
 
                 {/* Right - Form */}
                 <form onSubmit={handleSubmit} className="flex-1 w-full">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
                     {/* Row 1 */}
                     <input
                       type="text"
@@ -349,7 +349,7 @@ function StickyFormBand() {
                       placeholder="Ad Soyad"
                       required
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-sm disabled:opacity-50"
+                      className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-white/5 border border-white/10 rounded-lg md:rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-xs md:text-sm disabled:opacity-50"
                     />
                     <input
                       type="text"
@@ -358,7 +358,7 @@ function StickyFormBand() {
                       placeholder="Restoran Adı"
                       required
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-sm disabled:opacity-50"
+                      className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-white/5 border border-white/10 rounded-lg md:rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-xs md:text-sm disabled:opacity-50"
                     />
                     <input
                       type="tel"
@@ -367,7 +367,7 @@ function StickyFormBand() {
                       placeholder="Telefon / WhatsApp"
                       required
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-sm disabled:opacity-50"
+                      className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-white/5 border border-white/10 rounded-lg md:rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-xs md:text-sm disabled:opacity-50"
                     />
 
                     {/* Row 2 */}
@@ -377,15 +377,15 @@ function StickyFormBand() {
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="E-posta (opsiyonel)"
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-sm disabled:opacity-50"
+                      className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-white/5 border border-white/10 rounded-lg md:rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-xs md:text-sm disabled:opacity-50"
                     />
                     <select
                       value={formData.type}
                       onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                       required
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#EF742C] transition-all text-sm disabled:opacity-50 appearance-none"
-                      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '20px' }}
+                      className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-white/5 border border-white/10 rounded-lg md:rounded-xl text-white focus:outline-none focus:border-[#EF742C] transition-all text-xs md:text-sm disabled:opacity-50 appearance-none"
+                      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '16px' }}
                     >
                       <option value="" className="bg-gray-900">Restoran Tipi</option>
                       {restaurantTypes.map((type) => (
@@ -400,18 +400,18 @@ function StickyFormBand() {
                       min="1"
                       max="500"
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-sm disabled:opacity-50"
+                      className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-white/5 border border-white/10 rounded-lg md:rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EF742C] transition-all text-xs md:text-sm disabled:opacity-50"
                     />
                   </div>
 
                   {/* Submit Button */}
-                  <div className="mt-4 flex justify-end">
+                  <div className="mt-3 md:mt-4 flex justify-center md:justify-end">
                     <motion.button
                       type="submit"
                       disabled={isSubmitting}
                       whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                       whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                      className="relative w-full md:w-auto px-8 py-4 bg-gradient-to-r from-[#EF742C] to-[#ff9a5a] text-black font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="relative w-full md:w-auto px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-[#EF742C] to-[#ff9a5a] text-black text-sm md:text-base font-bold rounded-lg md:rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
@@ -525,12 +525,12 @@ export default function DemoRequestPage() {
       <FloatingCards />
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen pt-24 pb-80 md:pb-60 lg:pb-48 flex flex-col items-center justify-center px-4 md:px-6">
+      <div className="relative z-10 pt-20 md:pt-24 pb-8 lg:pb-48 flex flex-col items-center justify-center px-4 md:px-6 min-h-[60vh] lg:min-h-screen">
         {/* Phone Mockup */}
         <PhoneMockup />
       </div>
 
-      {/* Sticky Form Band */}
+      {/* Form Band - Scrollable on mobile, sticky on desktop */}
       <StickyFormBand />
 
       {/* Decorative Lines */}
