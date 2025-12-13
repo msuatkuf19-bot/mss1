@@ -116,7 +116,7 @@ export default function Home() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 glass-effect rounded-full border border-green-500/20">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-green-400 font-medium">Restaurant ve Cafeler İçin</span>
+                <span className="text-sm text-green-400 font-medium">Sadece Restoran - Kafe - Lokanta &amp; Yemek Salonları içindir</span>
               </div>
 
               {/* Main Heading */}
@@ -160,10 +160,10 @@ export default function Home() {
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-stretch sm:items-center">
                 <Link 
                   href="/demo"
-                  className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 flex items-center justify-center gap-2"
+                  className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   Ücretsiz Demo Talep Et
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +172,7 @@ export default function Home() {
                 </Link>
                 <Link 
                   href="/ornek-menuler"
-                  className="px-8 py-4 glass-effect text-gray-300 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 flex items-center justify-center"
+                  className="w-full sm:w-auto px-8 py-4 glass-effect text-gray-300 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 flex items-center justify-center"
                 >
                   Örnek Menülere Göz At
                 </Link>

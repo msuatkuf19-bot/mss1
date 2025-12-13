@@ -22,7 +22,7 @@ export default function OrnekMenulerPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0B0B0D]">
+    <main className="min-h-screen bg-[#0B0B0D] overflow-x-hidden">
       {/* Navbar */}
       <Navbar />
 

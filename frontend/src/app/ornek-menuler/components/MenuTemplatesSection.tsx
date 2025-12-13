@@ -113,7 +113,7 @@ export default function MenuTemplatesSection({
     : menuTemplates;
 
   return (
-    <section ref={sectionRef} className="py-20 px-6 relative" id="menu-templates">
+    <section ref={sectionRef} className="py-20 px-6 relative overflow-x-hidden" id="menu-templates">
       {/* Background */}
       <div className="absolute inset-0">
         <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[200px]"></div>

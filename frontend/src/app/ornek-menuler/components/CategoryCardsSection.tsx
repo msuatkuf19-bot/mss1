@@ -38,7 +38,7 @@ interface CategoryCardsSectionProps {
 
 export default function CategoryCardsSection({ onCategoryClick }: CategoryCardsSectionProps) {
   return (
-    <section className="py-20 px-6 relative">
+    <section className="py-20 px-6 relative overflow-x-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent"></div>
 
