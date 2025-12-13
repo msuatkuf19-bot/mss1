@@ -47,15 +47,8 @@ export default function AdminDashboard() {
       // Kullanıcı istatistikleri - custom endpoint
       let usersData = { totalUsers: 0 };
       try {
-        const response = await fetch('http://localhost:5000/api/users/stats', {
-          headers: {
-            'Authorization': `Bearer ${typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('auth-storage') || '{}').state?.accessToken : ''}`,
-          },
-        });
-        if (response.ok) {
-          const result = await response.json();
-          usersData = result.data || usersData;
-        }
+        const result = await apiClient.getUserStats();
+        usersData = result.data || usersData;
       } catch (err) {
         console.log('Kullanıcı stats alınamadı:', err);
       }

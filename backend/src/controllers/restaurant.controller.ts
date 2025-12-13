@@ -118,7 +118,22 @@ export const createRestaurant = async (
     });
 
     if (existingOwner) {
-      owner = existingOwner;
+      // Mevcut kullanıcıyı restoran sahibi olarak kullan (rol/aktiflik/name/password güncelle)
+      const ownerUpdateData: any = {
+        isActive: true,
+        // SUPER_ADMIN'i düşürmeyelim; diğer roller varsa RESTAURANT_ADMIN yapalım
+        ...(existingOwner.role !== UserRole.SUPER_ADMIN && { role: UserRole.RESTAURANT_ADMIN }),
+        ...(ownerName && ownerName !== existingOwner.name && { name: ownerName }),
+      };
+
+      if (ownerPassword && typeof ownerPassword === 'string' && ownerPassword.length >= 6) {
+        ownerUpdateData.password = await hashPassword(ownerPassword);
+      }
+
+      owner = await prisma.user.update({
+        where: { id: existingOwner.id },
+        data: ownerUpdateData,
+      });
     } else {
       const hashedPassword = await hashPassword(ownerPassword);
       owner = await prisma.user.create({

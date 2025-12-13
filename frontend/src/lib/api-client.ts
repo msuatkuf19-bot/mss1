@@ -175,6 +175,32 @@ class ApiClient {
     return data;
   }
 
+  // Users (Super Admin)
+  async getUsers() {
+    const { data } = await this.client.get('/users');
+    return data;
+  }
+
+  async getUserStats() {
+    const { data } = await this.client.get('/users/stats');
+    return data;
+  }
+
+  async createUser(userData: any) {
+    const { data } = await this.client.post('/users', userData);
+    return data;
+  }
+
+  async updateUser(id: string, userData: any) {
+    const { data } = await this.client.put(`/users/${id}`, userData);
+    return data;
+  }
+
+  async deleteUser(id: string) {
+    const { data } = await this.client.delete(`/users/${id}`);
+    return data;
+  }
+
   // Menu - Categories
   async getCategories(restaurantId?: string) {
     const { data } = await this.client.get('/menu/categories', {

@@ -3,6 +3,7 @@
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api-client';
 
 interface User {
   id: string;
@@ -33,15 +34,8 @@ export default function AdminUsers() {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/users', {
-        headers: {
-          'Authorization': `Bearer ${typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('auth-storage') || '{}').state?.accessToken : ''}`,
-        },
-      });
-      if (response.ok) {
-        const result = await response.json();
-        setUsers(result.data || []);
-      }
+      const result = await apiClient.getUsers();
+      setUsers(result.data || []);
     } catch (error) {
       console.error('Kullanıcılar yüklenemedi:', error);
     } finally {
@@ -52,49 +46,27 @@ export default function AdminUsers() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const token = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('auth-storage') || '{}').state?.accessToken : '';
-      
       if (editingUser) {
-        await fetch(`http://localhost:5000/api/users/${editingUser.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(formData),
-        });
+        await apiClient.updateUser(editingUser.id, formData);
       } else {
-        await fetch('http://localhost:5000/api/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(formData),
-        });
+        await apiClient.createUser(formData);
       }
       
       setShowModal(false);
       resetForm();
       loadUsers();
     } catch (error: any) {
-      alert('Bir hata oluştu');
+      alert(error?.response?.data?.message || 'Bir hata oluştu');
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) return;
     try {
-      const token = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('auth-storage') || '{}').state?.accessToken : '';
-      await fetch(`http://localhost:5000/api/users/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      await apiClient.deleteUser(id);
       loadUsers();
     } catch (error: any) {
-      alert('Silinemedi');
+      alert(error?.response?.data?.message || 'Silinemedi');
     }
   };
 
