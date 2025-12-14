@@ -259,9 +259,12 @@ export default function Home() {
                           <div className="relative h-24 rounded-2xl col-start-2 row-start-3" style={{overflow: 'visible'}}>
                             {/* QR Float Wrapper - Responsive overflow */}
                             <div 
-                              className="qr-float-wrapper relative z-[3] w-[120%] h-[120%] right-[-18px] bottom-[-18px] group cursor-pointer"
+                              className="qr-float-wrapper relative z-[3] w-[120%] h-[120%] right-[-18px] bottom-[-18px] group cursor-pointer lg:absolute lg:z-[5] lg:w-[130%] lg:h-[125%] lg:right-[-24px] lg:bottom-[-18px]"
                               style={{overflow: 'visible'}}
                             >
+                              {/* Desktop-only extra hero glow */}
+                              <div className="hidden lg:block absolute -inset-8 bg-gradient-to-br from-orange-500/25 via-pink-500/20 to-purple-500/10 rounded-[2.5rem] blur-3xl opacity-80"></div>
+
                               {/* Multi-layer Ambient Glow */}
                               <div className="absolute -inset-2 sm:-inset-3 md:-inset-4 w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-orange-500/50 via-pink-500/40 to-purple-500/30 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] blur-2xl md:blur-3xl opacity-70 group-hover:opacity-90 transition-opacity duration-500 animate-pulse"></div>
                               <div className="absolute -inset-1 sm:-inset-2 w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 lg:w-60 lg:h-60 bg-gradient-to-tr from-orange-400/30 to-pink-500/20 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[2rem] blur-xl md:blur-2xl opacity-50 animate-pulse" style={{animationDelay: '0.5s'}}></div>
