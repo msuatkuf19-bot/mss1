@@ -193,7 +193,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right - Phone Mockup with Laptop Background */}
+            {/* Right - Phone Mockup Only */}
             <div className="relative flex justify-center lg:justify-end">
               <div className="relative">
                 {/* Animated Background Orbs */}
@@ -203,49 +203,6 @@ export default function Home() {
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 bg-purple-500/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s', animationDuration: '5s'}}></div>
                 </div>
 
-                {/* Laptop/Tablet Frame Background - Desktop only */}
-                <div className="hidden lg:flex absolute inset-0 items-center justify-center animate-float" style={{transform: 'scale(1.8)', animationDelay: '0.5s', animationDuration: '4s'}}>
-                  <div className="relative">
-                    {/* Screen Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-pink-500/20 to-purple-500/20 rounded-2xl blur-2xl animate-pulse"></div>
-                    
-                    {/* Screen */}
-                    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-3 shadow-2xl border-2 border-gray-700/50 hover:border-gray-600/50 transition-all duration-500">
-                      <div className="w-[420px] h-[280px] bg-gradient-to-br from-[#05070B] via-[#0C111C] to-[#141824] rounded-xl overflow-hidden relative border border-gray-700/30">
-                        {/* Animated Grid Pattern */}
-                        <div className="absolute inset-0 opacity-5">
-                          <div className="absolute inset-0" style={{
-                            backgroundImage: 'linear-gradient(90deg, rgba(249,115,22,0.3) 1px, transparent 1px), linear-gradient(rgba(249,115,22,0.3) 1px, transparent 1px)',
-                            backgroundSize: '30px 30px'
-                          }}></div>
-                        </div>
-                        
-                        {/* Screen reflection effect */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent"></div>
-                        
-                        {/* Animated scan line */}
-                        <div className="absolute inset-0 overflow-hidden">
-                          <div className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-orange-500/30 to-transparent animate-[slideDown_3s_ease-in-out_infinite]"></div>
-                        </div>
-                        
-                        {/* Camera notch with LED indicator */}
-                        <div className="absolute top-2 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                          <div className="w-20 h-1.5 bg-gray-900 rounded-full flex items-center justify-center">
-                            <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Keyboard/Base with breathing effect */}
-                    <div className="relative h-3 bg-gradient-to-b from-gray-700 to-gray-800 rounded-b-xl -mt-1 animate-pulse" style={{animationDuration: '4s'}}></div>
-                    <div className="w-[480px] h-2 bg-gradient-to-b from-gray-800 to-gray-900 rounded-b-2xl mx-auto shadow-xl"></div>
-                    
-                    {/* Shadow under laptop */}
-                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[400px] h-8 bg-black/40 blur-2xl rounded-full animate-pulse" style={{animationDuration: '3s'}}></div>
-                  </div>
-                </div>
-
                 {/* Phone Mockup */}
                 <div className="relative animate-float z-10 hover:scale-105 transition-transform duration-500">
                   {/* Multi-layer Glow Effects */}
@@ -253,9 +210,9 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-tl from-blue-500/20 via-transparent to-pink-500/20 blur-[80px] animate-pulse" style={{animationDelay: '1s'}}></div>
                   
                   {/* Phone Frame */}
-                  <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3.5rem] p-4 shadow-2xl border border-white/10">
+                  <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3.5rem] p-4 shadow-2xl border border-white/10" style={{overflow: 'visible'}}>
                     {/* Screen */}
-                    <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] rounded-[3rem] overflow-hidden w-[280px] h-[580px]">
+                    <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] rounded-[3rem] w-[280px] h-[580px]" style={{overflow: 'visible'}}>
                       {/* Status Bar */}
                       <div className="h-8 flex items-center justify-center">
                         <div className="w-28 h-6 bg-black rounded-full"></div>
@@ -273,7 +230,7 @@ export default function Home() {
                         </div>
 
                         {/* Category Cards */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-3 relative">
                           {[
                             { name: 'Ana Yemekler', icon: '🍽️', color: 'from-orange-500 to-red-500' },
                             { name: 'İçecekler', icon: '🥤', color: 'from-blue-500 to-cyan-500' },
@@ -283,7 +240,9 @@ export default function Home() {
                           ].map((cat, i) => (
                             <div 
                               key={i} 
-                              className={`relative h-24 rounded-2xl overflow-hidden animate-slideUp`}
+                              className={`relative h-24 rounded-2xl overflow-hidden animate-slideUp ${
+                                cat.name === 'Kahvaltı' ? 'col-start-1 col-end-2 row-start-3' : ''
+                              }`}
                               style={{animationDelay: `${i * 0.15}s`}}
                             >
                               <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-90`}></div>
@@ -294,47 +253,53 @@ export default function Home() {
                             </div>
                           ))}
                           
-                          {/* QR Scan Button */}
-                          <div className="relative h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-white/20 animate-slideUp" style={{animationDelay: '0.75s'}}>
-                            <div className="h-full flex flex-col items-center justify-center">
-                              <svg className="w-12 h-12 text-white mb-1" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
-                              </svg>
-                              <p className="text-white text-[9px] font-bold">Masanızı Tarayın</p>
+                          {/* QR Scan Button - Hero Element with Overflow */}
+                          <div className="relative h-24 rounded-2xl col-start-2 row-start-3" style={{overflow: 'visible'}}>
+                            <div 
+                              className="absolute z-[5] w-[130%] h-[130%] -right-[15%] -bottom-[15%] group cursor-pointer"
+                              style={{overflow: 'visible'}}
+                            >
+                              {/* QR Glow Effect */}
+                              <div className="absolute -inset-4 bg-gradient-to-br from-orange-500/40 via-pink-500/30 to-purple-500/20 rounded-[2rem] blur-2xl opacity-80 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
+                              
+                              {/* QR Card Container */}
+                              <div 
+                                className="relative w-full h-full rounded-2xl overflow-hidden bg-[linear-gradient(180deg,rgba(12,14,24,0.98)_0%,rgba(8,10,18,0.96)_100%)] border border-[rgba(239,116,44,0.55)] shadow-[0_25px_50px_rgba(0,0,0,0.5)] animate-slideUp group-hover:-translate-y-2 group-hover:scale-[1.05] transition-all duration-500 ease-out"
+                                style={{ animationDelay: '0.75s' }}
+                              >
+                                {/* Shimmer Effect */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
+                                  <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 group-hover:animate-shimmer"></div>
+                                </div>
+                                
+                                {/* QR Content */}
+                                <div className="relative h-full flex flex-col items-center justify-center p-4">
+                                  {/* QR Icon */}
+                                  <div className="relative">
+                                    <div className="absolute -inset-4 bg-orange-500/20 rounded-2xl blur-xl opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                                    <svg
+                                      className="relative w-14 h-14 text-white drop-shadow-lg"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
+                                    </svg>
+                                  </div>
+                                  
+                                  {/* Label */}
+                                  <p className="mt-2 text-sm font-semibold text-white tracking-wide drop-shadow-lg">
+                                    Masanızı Tarayın
+                                  </p>
+                                </div>
+                                
+                                {/* Corner Accent */}
+                                <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 animate-pulse shadow-lg shadow-orange-500/60"></div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Enhanced Floating Elements with rotation */}
-                  <div className="absolute -top-6 -right-6 w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center animate-float shadow-lg shadow-orange-500/50 hover:rotate-12 transition-transform duration-300" style={{animationDelay: '0.5s'}}>
-                    <span className="text-2xl animate-pulse">🎉</span>
-                  </div>
-                  <div className="absolute -bottom-6 -left-6 w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center animate-float shadow-lg shadow-green-500/50 hover:rotate-12 transition-transform duration-300" style={{animationDelay: '1s'}}>
-                    <span className="text-2xl animate-pulse" style={{animationDelay: '0.5s'}}>✨</span>
-                  </div>
-                  
-                  {/* Additional Floating Icons */}
-                  <div className="absolute top-1/4 -right-12 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center animate-float shadow-lg shadow-blue-500/50" style={{animationDelay: '1.5s', animationDuration: '3.5s'}}>
-                    <span className="text-xl">🍔</span>
-                  </div>
-                  <div className="absolute bottom-1/4 -left-12 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center animate-float shadow-lg shadow-purple-500/50" style={{animationDelay: '2s', animationDuration: '4s'}}>
-                    <span className="text-xl">🍕</span>
-                  </div>
-                  <div className="absolute top-1/2 -right-16 w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center animate-float shadow-lg shadow-yellow-500/50" style={{animationDelay: '0.3s', animationDuration: '4.5s'}}>
-                    <span className="text-lg">☕</span>
-                  </div>
-                  <div className="absolute top-1/3 -left-10 w-10 h-10 rounded-lg bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center animate-float shadow-lg shadow-red-500/50" style={{animationDelay: '1.2s', animationDuration: '3.8s'}}>
-                    <span className="text-lg">🎂</span>
-                  </div>
-                  
-                  {/* Orbiting Particles */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-orange-400 rounded-full animate-ping" style={{animationDelay: '0s', animationDuration: '2s'}}></div>
-                    <div className="absolute top-3/4 right-1/4 w-2 h-2 bg-pink-400 rounded-full animate-ping" style={{animationDelay: '1s', animationDuration: '2.5s'}}></div>
-                    <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-purple-400 rounded-full animate-ping" style={{animationDelay: '0.5s', animationDuration: '3s'}}></div>
                   </div>
                 </div>
               </div>
