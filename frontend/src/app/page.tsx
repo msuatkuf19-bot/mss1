@@ -224,7 +224,7 @@ export default function Home() {
                         </div>
 
                         {/* Category Cards */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-3 relative">
                           {[
                             { name: 'Ana Yemekler', icon: '🍽️', color: 'from-orange-500 to-red-500' },
                             { name: 'İçecekler', icon: '🥤', color: 'from-blue-500 to-cyan-500' },
@@ -245,14 +245,16 @@ export default function Home() {
                             </div>
                           ))}
                           
-                          {/* QR Scan Button */}
-                          <div className="relative h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-orange-500/50 animate-slideUp shadow-lg shadow-orange-500/20" style={{animationDelay: '0.75s'}}>
-                            <div className="absolute inset-0 bg-orange-500/10 animate-pulse"></div>
-                            <div className="relative h-full flex flex-col items-center justify-center">
-                              <svg className="w-14 h-14 text-white mb-1 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
-                              </svg>
-                              <p className="text-white text-[10px] font-bold">Masanızı Tarayın</p>
+                          {/* QR Scan Button - Large, overflowing */}
+                          <div className="relative h-24 rounded-2xl overflow-visible">
+                            <div className="absolute -bottom-8 -right-10 w-40 h-40 rounded-3xl bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-orange-500/60 animate-slideUp shadow-2xl shadow-orange-500/40 z-20" style={{animationDelay: '0.75s'}}>
+                              <div className="absolute inset-0 bg-orange-500/10 animate-pulse rounded-3xl"></div>
+                              <div className="relative h-full flex flex-col items-center justify-center">
+                                <svg className="w-20 h-20 text-white mb-2 drop-shadow-xl" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
+                                </svg>
+                                <p className="text-white text-xs font-bold">Masanızı Tarayın</p>
+                              </div>
                             </div>
                           </div>
                         </div>
