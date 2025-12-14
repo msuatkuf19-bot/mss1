@@ -116,7 +116,7 @@ export default function Home() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 glass-effect rounded-full border border-green-500/20">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-green-400 font-medium">Sadece Restoran - Kafe - Lokanta &amp; Yemek Salonları içindir</span>
+                <span className="text-sm text-green-400 font-medium">Restoran ve Kafeler içindir</span>
               </div>
 
               {/* Main Heading */}
@@ -216,7 +216,7 @@ export default function Home() {
                       <div className="px-6 py-8 space-y-6">
                         {/* Logo & Title */}
                         <div className="text-center space-y-3 animate-slideDown">
-                          <div className="w-20 h-20 mx-auto rounded-3xl overflow-hidden shadow-lg animate-pulse">
+                          <div className="w-28 h-28 mx-auto rounded-3xl overflow-hidden shadow-2xl shadow-orange-500/30 ring-2 ring-orange-500/30">
                             <img src="/benmedya.png" alt="Menü Ben" className="w-full h-full object-contain brightness-0 invert" />
                           </div>
                           <h3 className="text-white font-bold text-xl">Menü Ben</h3>
@@ -246,12 +246,13 @@ export default function Home() {
                           ))}
                           
                           {/* QR Scan Button */}
-                          <div className="relative h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-white/20 animate-slideUp" style={{animationDelay: '0.75s'}}>
-                            <div className="h-full flex flex-col items-center justify-center">
-                              <svg className="w-12 h-12 text-white mb-1" fill="currentColor" viewBox="0 0 24 24">
+                          <div className="relative h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-orange-500/50 animate-slideUp shadow-lg shadow-orange-500/20" style={{animationDelay: '0.75s'}}>
+                            <div className="absolute inset-0 bg-orange-500/10 animate-pulse"></div>
+                            <div className="relative h-full flex flex-col items-center justify-center">
+                              <svg className="w-14 h-14 text-white mb-1 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
                               </svg>
-                              <p className="text-white text-[9px] font-bold">Masanızı Tarayın</p>
+                              <p className="text-white text-[10px] font-bold">Masanızı Tarayın</p>
                             </div>
                           </div>
                         </div>
@@ -381,13 +382,15 @@ export default function Home() {
             ].map((feature, i) => (
               <div 
                 key={i} 
-                className="group glass-effect rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:border-white/10 animate-slideUp"
+                className="group glass-effect rounded-2xl p-5 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:border-white/10 animate-slideUp"
                 style={{animationDelay: `${i * 0.1}s`}}
               >
-                <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 text-white group-hover:scale-110 transition-transform`}>
-                  {feature.icon}
+                <div className="flex items-center gap-4 mb-3">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0`}>
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-lg font-bold text-white">{feature.title}</h3>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
               </div>
             ))}
@@ -891,9 +894,9 @@ export default function Home() {
             {/* Social */}
             <div>
               <h4 className="text-white font-semibold mb-4">Bizi Takip Edin</h4>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <a 
-                  href="https://instagram.com/menuben" 
+                  href="https://instagram.com/menuben.tr" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center hover:scale-110 transition-transform"
@@ -904,7 +907,7 @@ export default function Home() {
                   </svg>
                 </a>
                 <a 
-                  href="https://facebook.com/menuben" 
+                  href="https://facebook.com/menuben.tr" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center hover:scale-110 transition-transform"
@@ -915,7 +918,7 @@ export default function Home() {
                   </svg>
                 </a>
                 <a 
-                  href="https://x.com/menuben" 
+                  href="https://x.com/menubentr" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center hover:scale-110 transition-transform"
@@ -923,6 +926,39 @@ export default function Home() {
                 >
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+                <a 
+                  href="https://tiktok.com/@menuben.tr" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-900 to-black flex items-center justify-center hover:scale-110 transition-transform"
+                  title="TikTok"
+                >
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                  </svg>
+                </a>
+                <a 
+                  href="https://youtube.com/@menubentr" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center hover:scale-110 transition-transform"
+                  title="YouTube"
+                >
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </a>
+                <a 
+                  href="https://linkedin.com/company/menubentr" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center hover:scale-110 transition-transform"
+                  title="LinkedIn"
+                >
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                   </svg>
                 </a>
                 <a 

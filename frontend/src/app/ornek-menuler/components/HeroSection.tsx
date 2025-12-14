@@ -94,7 +94,7 @@ export default function HeroSection() {
               transition={{ delay: 0.2 }}
             >
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-green-400 font-medium">Sadece Restoran - Kafe - Lokanta &amp; Yemek Salonları içindir</span>
+              <span className="text-sm text-green-400 font-medium">Restoran ve Kafeler içindir</span>
             </motion.div>
 
             {/* Main Heading */}
