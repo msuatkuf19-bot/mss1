@@ -240,7 +240,11 @@ export default function Home() {
                           ].map((cat, i) => (
                             <div 
                               key={i} 
-                              className={`relative h-24 rounded-2xl overflow-hidden animate-slideUp ${cat.name === 'Kahvaltı' ? 'z-20' : ''}`}
+                              className={`relative h-24 rounded-2xl overflow-hidden animate-slideUp ${
+                                cat.name === 'Kahvaltı'
+                                  ? 'col-start-1 col-end-2 row-start-3 z-[1] left-0 right-0 bottom-0'
+                                  : ''
+                              }`}
                               style={{animationDelay: `${i * 0.15}s`}}
                             >
                               <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-90`}></div>
@@ -255,7 +259,7 @@ export default function Home() {
                           <div className="relative h-24 rounded-2xl col-start-2 row-start-3" style={{overflow: 'visible'}}>
                             {/* QR Float Wrapper - Responsive overflow */}
                             <div 
-                              className="qr-float-wrapper absolute top-0 right-0 translate-x-10 translate-y-10 sm:translate-x-12 sm:translate-y-12 md:translate-x-16 md:translate-y-16 lg:translate-x-20 lg:translate-y-20 z-30 group cursor-pointer"
+                              className="qr-float-wrapper relative z-[3] w-[120%] h-[120%] right-[-18px] bottom-[-18px] group cursor-pointer"
                               style={{overflow: 'visible'}}
                             >
                               {/* Multi-layer Ambient Glow */}
@@ -264,7 +268,7 @@ export default function Home() {
                               
                               {/* QR Card Container - Responsive sizing */}
                               <div 
-                                className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] bg-gradient-to-br from-[#1a1a2e] via-[#1f1f35] to-[#0f0f1e] border-2 border-orange-500/30 animate-slideUp group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-[1.04] transition-all duration-500 ease-out"
+                                className="relative w-full h-full rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] bg-gradient-to-br from-[#1a1a2e] via-[#1f1f35] to-[#0f0f1e] border-2 border-orange-500/30 animate-slideUp group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-[1.04] transition-all duration-500 ease-out"
                                 style={{
                                   animationDelay: '0.75s',
                                   boxShadow: '0 30px 60px -15px rgba(249, 115, 22, 0.35), 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 80px -20px rgba(249, 115, 22, 0.4), 0 0 0 1px rgba(249, 115, 22, 0.15), inset 0 1px 0 rgba(255,255,255,0.08)'
