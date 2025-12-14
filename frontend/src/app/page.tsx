@@ -268,42 +268,44 @@ export default function Home() {
                               
                               {/* QR Card Container - Responsive sizing */}
                               <div 
-                                className="relative w-full h-full rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] bg-gradient-to-br from-[#1a1a2e] via-[#1f1f35] to-[#0f0f1e] border-2 border-orange-500/30 animate-slideUp group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-[1.04] transition-all duration-500 ease-out"
+                                className="relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-orange-500 to-pink-500 animate-slideUp group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-[1.04] transition-all duration-500 ease-out"
                                 style={{
                                   animationDelay: '0.75s',
-                                  boxShadow: '0 30px 60px -15px rgba(249, 115, 22, 0.35), 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 80px -20px rgba(249, 115, 22, 0.4), 0 0 0 1px rgba(249, 115, 22, 0.15), inset 0 1px 0 rgba(255,255,255,0.08)'
+                                  boxShadow: '0 30px 60px -15px rgba(249, 115, 22, 0.30), 0 18px 40px -12px rgba(0, 0, 0, 0.55)'
                                 }}
                               >
-                                {/* Inner Gradient Overlay */}
-                                <div className="absolute inset-0 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] bg-gradient-to-t from-orange-500/8 via-transparent to-white/5 pointer-events-none"></div>
+                                {/* Soft inner overlay to keep the same premium vibe */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-black/10 pointer-events-none"></div>
                                 
                                 {/* Shimmer Effect on Hover */}
                                 <div className="absolute inset-0 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
                                   <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/8 to-transparent skew-x-12 group-hover:animate-shimmer"></div>
                                 </div>
                                 
-                                {/* Pulsing Ring Effect */}
-                                <div className="absolute inset-0 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] border-2 border-orange-500/20 animate-ping opacity-30 pointer-events-none" style={{animationDuration: '2s'}}></div>
+                                {/* Subtle ping for hero attention */}
+                                <div className="absolute inset-0 rounded-2xl border border-white/20 animate-ping opacity-20 pointer-events-none" style={{animationDuration: '2.2s'}}></div>
                                 
                                 {/* QR Content */}
                                 <div className="relative h-full flex flex-col items-center justify-center p-3 sm:p-4 md:p-5">
                                   {/* QR Icon with Premium Styling */}
                                   <div className="relative">
                                     {/* Icon Glow */}
-                                    <div className="absolute -inset-2 sm:-inset-3 md:-inset-4 w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 bg-orange-500/25 rounded-2xl md:rounded-3xl blur-xl md:blur-2xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
-                                    
-                                    {/* QR Icon - Responsive */}
-                                    <svg 
-                                      className="relative w-14 h-14 sm:w-18 sm:h-18 md:w-24 md:h-24 lg:w-28 lg:h-28 text-white drop-shadow-[0_4px_12px_rgba(249,115,22,0.4)] md:drop-shadow-[0_6px_16px_rgba(249,115,22,0.4)] group-hover:drop-shadow-[0_8px_20px_rgba(249,115,22,0.5)] md:group-hover:drop-shadow-[0_10px_24px_rgba(249,115,22,0.5)] transition-all duration-300" 
-                                      fill="currentColor" 
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
-                                    </svg>
+                                    <div className="absolute -inset-6 bg-white/20 rounded-3xl blur-2xl opacity-60 group-hover:opacity-90 transition-opacity"></div>
+
+                                    {/* White plate for crisp QR */}
+                                    <div className="relative bg-white rounded-2xl p-3 sm:p-3.5 md:p-4 shadow-2xl shadow-black/30 ring-1 ring-white/30">
+                                      <svg
+                                        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 text-gray-900"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zm4-6h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zm6-6h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
+                                      </svg>
+                                    </div>
                                   </div>
                                   
                                   {/* Label with Gradient - Responsive */}
-                                  <p className="mt-2 sm:mt-2.5 md:mt-3 text-[10px] sm:text-xs md:text-sm lg:text-base font-bold bg-gradient-to-r from-white via-orange-200 to-white bg-clip-text text-transparent tracking-wide">
+                                  <p className="mt-2 sm:mt-2.5 md:mt-3 text-[10px] sm:text-xs md:text-sm lg:text-base font-bold text-white tracking-wide drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]">
                                     Masanızı Tarayın
                                   </p>
                                 </div>
