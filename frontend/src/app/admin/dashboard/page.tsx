@@ -4,6 +4,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
+import { QrCode, Store, TrendingUp, Users } from 'lucide-react';
 
 interface DashboardStats {
   restaurants: number;
@@ -90,42 +91,78 @@ export default function AdminDashboard() {
           <>
             {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-2 sm:mb-4">
-                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Toplam Restoran</h3>
-                  <span className="text-xl sm:text-3xl">🏪</span>
+              <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
+                      Toplam Restoran
+                    </div>
+                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-blue-600">
+                      {stats.restaurants}
+                    </div>
+                    <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">
+                      {stats.activeRestaurants} aktif
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 ring-1 ring-blue-100/80 flex items-center justify-center">
+                    <Store className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-blue-600" strokeWidth={1.9} aria-hidden="true" />
+                  </div>
                 </div>
-                <p className="text-xl sm:text-3xl font-bold text-blue-600">{stats.restaurants}</p>
-                <p className="text-xs text-gray-500 mt-1 sm:mt-2">{stats.activeRestaurants} aktif</p>
               </div>
 
-              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-2 sm:mb-4">
-                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Toplam Kullanıcı</h3>
-                  <span className="text-xl sm:text-3xl">👥</span>
+              <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
+                      Toplam Kullanıcı
+                    </div>
+                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-indigo-600">
+                      {stats.users}
+                    </div>
+                    <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">Tüm roller</div>
+                  </div>
+
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-indigo-50 ring-1 ring-indigo-100/80 flex items-center justify-center">
+                    <Users className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-indigo-600" strokeWidth={1.9} aria-hidden="true" />
+                  </div>
                 </div>
-                <p className="text-xl sm:text-3xl font-bold text-green-600">{stats.users}</p>
-                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Tüm roller</p>
               </div>
 
-              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-2 sm:mb-4">
-                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">QR Tarama</h3>
-                  <span className="text-xl sm:text-3xl">📊</span>
+              <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
+                      QR Tarama
+                    </div>
+                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-purple-600">
+                      {stats.qrScans}
+                    </div>
+                    <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">Toplam görüntülenme</div>
+                  </div>
+
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-purple-50 ring-1 ring-purple-100/80 flex items-center justify-center">
+                    <QrCode className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-purple-600" strokeWidth={1.9} aria-hidden="true" />
+                  </div>
                 </div>
-                <p className="text-xl sm:text-3xl font-bold text-purple-600">{stats.qrScans}</p>
-                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Toplam görüntülenme</p>
               </div>
 
-              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-2 sm:mb-4">
-                  <h3 className="text-xs sm:text-sm font-medium text-gray-600">Aktif Oran</h3>
-                  <span className="text-xl sm:text-3xl">📈</span>
+              <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
+                      Aktif Oran
+                    </div>
+                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-orange-600">
+                      {stats.restaurants > 0 ? Math.round((stats.activeRestaurants / stats.restaurants) * 100) : 0}%
+                    </div>
+                    <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">Menüsü olan</div>
+                  </div>
+
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-orange-50 ring-1 ring-orange-100/80 flex items-center justify-center">
+                    <TrendingUp className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-orange-600" strokeWidth={1.9} aria-hidden="true" />
+                  </div>
                 </div>
-                <p className="text-xl sm:text-3xl font-bold text-orange-600">
-                  {stats.restaurants > 0 ? Math.round((stats.activeRestaurants / stats.restaurants) * 100) : 0}%
-                </p>
-                <p className="text-xs text-gray-500 mt-1 sm:mt-2">Menüsü olan</p>
               </div>
             </div>
 
