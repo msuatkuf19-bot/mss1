@@ -259,7 +259,7 @@ export default function Home() {
                           <div className="relative h-24 rounded-2xl col-start-2 row-start-3" style={{overflow: 'visible'}}>
                             {/* QR Float Wrapper - Responsive overflow */}
                             <div 
-                              className="qr-float-wrapper relative z-[3] w-[120%] h-[120%] right-[-18px] bottom-[-18px] group cursor-pointer lg:absolute lg:z-[5] lg:w-[130%] lg:h-[125%] lg:right-[-24px] lg:bottom-[-18px]"
+                              className="qr-float-wrapper relative z-[3] w-[120%] h-[120%] right-[-18px] bottom-[-18px] group cursor-pointer lg:absolute lg:z-[5] lg:w-[130%] lg:h-[125%] lg:right-[-16px] lg:bottom-[-12px]"
                               style={{overflow: 'visible'}}
                             >
                               {/* Desktop-only extra hero glow */}
@@ -271,34 +271,31 @@ export default function Home() {
                               
                               {/* QR Card Container - Responsive sizing */}
                               <div 
-                                className="relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-orange-500 to-pink-500 animate-slideUp group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-[1.04] transition-all duration-500 ease-out"
-                                style={{
-                                  animationDelay: '0.75s',
-                                  boxShadow: '0 30px 60px -15px rgba(249, 115, 22, 0.30), 0 18px 40px -12px rgba(0, 0, 0, 0.55)'
-                                }}
+                                className="relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-orange-500 to-pink-500 animate-slideUp group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-[1.04] transition-all duration-500 ease-out shadow-[0_30px_60px_-15px_rgba(249,115,22,0.30),0_18px_40px_-12px_rgba(0,0,0,0.55)] lg:!bg-[linear-gradient(180deg,rgba(12,14,24,0.98)_0%,rgba(8,10,18,0.96)_100%)] lg:border lg:border-[rgba(239,116,44,0.55)] lg:shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                                style={{ animationDelay: '0.75s' }}
                               >
                                 {/* Soft inner overlay to keep the same premium vibe */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-black/10 pointer-events-none"></div>
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-black/10 pointer-events-none lg:hidden"></div>
                                 
                                 {/* Shimmer Effect on Hover */}
-                                <div className="absolute inset-0 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
+                                <div className="absolute inset-0 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[1.75rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden lg:hidden">
                                   <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/8 to-transparent skew-x-12 group-hover:animate-shimmer"></div>
                                 </div>
                                 
                                 {/* Subtle ping for hero attention */}
-                                <div className="absolute inset-0 rounded-2xl border border-white/20 animate-ping opacity-20 pointer-events-none" style={{animationDuration: '2.2s'}}></div>
+                                <div className="absolute inset-0 rounded-2xl border border-white/20 animate-ping opacity-20 pointer-events-none lg:hidden" style={{animationDuration: '2.2s'}}></div>
                                 
                                 {/* QR Content */}
-                                <div className="relative h-full flex flex-col items-center justify-center p-3 sm:p-4 md:p-5">
+                                <div className="relative h-full flex flex-col items-center justify-center p-3 sm:p-4 md:p-5 lg:p-[18px]">
                                   {/* QR Icon with Premium Styling */}
                                   <div className="relative">
                                     {/* Icon Glow */}
                                     <div className="absolute -inset-6 bg-white/20 rounded-3xl blur-2xl opacity-60 group-hover:opacity-90 transition-opacity"></div>
 
                                     {/* White plate for crisp QR */}
-                                    <div className="relative bg-white rounded-2xl p-3 sm:p-3.5 md:p-4 shadow-2xl shadow-black/30 ring-1 ring-white/30">
+                                    <div className="relative bg-white rounded-2xl p-3 sm:p-3.5 md:p-4 shadow-2xl shadow-black/30 ring-1 ring-white/30 lg:bg-transparent lg:p-0 lg:shadow-none lg:ring-0">
                                       <svg
-                                        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 text-gray-900"
+                                        className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 text-gray-900 lg:text-white"
                                         fill="currentColor"
                                         viewBox="0 0 24 24"
                                       >
@@ -308,7 +305,7 @@ export default function Home() {
                                   </div>
                                   
                                   {/* Label with Gradient - Responsive */}
-                                  <p className="mt-2 sm:mt-2.5 md:mt-3 text-[10px] sm:text-xs md:text-sm lg:text-base font-bold text-white tracking-wide drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]">
+                                  <p className="mt-2 sm:mt-2.5 md:mt-3 text-[10px] sm:text-xs md:text-sm lg:text-[15px] font-bold lg:!font-semibold text-white lg:tracking-[0.02em] drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]">
                                     Masanızı Tarayın
                                   </p>
                                 </div>
