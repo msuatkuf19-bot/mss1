@@ -150,12 +150,12 @@ export default function AdminDashboard() {
             {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
               <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
                       Toplam Restoran
                     </div>
-                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-blue-600">
+                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-blue-700">
                       {stats.restaurants}
                     </div>
                     <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">
@@ -163,50 +163,50 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 ring-1 ring-blue-100/80 flex items-center justify-center">
-                    <Store className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-blue-600" strokeWidth={1.9} aria-hidden="true" />
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 ring-1 ring-blue-100/80 flex items-center justify-center transition-colors duration-200 group-hover:bg-blue-100/70">
+                    <Store className="h-6 w-6 lg:h-7 lg:w-7 text-blue-700" strokeWidth={1.9} aria-hidden="true" />
                   </div>
                 </div>
               </div>
 
               <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
                       Toplam Kullanıcı
                     </div>
-                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-indigo-600">
+                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-indigo-700">
                       {stats.users}
                     </div>
                     <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">Tüm roller</div>
                   </div>
 
-                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-indigo-50 ring-1 ring-indigo-100/80 flex items-center justify-center">
-                    <Users className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-indigo-600" strokeWidth={1.9} aria-hidden="true" />
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-indigo-50 ring-1 ring-indigo-100/80 flex items-center justify-center transition-colors duration-200 group-hover:bg-indigo-100/70">
+                    <Users className="h-6 w-6 lg:h-7 lg:w-7 text-indigo-700" strokeWidth={1.9} aria-hidden="true" />
                   </div>
                 </div>
               </div>
 
               <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
                       QR Tarama
                     </div>
-                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-purple-600">
+                    <div className="mt-2 text-[28px] sm:text-[32px] leading-none font-bold tabular-nums text-purple-700">
                       {stats.qrScans}
                     </div>
                     <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">Toplam görüntülenme</div>
                   </div>
 
-                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-purple-50 ring-1 ring-purple-100/80 flex items-center justify-center">
-                    <QrCode className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-purple-600" strokeWidth={1.9} aria-hidden="true" />
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-purple-50 ring-1 ring-purple-100/80 flex items-center justify-center transition-colors duration-200 group-hover:bg-purple-100/70">
+                    <QrCode className="h-6 w-6 lg:h-7 lg:w-7 text-purple-700" strokeWidth={1.9} aria-hidden="true" />
                   </div>
                 </div>
               </div>
 
               <div className="group bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-default">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.02em] text-slate-500">
                       Aktif Oran
@@ -217,8 +217,8 @@ export default function AdminDashboard() {
                     <div className="mt-2 text-[12px] sm:text-[13px] text-slate-500">Menüsü olan</div>
                   </div>
 
-                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-orange-50 ring-1 ring-orange-100/80 flex items-center justify-center">
-                    <TrendingUp className="h-5 w-5 sm:h-[22px] sm:w-[22px] text-orange-600" strokeWidth={1.9} aria-hidden="true" />
+                  <div className="shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-amber-50 ring-1 ring-amber-100/80 flex items-center justify-center transition-colors duration-200 group-hover:bg-amber-100/70">
+                    <TrendingUp className="h-6 w-6 lg:h-7 lg:w-7 text-amber-700" strokeWidth={1.9} aria-hidden="true" />
                   </div>
                 </div>
               </div>
