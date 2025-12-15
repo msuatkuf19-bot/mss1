@@ -13,8 +13,11 @@ export class QRCodeService {
     try {
       // Logo yoksa orijinal QR'ı döndür
       if (!logoPath) {
+        logger.warn('Logo yolu belirtilmedi, QR logosuz oluşturuluyor');
         return qrDataUrl;
       }
+
+      logger.info('QR koduna logo ekleniyor', { logoPath });
 
       // QR kodunu canvas'a yükle
       const qrImage = await loadImage(qrDataUrl);
@@ -53,9 +56,9 @@ export class QRCodeService {
         ctx.drawImage(logo, logoPosition, logoPosition, logoSize, logoSize);
         ctx.restore();
         
-        logger.info('QR koduna logo eklendi', { logoPath, logoSize });
+        logger.info('✅ QR koduna logo başarıyla eklendi', { logoPath, logoSize, qrSize });
       } catch (logoError) {
-        logger.warn('Logo yüklenemedi, QR kod logosuz oluşturuldu', { logoPath, error: (logoError as Error).message });
+        logger.warn('❌ Logo yüklenemedi, QR kod logosuz oluşturuldu', { logoPath, error: (logoError as Error).message });
       }
       
       // Canvas'ı data URL'e çevir
@@ -116,7 +119,15 @@ export class QRCodeService {
         });
         
         // PNG formatında ise logo ekle
-        const logoPath = restaurant.logo ? `${process.cwd()}/uploads${restaurant.logo}` : null;
+        // Restoran logosu varsa onu kullan, yoksa default benmedya.png kullan
+        let logoPath: string | null = null;
+        if (restaurant.logo) {
+          logoPath = `${process.cwd()}/uploads${restaurant.logo}`;
+        } else {
+          // Default logo olarak benmedya.png kullan
+          logoPath = `${process.cwd()}/frontend/public/benmedya.png`;
+        }
+        
         qrImage = await this.addLogoToQR(qrImage, logoPath);
       }
 
