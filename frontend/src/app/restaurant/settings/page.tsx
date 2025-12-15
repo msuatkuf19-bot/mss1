@@ -5,7 +5,6 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { apiClient } from '@/lib/api-client';
 import { useAuthStore } from '@/store/auth.store';
-import WorkingHoursEditor from '@/components/WorkingHoursEditor';
 import toast from 'react-hot-toast';
 import RestaurantLogo from '@/components/RestaurantLogo';
 
@@ -411,22 +410,20 @@ export default function RestaurantSettingsPage() {
               <h2 className="text-lg font-semibold text-gray-900">Çalışma Saatleri</h2>
             </div>
 
-            <WorkingHoursEditor 
-              value={formData.workingHours}
-              onChange={(value) => setFormData({ ...formData, workingHours: value })}
-            />
-
-            <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mt-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <p className="text-sm text-blue-700">
-                  <strong>Bilgi:</strong> Çalışma saatleriniz QR menünüzde müşterilerinize gösterilecek. Her gün için ayrı saatler belirleyebilir veya kapalı olarak işaretleyebilirsiniz.
-                </p>
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Çalışma Saatleri
+              </label>
+              <input
+                type="text"
+                value={formData.workingHours}
+                onChange={(e) => setFormData({ ...formData, workingHours: e.target.value })}
+                placeholder="Örn: 10:30 - 20:00"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+              />
+              <p className="mt-2 text-sm text-gray-500">
+                Çalışma saatlerinizi girin (Örn: 10:30 - 20:00 veya Hafta İçi: 10:00 - 22:00)
+              </p>
             </div>
           </div>
 
