@@ -315,7 +315,14 @@ export default function PublicMenu() {
                     <div className="flex gap-4 p-4">
                       {theme.showProductImages && (product.imageUrl || product.image) ? (
                         <img
-                          src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.imageUrl || product.image}`}
+                          src={
+                            // Eğer URL http ile başlıyorsa (Cloudinary), direkt kullan
+                            (product.imageUrl && product.imageUrl.startsWith('http'))
+                              ? product.imageUrl
+                              : (product.image && product.image.startsWith('http'))
+                              ? product.image
+                              : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.imageUrl || product.image}`
+                          }
                           alt={product.name}
                           className={'w-24 h-24 object-cover flex-shrink-0 ' + cardRadiusClass}
                           onError={(e) => {

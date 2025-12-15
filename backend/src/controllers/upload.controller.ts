@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs';
+import cloudinary from '../config/cloudinary';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { sendSuccess, ApiError } from '../utils/response';
 import prisma from '../config/database';
@@ -33,35 +34,58 @@ export const uploadImage = async (
     const originalPath = req.file.path;
     const filename = req.file.filename;
     const mimetype = req.file.mimetype;
-    const size = req.file.size;
+    const originalSize = req.file.size;
 
     // Optimize edilmiş dosya adı
     const optimizedFilename = `optimized-${filename}`;
     const optimizedPath = path.join(path.dirname(originalPath), optimizedFilename);
 
     // Sharp ile görsel optimizasyonu
-    await sharp(originalPath)
+    const optimizedBuffer = await sharp(originalPath)
       .resize(800, 800, {
         fit: 'inside',
         withoutEnlargement: true,
       })
       .jpeg({ quality: 85 })
-      .toFile(optimizedPath);
+      .toBuffer();
 
-    // Orijinal dosyayı sil
-    fs.unlinkSync(originalPath);
+    // Save optimized image temporarily
+    fs.writeFileSync(optimizedPath, optimizedBuffer);
 
-    // Database'e kaydet
+    // Upload to Cloudinary
+    const uploadResult = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          folder: `qr-menu/${restaurantId}`,
+          public_id: optimizedFilename.replace(/\.[^/.]+$/, ''), // Remove extension
+          resource_type: 'image',
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(optimizedBuffer);
+    });
+
+    // Dosyaları temizle
+    try {
+      fs.unlinkSync(originalPath);
+      fs.unlinkSync(optimizedPath);
+    } catch (cleanupError) {
+      console.error('Cleanup error:', cleanupError);
+    }
+
+    // Database'e Cloudinary URL'ini kaydet
     const imageType = (req.body.type && Object.values(ImageType).includes(req.body.type)) 
       ? req.body.type 
       : ImageType.OTHER;
       
     const image = await prisma.image.create({
       data: {
-        url: `/uploads/${optimizedFilename}`,
+        url: uploadResult.secure_url, // Cloudinary URL
         filename: optimizedFilename,
         mimetype,
-        size,
+        size: optimizedBuffer.length,
         type: imageType as any,
         restaurantId,
       },

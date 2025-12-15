@@ -54,12 +54,21 @@ export const getPublicMenu = async (
     });
 
     // Ürün resimlerini düzenle - imageUrl ekle
+    // Eğer image alanı http ile başlıyorsa (Cloudinary URL), direkt kullan
+    // Değilse başına API URL ekle (/uploads/... için)
     const categoriesWithImages = categories.map(category => ({
       ...category,
-      products: category.products.map(product => ({
-        ...product,
-        imageUrl: product.image || null, // image alanını imageUrl olarak da ekle
-      })),
+      products: category.products.map(product => {
+        let imageUrl = product.image;
+        // Eğer image varsa ve http/https ile başlamıyorsa (local path), API URL ekle
+        if (imageUrl && !imageUrl.startsWith('http')) {
+          imageUrl = imageUrl; // Keep as is, will be prefixed in frontend
+        }
+        return {
+          ...product,
+          imageUrl: imageUrl || null,
+        };
+      }),
     }));
 
     // Analytics kaydı
