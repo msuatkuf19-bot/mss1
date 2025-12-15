@@ -317,23 +317,26 @@ export default function PublicMenu() {
                     }}
                   >
                     <div className="flex gap-4 p-4">
-                      {theme.showProductImages && (
-                        <img
-                          src={
-                            (product.imageUrl || product.image)
-                              ? (product.imageUrl || product.image).startsWith('http')
-                                ? (product.imageUrl || product.image)
-                                : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.imageUrl || product.image}`
-                              : DEFAULT_PRODUCT_IMAGE
-                          }
-                          alt={product.name}
-                          className={'w-24 h-24 object-cover flex-shrink-0 ' + cardRadiusClass}
-                          onError={(e) => {
-                            console.error('Image load failed for:', product.name);
-                            e.currentTarget.src = DEFAULT_PRODUCT_IMAGE;
-                          }}
-                        />
-                      )}
+                      {theme.showProductImages && (() => {
+                        const imageUrl = product.imageUrl || product.image;
+                        const imageSrc = imageUrl
+                          ? imageUrl.startsWith('http')
+                            ? imageUrl
+                            : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`
+                          : DEFAULT_PRODUCT_IMAGE;
+                        
+                        return (
+                          <img
+                            src={imageSrc}
+                            alt={product.name}
+                            className={'w-24 h-24 object-cover flex-shrink-0 ' + cardRadiusClass}
+                            onError={(e) => {
+                              console.error('Image load failed for:', product.name);
+                              e.currentTarget.src = DEFAULT_PRODUCT_IMAGE;
+                            }}
+                          />
+                        );
+                      })()}
                       <div className="flex-1">
                         <div className="flex items-start justify-between">
                           <h3 
