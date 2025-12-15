@@ -233,13 +233,14 @@ export default function RestaurantMenu() {
                   {products.map((product) => (
                     <div key={product.id} className="p-4">
                       <div className="flex gap-3 mb-3">
-                        {product.image && (
-                          <img 
-                            src={product.image} 
-                            alt={product.name}
-                            className="w-20 h-20 rounded-lg object-cover border flex-shrink-0"
-                          />
-                        )}
+                        <img 
+                          src={product.image || '/ürün resmi.jpg'} 
+                          alt={product.name}
+                          className="w-20 h-20 rounded-lg object-cover border flex-shrink-0"
+                          onError={(e) => {
+                            e.currentTarget.src = '/ürün resmi.jpg';
+                          }}
+                        />
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-gray-900">{product.name}</div>
                           {product.description && (
@@ -305,13 +306,14 @@ export default function RestaurantMenu() {
                     <tr key={product.id} className="border-b hover:bg-gray-50">
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          {product.image && (
-                            <img 
-                              src={product.image} 
-                              alt={product.name}
-                              className="w-16 h-16 rounded-lg object-cover border"
-                            />
-                          )}
+                          <img 
+                            src={product.image || '/ürün resmi.jpg'} 
+                            alt={product.name}
+                            className="w-16 h-16 rounded-lg object-cover border"
+                            onError={(e) => {
+                              e.currentTarget.src = '/ürün resmi.jpg';
+                            }}
+                          />
                           <div>
                             <div className="font-medium text-gray-900">{product.name}</div>
                             {product.description && (
