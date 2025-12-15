@@ -61,8 +61,16 @@ export default function RestaurantSettingsPage() {
 
       // Backend URL'i ekle
       const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      setLogoPreview(restaurant.logo ? `${backendUrl}${restaurant.logo}` : '');
-      setHeaderPreview(restaurant.headerImage ? `${backendUrl}${restaurant.headerImage}` : '');
+      setLogoPreview(
+        restaurant.logo 
+          ? (restaurant.logo.startsWith('http') ? restaurant.logo : `${backendUrl}${restaurant.logo}`)
+          : ''
+      );
+      setHeaderPreview(
+        restaurant.headerImage 
+          ? (restaurant.headerImage.startsWith('http') ? restaurant.headerImage : `${backendUrl}${restaurant.headerImage}`)
+          : ''
+      );
     } catch (error: any) {
       console.error('Failed to fetch restaurant:', error);
       setMessage({ type: 'error', text: 'Restoran bilgileri yüklenemedi' });
@@ -81,9 +89,8 @@ export default function RestaurantSettingsPage() {
       const imageUrl = response.data.url;
       
       setFormData({ ...formData, logo: imageUrl });
-      // Backend URL'i ekle
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      setLogoPreview(`${backendUrl}${imageUrl}`);
+      // Cloudinary tam URL dönüyor, local path ise backend URL ekle
+      setLogoPreview(imageUrl.startsWith('http') ? imageUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`);
       setMessage({ type: 'success', text: '✅ Logo yüklendi!' });
     } catch (error: any) {
       setMessage({ type: 'error', text: 'Logo yüklenemedi' });
@@ -102,9 +109,8 @@ export default function RestaurantSettingsPage() {
       const imageUrl = response.data.url;
       
       setFormData({ ...formData, headerImage: imageUrl });
-      // Backend URL'i ekle
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      setHeaderPreview(`${backendUrl}${imageUrl}`);
+      // Cloudinary tam URL dönüyor, local path ise backend URL ekle
+      setHeaderPreview(imageUrl.startsWith('http') ? imageUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`);
       setMessage({ type: 'success', text: '✅ Header görseli yüklendi!' });
     } catch (error: any) {
       setMessage({ type: 'error', text: 'Header görseli yüklenemedi' });

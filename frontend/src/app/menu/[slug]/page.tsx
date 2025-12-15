@@ -148,7 +148,11 @@ export default function PublicMenu() {
             <div className="text-center">
               {restaurant.logo && (
                 <div className="w-24 h-24 mx-auto mb-4 rounded-2xl overflow-hidden shadow-lg">
-                  <img src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`} alt={restaurant.name} className="w-full h-full object-cover" />
+                  <img 
+                    src={restaurant.logo.startsWith('http') ? restaurant.logo : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`} 
+                    alt={restaurant.name} 
+                    className="w-full h-full object-cover" 
+                  />
                 </div>
               )}
               <h2 className="text-2xl font-bold text-gray-900 mb-2">{restaurant.name} - Hoşgeldiniz!</h2>
@@ -169,7 +173,7 @@ export default function PublicMenu() {
         style={
           restaurant.headerImage
             ? {
-                backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.headerImage})`,
+                backgroundImage: `url(${restaurant.headerImage.startsWith('http') ? restaurant.headerImage : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.headerImage}`})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 minHeight: '240px',
@@ -185,7 +189,11 @@ export default function PublicMenu() {
             <div className="flex items-center gap-4">
               {restaurant.logo && (
                 <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-md border-2 border-white/20">
-                  <img src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`} alt={restaurant.name} className="w-full h-full object-cover" />
+                  <img 
+                    src={restaurant.logo.startsWith('http') ? restaurant.logo : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`} 
+                    alt={restaurant.name} 
+                    className="w-full h-full object-cover" 
+                  />
                 </div>
               )}
               <div>
