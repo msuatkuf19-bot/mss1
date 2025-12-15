@@ -6,6 +6,7 @@ import { apiClient } from '@/lib/api-client';
 import { buildTheme, getCardRadiusClass, getHeaderBackgroundStyle } from '@/lib/theme-utils';
 import { getTodayWorkingHours, isRestaurantOpen } from '@/lib/working-hours-utils';
 import { DEFAULT_PRODUCT_IMAGE } from '@/lib/constants';
+import RestaurantLogo from '@/components/RestaurantLogo';
 
 interface Product {
   id: string;
@@ -149,15 +150,14 @@ export default function PublicMenu() {
             </button>
 
             <div className="text-center">
-              {restaurant.logo && (
-                <div className="w-24 h-24 mx-auto mb-4 rounded-2xl overflow-hidden shadow-lg">
-                  <img 
-                    src={restaurant.logo.startsWith('http') ? restaurant.logo : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`} 
-                    alt={restaurant.name} 
-                    className="w-full h-full object-cover" 
-                  />
-                </div>
-              )}
+              <div className="flex justify-center mb-4">
+                <RestaurantLogo 
+                  name={restaurant.name}
+                  logoUrl={restaurant.logo?.startsWith('http') ? restaurant.logo : restaurant.logo ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}` : undefined}
+                  size="lg"
+                  className="shadow-lg"
+                />
+              </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">{restaurant.name} - Hoşgeldiniz!</h2>
               <p className="text-lg text-gray-600">Afiyet olsun.</p>
               {tableNumber && (
@@ -190,15 +190,12 @@ export default function PublicMenu() {
         <div className="max-w-4xl mx-auto px-4 py-8 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              {restaurant.logo && (
-                <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-md border-2 border-white/20">
-                  <img 
-                    src={restaurant.logo.startsWith('http') ? restaurant.logo : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`} 
-                    alt={restaurant.name} 
-                    className="w-full h-full object-cover" 
-                  />
-                </div>
-              )}
+              <RestaurantLogo 
+                name={restaurant.name}
+                logoUrl={restaurant.logo?.startsWith('http') ? restaurant.logo : restaurant.logo ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}` : undefined}
+                size="md"
+                className="shadow-md border-2 border-white/20"
+              />
               <div>
                 <h1 
                   className="text-2xl font-bold drop-shadow-lg"
