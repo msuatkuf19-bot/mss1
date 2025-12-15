@@ -45,6 +45,7 @@ interface Restaurant {
   facebookUrl?: string;
   themeColor?: string;
   themeSettings?: string;
+  workingHours?: string;
 }
 
 export default function PublicMenu() {
