@@ -53,6 +53,15 @@ export const getPublicMenu = async (
       orderBy: { order: 'asc' },
     });
 
+    // Ürün resimlerini düzenle - imageUrl ekle
+    const categoriesWithImages = categories.map(category => ({
+      ...category,
+      products: category.products.map(product => ({
+        ...product,
+        imageUrl: product.image || null, // image alanını imageUrl olarak da ekle
+      })),
+    }));
+
     // Analytics kaydı
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -76,7 +85,7 @@ export const getPublicMenu = async (
 
     sendSuccess(res, {
       restaurant,
-      categories,
+      categories: categoriesWithImages,
       tableNumber: table,
     });
   } catch (error) {
