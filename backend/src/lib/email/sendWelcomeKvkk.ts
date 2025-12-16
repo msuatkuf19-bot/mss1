@@ -62,6 +62,9 @@ export const sendWelcomeKvkkEmail = async (
       to: params.to,
       subject: getWelcomeEmailSubject(),
       html,
+      text,
+    });
+
     console.log('✅ RESEND API RESPONSE:', result);
     logger.info(`✅ Welcome email sent successfully to ${params.to} - ID: ${result.data?.id}`);
     
@@ -76,9 +79,6 @@ export const sendWelcomeKvkkEmail = async (
       statusCode: error.statusCode,
       name: error.name
     });
-      messageId: result.data?.id,
-    };
-  } catch (error: any) {
     logger.error('❌ Failed to send welcome email:', error);
     
     return {
