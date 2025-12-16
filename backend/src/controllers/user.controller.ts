@@ -77,6 +77,7 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
+    console.log('[USER CREATE] Request received:', { email: req.body.email, name: req.body.name });
     const { email, name, password, role } = req.body;
 
     // Email kontrolü
@@ -111,6 +112,7 @@ export const createUser = async (
     // Hoş geldiniz + KVKK maili gönder (async, hata durumunda kullanıcı kaydı yine başarılı)
     let emailSent = false;
     try {
+      console.log('[USER] Attempting to send welcome email to:', user.email);
       const appUrl = process.env.APP_URL || 'http://localhost:3000';
       const emailResult = await sendWelcomeKvkkEmail({
         to: user.email,

@@ -7,6 +7,8 @@ let resendClient: Resend | null = null;
 export const getEmailClient = (): Resend | null => {
   const apiKey = process.env.RESEND_API_KEY;
   
+  console.log('[EMAIL] Checking RESEND_API_KEY:', apiKey ? 'EXISTS' : 'MISSING');
+  
   if (!apiKey) {
     logger.warn('RESEND_API_KEY not configured - email sending disabled');
     return null;
