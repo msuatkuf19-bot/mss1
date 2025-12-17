@@ -9,6 +9,14 @@ export interface ThemeSettings {
   showHeaderOverlay?: boolean;
   cardRadius?: 'sm' | 'md' | 'lg' | 'full';
   showProductImages?: boolean;
+  
+  // Welcome Popup Settings
+  welcomeTitle?: string;
+  welcomeMessage?: string;
+  welcomeBackgroundColor?: string;
+  welcomeTitleColor?: string;
+  welcomeMessageColor?: string;
+  showWelcomePopup?: boolean;
 }
 
 export interface CompleteTheme {
@@ -21,6 +29,14 @@ export interface CompleteTheme {
   showHeaderOverlay: boolean;
   cardRadius: 'sm' | 'md' | 'lg' | 'full';
   showProductImages: boolean;
+  
+  // Welcome Popup Settings
+  welcomeTitle: string;
+  welcomeMessage: string;
+  welcomeBackgroundColor: string;
+  welcomeTitleColor: string;
+  welcomeMessageColor: string;
+  showWelcomePopup: boolean;
 }
 
 // Preset tema tanımları
@@ -74,6 +90,14 @@ const DEFAULT_THEME: CompleteTheme = {
   showHeaderOverlay: false,
   cardRadius: 'lg',
   showProductImages: true,
+  
+  // Welcome Popup defaults
+  welcomeTitle: 'Hoşgeldiniz!',
+  welcomeMessage: 'Afiyet olsun.',
+  welcomeBackgroundColor: '#FFFFFF',
+  welcomeTitleColor: '#1F2937',
+  welcomeMessageColor: '#6B7280',
+  showWelcomePopup: true,
 };
 
 /**

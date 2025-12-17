@@ -137,9 +137,12 @@ export default function PublicMenu() {
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: theme.backgroundColor }}>
       {/* Welcome Popup */}
-      {showWelcome && (
+      {showWelcome && buildTheme(restaurant.themeSettings).showWelcomePopup !== false && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scaleIn">
+          <div 
+            className="rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scaleIn"
+            style={{ backgroundColor: buildTheme(restaurant.themeSettings).welcomeBackgroundColor || '#FFFFFF' }}
+          >
             <button
               onClick={() => setShowWelcome(false)}
               className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition"
@@ -158,8 +161,18 @@ export default function PublicMenu() {
                   className="shadow-lg"
                 />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{restaurant.name} - Hoşgeldiniz!</h2>
-              <p className="text-lg text-gray-600">Afiyet olsun.</p>
+              <h2 
+                className="text-2xl font-bold mb-2"
+                style={{ color: buildTheme(restaurant.themeSettings).welcomeTitleColor || '#1F2937' }}
+              >
+                {restaurant.name} - {buildTheme(restaurant.themeSettings).welcomeTitle || 'Hoşgeldiniz!'}
+              </h2>
+              <p 
+                className="text-lg"
+                style={{ color: buildTheme(restaurant.themeSettings).welcomeMessageColor || '#6B7280' }}
+              >
+                {buildTheme(restaurant.themeSettings).welcomeMessage || 'Afiyet olsun.'}
+              </p>
               {tableNumber && (
                 <div className="mt-4 inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full font-medium">
                   Masa {tableNumber}
