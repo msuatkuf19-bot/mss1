@@ -467,7 +467,7 @@ export default function PublicMenu() {
 
             {/* Konum */}
             <a 
-              href={restaurant.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address)}` : "https://maps.google.com"}
+              href={restaurant.address || "https://maps.google.com"}
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center gap-2 px-6 py-3 rounded-2xl transition-all hover:scale-105 active:scale-95"
