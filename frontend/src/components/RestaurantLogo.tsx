@@ -41,17 +41,32 @@ const getColorFromName = (str: string): string => {
 };
 
 export default function RestaurantLogo({ name, logoUrl, size = 'md', className = '' }: Props) {
-  // Logo varsa göster
-  if (logoUrl && logoUrl.trim()) {
-    console.log('RestaurantLogo - Logo URL:', logoUrl);
+  console.log('RestaurantLogo render:', { 
+    name, 
+    logoUrl, 
+    hasLogo: !!logoUrl, 
+    logoTrimmed: logoUrl?.trim(),
+    logoLength: logoUrl?.length 
+  });
+
+  // Logo varsa ve geçerli URL ise göster
+  if (logoUrl && logoUrl.trim() && logoUrl !== 'null' && logoUrl !== 'undefined') {
+    const cleanLogoUrl = logoUrl.trim();
+    console.log('RestaurantLogo - Using logo URL:', cleanLogoUrl);
+    
     return (
       <div className="relative">
         <img
-          src={logoUrl}
-          alt={name}
+          src={cleanLogoUrl}
+          alt={`${name} Logo`}
           className={`rounded-full object-cover ${sizeClasses[size]} ${className}`}
           onError={(e) => {
-            console.error('Logo load failed:', logoUrl);
+            console.error('❌ Logo load FAILED:', {
+              url: cleanLogoUrl,
+              name,
+              error: e.currentTarget.error
+            });
+            
             // Hata durumunda avatar'a düş
             const target = e.currentTarget;
             const parent = target.parentElement;
@@ -59,28 +74,32 @@ export default function RestaurantLogo({ name, logoUrl, size = 'md', className =
               const initial = (name?.charAt(0).toUpperCase() || '?');
               const gradient = getColorFromName(name || 'A');
               parent.innerHTML = `
-                <div class="${sizeClasses[size]} rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-bold shadow-lg ${className}" title="${name}">
+                <div class="${sizeClasses[size]} rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-bold shadow-lg ${className}" title="${name} - Logo Yüklenemedi">
                   ${initial}
                 </div>
               `;
             }
           }}
           onLoad={() => {
-            console.log('Logo loaded successfully:', logoUrl);
+            console.log('✅ Logo loaded SUCCESSFULLY:', {
+              url: cleanLogoUrl,
+              name
+            });
           }}
         />
       </div>
     );
   }
 
-  // Logo yoksa ilk harf avatarı
+  // Logo yoksa veya geçersizse ilk harf avatarı
+  console.log('RestaurantLogo - Using avatar for:', name);
   const initial = name?.charAt(0).toUpperCase() || '?';
   const bgGradient = getColorFromName(name || 'A');
 
   return (
     <div
       className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${bgGradient} flex items-center justify-center text-white font-bold shadow-lg ${className}`}
-      title={name}
+      title={`${name} - Logo Yok`}
     >
       {initial}
     </div>
