@@ -92,14 +92,27 @@ export default function RestaurantSettingsPage() {
       const imageUrl = response.data.url;
       console.log('Image URL from response:', imageUrl);
       
-      setFormData({ ...formData, logo: imageUrl });
-      // Cloudinary tam URL dönüyor, local path ise backend URL ekle
+      // Form data'yı güncelle
+      const updatedFormData = { ...formData, logo: imageUrl };
+      setFormData(updatedFormData);
+      
+      // Preview URL'ini ayarla
       const previewUrl = imageUrl.startsWith('http') ? imageUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`;
       console.log('Preview URL:', previewUrl);
       setLogoPreview(previewUrl);
-      setMessage({ type: 'success', text: '✅ Logo yüklendi!' });
+      
+      // 🔥 OTOMATIK KAYDET - Logo yüklendiğinde hemen database'e kaydet
+      console.log('🔄 Auto-saving logo to database...');
+      await apiClient.updateRestaurant(restaurantId, updatedFormData);
+      console.log('✅ Logo saved to database successfully!');
+      
+      setMessage({ type: 'success', text: '✅ Logo yüklendi ve kaydedildi!' });
+      toast.success('✅ Logo başarıyla yüklendi!');
+      
     } catch (error: any) {
-      setMessage({ type: 'error', text: 'Logo yüklenemedi' });
+      console.error('❌ Logo upload/save error:', error);
+      setMessage({ type: 'error', text: 'Logo yüklenemedi veya kaydedilemedi' });
+      toast.error('❌ Logo yüklenemedi');
     } finally {
       setUploadingLogo(false);
     }
@@ -114,12 +127,26 @@ export default function RestaurantSettingsPage() {
       const response = await apiClient.uploadFile(file, 'logo');
       const imageUrl = response.data.url;
       
-      setFormData({ ...formData, headerImage: imageUrl });
-      // Cloudinary tam URL dönüyor, local path ise backend URL ekle
-      setHeaderPreview(imageUrl.startsWith('http') ? imageUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`);
-      setMessage({ type: 'success', text: '✅ Header görseli yüklendi!' });
+      // Form data'yı güncelle
+      const updatedFormData = { ...formData, headerImage: imageUrl };
+      setFormData(updatedFormData);
+      
+      // Preview URL'ini ayarla
+      const previewUrl = imageUrl.startsWith('http') ? imageUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`;
+      setHeaderPreview(previewUrl);
+      
+      // 🔥 OTOMATIK KAYDET - Header yüklendiğinde hemen database'e kaydet
+      console.log('🔄 Auto-saving header image to database...');
+      await apiClient.updateRestaurant(restaurantId, updatedFormData);
+      console.log('✅ Header image saved to database successfully!');
+      
+      setMessage({ type: 'success', text: '✅ Header görseli yüklendi ve kaydedildi!' });
+      toast.success('✅ Header görseli başarıyla yüklendi!');
+      
     } catch (error: any) {
-      setMessage({ type: 'error', text: 'Header görseli yüklenemedi' });
+      console.error('❌ Header upload/save error:', error);
+      setMessage({ type: 'error', text: 'Header görseli yüklenemedi veya kaydedilemedi' });
+      toast.error('❌ Header görseli yüklenemedi');
     } finally {
       setUploadingHeader(false);
     }
