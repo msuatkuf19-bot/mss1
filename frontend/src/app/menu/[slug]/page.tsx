@@ -90,7 +90,9 @@ export default function PublicMenu() {
       const restaurantData = response.data.restaurant;
       console.log('Restaurant Data:', restaurantData);
       console.log('Restaurant Logo:', restaurantData.logo);
-      console.log('Final Logo URL:', restaurantData.logo ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurantData.logo}` : 'No logo');
+      console.log('Final Logo URL:', restaurantData.logo ? 
+        (restaurantData.logo.startsWith('http') ? restaurantData.logo : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurantData.logo}`) 
+        : 'No logo');
       setRestaurant(restaurantData);
       setCategories(response.data.categories || []);
       
@@ -160,7 +162,9 @@ export default function PublicMenu() {
               <div className="flex items-center justify-center gap-3 mb-4">
                 <RestaurantLogo 
                   name={restaurant.name}
-                  logoUrl={restaurant.logo ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}` : null}
+                  logoUrl={restaurant.logo ? 
+                    (restaurant.logo.startsWith('http') ? restaurant.logo : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`) 
+                    : null}
                   size="lg"
                   className="shadow-lg"
                 />
@@ -212,7 +216,9 @@ export default function PublicMenu() {
             <div className="flex items-center gap-4">
               <RestaurantLogo 
                 name={restaurant.name}
-                logoUrl={restaurant.logo ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}` : null}
+                logoUrl={restaurant.logo ? 
+                  (restaurant.logo.startsWith('http') ? restaurant.logo : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.logo}`) 
+                  : null}
                 size="lg"
                 className="shadow-md border-2 border-white/20"
               />
