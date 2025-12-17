@@ -89,6 +89,8 @@ export default function PublicMenu() {
       });
       const restaurantData = response.data.restaurant;
       console.log('Restaurant Data:', restaurantData);
+      console.log('Restaurant Logo:', restaurantData.logo);
+      console.log('Final Logo URL:', restaurantData.logo ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurantData.logo}` : 'No logo');
       setRestaurant(restaurantData);
       setCategories(response.data.categories || []);
       
