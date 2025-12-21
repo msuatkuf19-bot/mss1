@@ -2,28 +2,152 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* Theme Tokens (Design System)
+   - Dark mode must remain identical
+   - Light mode uses the provided premium SaaS palette
+   - Theme is controlled via: html[data-theme="dark"|"light"]
+*/
+
+:root,
+html[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg-primary: #0C111C;
+  --bg-secondary: #0C111C;
+  --bg-glass: rgba(12, 17, 28, 0.7);
+  --page-bg: linear-gradient(to bottom, #05070B, #0C111C, #141824);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF; /* matches Tailwind gray-400 used in landing */
+  --text-muted: #6B7280;     /* matches Tailwind gray-500 used in landing */
+
+  --border-color: rgba(255, 255, 255, 0.06);
+
+  /* Keep dark accents exactly as-is */
+  --accent-primary: #F97316;
+  --accent-secondary: #EC4899;
+  --accent-gradient: linear-gradient(135deg, #F97316 0%, #EC4899 100%);
+  --accent-primary-rgb: 249, 115, 22;
+  --accent-secondary-rgb: 236, 72, 153;
+
+  --success: #16A34A;
+  --warning: #F59E0B;
+
+  /* Dark should not gain new shadows */
+  --shadow-soft: 0 0 #0000;
+  --shadow-strong: 0 0 #0000;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  --page-bg: linear-gradient(to bottom, var(--bg-primary), var(--bg-primary));
+
+  --surface-soft: #F1F5F9;
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+
+  --border-color: rgba(15, 23, 42, 0.10);
+
+  --accent-primary: #FF6A00;
+  --accent-secondary: #FF3D3D;
+  --accent-gradient: linear-gradient(135deg, #FF6A00, #FF3D3D);
+
+  /* Alias tokens (requested naming) */
+  --accent-1: var(--accent-primary);
+  --accent-2: var(--accent-secondary);
+  --accent-grad: var(--accent-gradient);
+  --accent-primary-rgb: 255, 106, 0;
+  --accent-secondary-rgb: 255, 61, 61;
+
+  --success: #16A34A;
+  --warning: #F59E0B;
+
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.10);
+  --shadow-subtle: 0 8px 20px rgba(15, 23, 42, 0.08);
+  --shadow-strong: 0 16px 40px rgba(15, 23, 42, 0.12);
+
+  --theme-transition: 0.25s ease;
+
+  /* Derived helpers (avoid hardcoded colors in overrides) */
+  --border-strong: color-mix(in srgb, var(--text-primary) 14%, transparent);
+  --border-soft: color-mix(in srgb, var(--text-primary) 8%, transparent);
+  --shadow-header: 0 10px 30px color-mix(in srgb, var(--text-primary) 8%, transparent);
+  --shadow-band: 0 -8px 24px color-mix(in srgb, var(--text-primary) 6%, transparent);
+
+  /* Mobile mockup (phone UI) light tokens */
+  --m-bg: #F6F7FB;
+  --m-surface: #FFFFFF;
+  --m-surface-2: #F1F5F9;
+  --m-text: #0F172A;
+  --m-text-2: #475569;
+  --m-border: rgba(15, 23, 42, 0.10);
+  --m-shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
+  --m-shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.08);
+
+  --m-accent-1: #FF6A00;
+  --m-accent-2: #FF3D3D;
+  --m-accent-1-rgb: 255, 106, 0;
+  --m-accent-grad: linear-gradient(135deg, #FF6A00, #FF3D3D);
+
+  /* Footer (landing) light tokens */
+  --footer-bg: #FFFFFF;
+  --footer-border: rgba(15, 23, 42, 0.08);
+  --footer-shadow: 0 -8px 24px rgba(15, 23, 42, 0.04);
+
+  --footer-text: #0F172A;
+  --footer-text-secondary: #475569;
+  --footer-text-tertiary: #64748B;
+
+  --footer-link: #0F172A;
+  --footer-link-hover: #FF6A00;
+  --footer-link-active: #FF3D3D;
+
+  --footer-social-bg: #F1F5F9;
+  --footer-social-icon: #0F172A;
+  --footer-social-hover-bg: linear-gradient(135deg, #FF6A00, #FF3D3D);
+
+  --footer-divider: linear-gradient(
+    to right,
+    transparent,
+    rgba(15, 23, 42, 0.12),
+    transparent
+  );
+}
+
+/* Light-theme transitions (light scope only) */
+html[data-theme='light'] body,
+html[data-theme='light'] header,
+html[data-theme='light'] main,
+html[data-theme='light'] section,
+html[data-theme='light'] footer,
+html[data-theme='light'] div,
+html[data-theme='light'] a,
+html[data-theme='light'] button,
+html[data-theme='light'] input,
+html[data-theme='light'] select,
+html[data-theme='light'] textarea {
+  transition:
+    background-color var(--theme-transition),
+    color var(--theme-transition),
+    border-color var(--theme-transition),
+    box-shadow var(--theme-transition);
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--text-primary);
+  background: var(--bg-primary);
 }
 
 @layer utilities {
@@ -141,14 +265,15 @@ body {
 
 /* Glassmorphism Effect */
 .glass-effect {
-  background: rgba(12, 17, 28, 0.7);
+  background: var(--bg-glass);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-soft);
 }
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, #F97316 0%, #EC4899 100%);
+  background: var(--accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -162,6 +287,296 @@ body {
 /* Smooth Scroll */
 html {
   scroll-behavior: smooth;
+}
+
+/* Landing-only theme bridging
+   The landing uses Tailwind color utilities (e.g. text-white, text-gray-400).
+   To avoid rewriting the entire component tree, we remap ONLY within .landing.
+   This keeps dark mode identical while enabling light mode via tokens.
+*/
+.landing,
+.landing * {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.landing {
+  background: var(--page-bg);
+  color: var(--text-primary);
+}
+
+.landing .text-white {
+  color: var(--text-primary) !important;
+}
+
+.landing .text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+
+.landing .text-gray-300 {
+  color: var(--text-secondary) !important;
+}
+
+.landing .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+.landing .bg-gray-700 {
+  background-color: var(--border-color) !important;
+}
+
+.landing .border-white\/5,
+.landing .border-white\/10,
+.landing .border-white\/20 {
+  border-color: var(--border-color) !important;
+}
+
+.landing .bg-white\/5,
+.landing .bg-white\/10 {
+  background-color: var(--bg-glass) !important;
+}
+
+/* Accent remaps (Landing only)
+   Keep existing classes/layout; only swap the color sources.
+*/
+.landing .text-orange-400,
+.landing .text-orange-300 {
+  color: var(--accent-primary) !important;
+}
+
+.landing .hover\:text-orange-400:hover {
+  color: var(--accent-primary) !important;
+}
+
+.landing .border-orange-400\/50,
+.landing .border-orange-500\/20,
+.landing .border-orange-500\/30,
+.landing .hover\:border-orange-500\/50:hover,
+.landing .focus\:border-orange-500:focus {
+  border-color: rgba(var(--accent-primary-rgb), 0.5) !important;
+}
+
+.landing .border-orange-500\/20 {
+  border-color: rgba(var(--accent-primary-rgb), 0.2) !important;
+}
+
+.landing .border-orange-500\/30 {
+  border-color: rgba(var(--accent-primary-rgb), 0.3) !important;
+}
+
+.landing .hover\:border-orange-500\/50:hover {
+  border-color: rgba(var(--accent-primary-rgb), 0.5) !important;
+}
+
+.landing .bg-orange-500\/20,
+.landing .bg-orange-500\/15 {
+  background-color: rgba(var(--accent-primary-rgb), 0.2) !important;
+}
+
+.landing .bg-orange-500\/15 {
+  background-color: rgba(var(--accent-primary-rgb), 0.15) !important;
+}
+
+.landing .bg-pink-500\/20 {
+  background-color: rgba(var(--accent-secondary-rgb), 0.2) !important;
+}
+
+.landing .hover\:bg-orange-400\/10:hover {
+  background-color: rgba(var(--accent-primary-rgb), 0.1) !important;
+}
+
+.landing .placeholder-gray-500::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Gradient stop remaps */
+.landing .from-orange-500,
+.landing .from-orange-400 {
+  --tw-gradient-from: var(--accent-primary) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.landing .via-pink-500 {
+  --tw-gradient-stops: var(--tw-gradient-from), var(--accent-secondary) var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+
+.landing .to-pink-500,
+.landing .to-pink-400 {
+  --tw-gradient-to: var(--accent-secondary) var(--tw-gradient-to-position);
+}
+
+/* Shadow color remaps for accent hover */
+.landing .hover\:shadow-orange-500\/50:hover,
+.landing .hover\:shadow-orange-500\/60:hover {
+  --tw-shadow-color: rgba(var(--accent-primary-rgb), 0.5) !important;
+}
+
+/* Phone mockup: LIGHT ONLY
+   Important: these rules must never affect dark mode.
+*/
+html[data-theme='light'] .landing .mobile-screen {
+  background: var(--m-bg) !important;
+}
+
+/* Top area title/subtitle */
+html[data-theme='light'] .landing .mobile-mockup h3.text-white {
+  color: var(--m-text) !important;
+}
+
+html[data-theme='light'] .landing .mobile-mockup p.text-gray-400 {
+  color: var(--m-text-2) !important;
+}
+
+/* Category tiles: turn gradient tiles into premium white cards */
+html[data-theme='light'] .landing .mobile-mockup .grid.grid-cols-2.gap-3.relative > div.relative.h-24.rounded-2xl.overflow-hidden {
+  background: var(--m-surface) !important;
+  border: 1px solid var(--m-border) !important;
+  box-shadow: var(--m-shadow-soft) !important;
+}
+
+html[data-theme='light'] .landing .mobile-mockup .grid.grid-cols-2.gap-3.relative > div.relative.h-24.rounded-2xl.overflow-hidden > div.absolute.inset-0.bg-gradient-to-br {
+  opacity: 0 !important;
+}
+
+html[data-theme='light'] .landing .mobile-mockup .grid.grid-cols-2.gap-3.relative > div.relative.h-24.rounded-2xl.overflow-hidden p.text-white {
+  color: var(--m-text) !important;
+}
+
+/* Icon container effect (pseudo background behind emoji) */
+html[data-theme='light'] .landing .mobile-mockup .grid.grid-cols-2.gap-3.relative > div.relative.h-24.rounded-2xl.overflow-hidden span.text-3xl {
+  position: relative;
+  z-index: 0;
+}
+
+html[data-theme='light'] .landing .mobile-mockup .grid.grid-cols-2.gap-3.relative > div.relative.h-24.rounded-2xl.overflow-hidden span.text-3xl::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  background: var(--m-surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  z-index: -1;
+}
+
+/* Hover/press hint (only where hover exists) */
+@media (hover: hover) {
+  html[data-theme='light'] .landing .mobile-mockup .grid.grid-cols-2.gap-3.relative > div.relative.h-24.rounded-2xl.overflow-hidden:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--m-shadow);
+  }
+}
+
+/* QR card (Masanızı Tarayın) */
+html[data-theme='light'] .landing .mobile-qr-card {
+  background: var(--m-surface) !important;
+  border: 1px solid rgba(var(--m-accent-1-rgb), 0.20) !important;
+  box-shadow: var(--m-shadow) !important;
+}
+
+html[data-theme='light'] .landing .mobile-qr-card svg,
+html[data-theme='light'] .landing .mobile-qr-card p.text-white {
+  color: var(--m-text) !important;
+}
+
+/* QR icon background area to light surface */
+html[data-theme='light'] .landing .mobile-qr-card .absolute.-inset-4.bg-orange-500\/20 {
+  background-color: var(--m-surface-2) !important;
+  opacity: 1 !important;
+}
+
+/* Corner indicator dot */
+html[data-theme='light'] .landing .mobile-qr-card .absolute.top-3.right-3 {
+  background: var(--m-accent-1) !important;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--m-accent-1) 25%, transparent) !important;
+}
+
+/* Landing footer: LIGHT ONLY */
+html[data-theme='light'] .landing footer {
+  background: var(--footer-bg) !important;
+  border-top: 1px solid var(--footer-border) !important;
+  box-shadow: var(--footer-shadow) !important;
+}
+
+html[data-theme='light'] .landing footer p,
+html[data-theme='light'] .landing footer li,
+html[data-theme='light'] .landing footer span {
+  color: var(--footer-text-secondary);
+}
+
+html[data-theme='light'] .landing footer h4,
+html[data-theme='light'] .landing footer h1,
+html[data-theme='light'] .landing footer h2,
+html[data-theme='light'] .landing footer h3 {
+  color: var(--footer-text) !important;
+}
+
+/* Footer links */
+html[data-theme='light'] .landing footer a {
+  color: var(--footer-link) !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
+}
+
+html[data-theme='light'] .landing footer a:hover {
+  color: var(--footer-link-hover) !important;
+}
+
+html[data-theme='light'] .landing footer a:active {
+  color: var(--footer-link-active) !important;
+}
+
+/* Bullet dot in quick links */
+html[data-theme='light'] .landing footer .bg-gray-600 {
+  background-color: color-mix(in srgb, var(--text-primary) 25%, transparent) !important;
+}
+
+/* Social icons (keep size/radius identical) */
+html[data-theme='light'] .landing footer a.w-10.h-10.rounded-lg {
+  background: var(--footer-social-bg) !important;
+}
+
+html[data-theme='light'] .landing footer a.w-10.h-10.rounded-lg svg {
+  color: var(--footer-social-icon) !important;
+}
+
+html[data-theme='light'] .landing footer a.w-10.h-10.rounded-lg:hover {
+  background: var(--footer-social-hover-bg) !important;
+}
+
+html[data-theme='light'] .landing footer a.w-10.h-10.rounded-lg:hover svg {
+  color: var(--bg-secondary) !important;
+}
+
+/* Bottom divider */
+html[data-theme='light'] .landing footer .pt-8.border-t {
+  position: relative;
+  border-top-color: transparent !important;
+}
+
+html[data-theme='light'] .landing footer .pt-8.border-t::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--footer-divider);
+}
+
+html[data-theme='light'] .landing footer .pt-8.border-t p,
+html[data-theme='light'] .landing footer .pt-8.border-t {
+  color: var(--footer-text-tertiary) !important;
+}
+
+/* Logo: light theme should render as black (keep DOM/layout identical) */
+html[data-theme='light'] img[alt='Menü Ben'],
+html[data-theme='light'] img[src='/benmedya.png'] {
+  -webkit-filter: brightness(0) invert(0) !important;
+  filter: brightness(0) invert(0) !important;
 }
 
 /* Custom Cursor - Hide default cursor on desktop devices */
@@ -179,4 +594,1056 @@ html {
 .custom-cursor-layer {
   pointer-events: none !important;
   user-select: none !important;
+}
+
+/* ==============================
+   /demo (Demo Talep) – LIGHT ONLY
+   - No structure/layout changes
+   - Override inline dark styles via !important
+   ============================== */
+
+/* Page background: brighten while keeping composition */
+html[data-theme='light'] main[style*='#0a0514'] {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] main[style*='#0a0514']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 420px at 50% 0%, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent 65%),
+    radial-gradient(700px 360px at 15% 40%, color-mix(in srgb, var(--accent-1) 8%, transparent), transparent 60%),
+    radial-gradient(700px 380px at 85% 35%, color-mix(in srgb, var(--accent-2) 8%, transparent), transparent 62%);
+  opacity: 0.55;
+}
+
+/* Soften existing glow orbs (purple/blue/pink) */
+html[data-theme='light'] main[style*='#0a0514'] .pointer-events-none > div[class*='bg-purple-500'],
+html[data-theme='light'] main[style*='#0a0514'] .pointer-events-none > div[class*='bg-blue-500'],
+html[data-theme='light'] main[style*='#0a0514'] .pointer-events-none > div[class*='bg-pink-500'] {
+  filter: opacity(0.22) !important;
+}
+
+/* Star particles: reduce visual noise on light */
+html[data-theme='light'] main[style*='#0a0514'] div.absolute.rounded-full.bg-white {
+  background-color: color-mix(in srgb, var(--text-primary) 18%, transparent) !important;
+  filter: opacity(0.45) !important;
+}
+
+/* Header: glass on light (override inline dark background) */
+html[data-theme='light'] main[style*='#0a0514'] header {
+  background: var(--bg-glass) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: var(--shadow-header) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] header a,
+html[data-theme='light'] main[style*='#0a0514'] header p,
+html[data-theme='light'] main[style*='#0a0514'] header span {
+  color: var(--text-primary) !important;
+}
+
+/* Back button */
+html[data-theme='light'] main[style*='#0a0514'] header a.border {
+  border-color: var(--border-color) !important;
+  background: transparent !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] header a.border:hover {
+  border-color: color-mix(in srgb, var(--accent-1) 35%, var(--border-color)) !important;
+  background: color-mix(in srgb, var(--accent-1) 6%, transparent) !important;
+}
+
+/* WhatsApp pill */
+html[data-theme='light'] main[style*='#0a0514'] header a[href*='wa.me'] {
+  background: color-mix(in srgb, var(--success) 14%, transparent) !important;
+  border-color: color-mix(in srgb, var(--success) 30%, var(--border-color)) !important;
+  color: var(--success) !important;
+}
+
+/* Floating info pills */
+html[data-theme='light'] main[style*='#0a0514'] .backdrop-blur-xl.bg-white\/5.border.border-white\/10.rounded-2xl.shadow-lg {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-subtle) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] .backdrop-blur-xl.bg-white\/5.border.border-white\/10.rounded-2xl.shadow-lg span.text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] .backdrop-blur-xl.bg-white\/5.border.border-white\/10.rounded-2xl.shadow-lg span.text-2xl {
+  background: var(--surface-soft);
+  border-radius: 9999px;
+}
+
+/* Phone screen interior: light UI only (frame stays the same) */
+html[data-theme='light'] main[style*='#0a0514'] div.bg-\[\#050814\].rounded-\[2rem\] {
+  background: var(--bg-primary) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] div.bg-\[\#050814\].rounded-\[2rem\] .text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] div.bg-\[\#050814\].rounded-\[2rem\] .text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] div.bg-\[\#050814\].rounded-\[2rem\] .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+/* Pastelize dashboard tiles + lighten overlay */
+html[data-theme='light'] main[style*='#0a0514'] div.bg-\[\#050814\].rounded-\[2rem\] .bg-gradient-to-br {
+  filter: saturate(0.75) brightness(1.18);
+}
+
+html[data-theme='light'] main[style*='#0a0514'] div.bg-\[\#050814\].rounded-\[2rem\] .bg-black\/20 {
+  background-color: color-mix(in srgb, var(--bg-secondary) 55%, transparent) !important;
+}
+
+/* Sticky form band: light surface instead of dark band */
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 {
+  background: var(--bg-secondary) !important;
+  border-top: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-band) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 .text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 .text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 .text-orange-400 {
+  color: var(--accent-1) !important;
+}
+
+/* Replace hardcoded orange highlight text (#EF742C) with token */
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 span[class*='text-\[\#EF742C\]'] {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+/* Inputs & select: premium light form fields */
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 input,
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 select {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-strong) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 input::placeholder {
+  color: color-mix(in srgb, var(--text-secondary) 75%, transparent) !important;
+}
+
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 input:focus,
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 select:focus {
+  border-color: color-mix(in srgb, var(--accent-1) 55%, transparent) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-1) 18%, transparent) !important;
+}
+
+/* CTA button (“Demo Panelimi Oluştur”) */
+html[data-theme='light'] main[style*='#0a0514'] .lg\:fixed .bg-\[\#05070a\]\/95 button[type='submit'] {
+  background: var(--accent-grad) !important;
+  color: var(--bg-secondary) !important;
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--accent-1) 18%, transparent) !important;
+}
+
+/* ================================
+   /demo – LIGHT ONLY
+   Scope: main.demo
+   Rules:
+   - Dark mode must remain identical
+   - Layout/spacing must not change
+   - No hardcoded colors; tokens only
+   ================================ */
+
+/* Light background: soft space equivalent (same composition, lower contrast) */
+html[data-theme='light'] main.demo {
+  background:
+    radial-gradient(
+      900px 520px at 50% 6%,
+      color-mix(in srgb, var(--accent-2) 10%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      620px 560px at 0% 72%,
+      color-mix(in srgb, var(--accent-1) 8%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      520px 520px at 100% 35%,
+      color-mix(in srgb, var(--accent-2) 8%, transparent) 0%,
+      transparent 60%
+    ),
+    var(--bg-primary) !important;
+  color: var(--text-primary);
+}
+
+/* Stars: keep positions/animation; soften color + opacity on light */
+html[data-theme='light'] main.demo .demo-star-particle {
+  background-color: color-mix(in srgb, var(--text-primary) 12%, transparent) !important;
+  opacity: 0.18 !important;
+}
+
+/* Header/top bar */
+html[data-theme='light'] main.demo .demo-header {
+  background: var(--bg-glass) !important;
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(10px) !important;
+}
+
+html[data-theme='light'] main.demo .demo-header .text-gray-300 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] main.demo .demo-header .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+html[data-theme='light'] main.demo .demo-header .hover\:text-white:hover {
+  color: var(--accent-1) !important;
+}
+
+html[data-theme='light'] main.demo .demo-header .border-white\/20 {
+  border-color: var(--border-color) !important;
+}
+
+html[data-theme='light'] main.demo .demo-header .hover\:border-white\/40:hover {
+  border-color: color-mix(in srgb, var(--accent-1) 30%, var(--border-color)) !important;
+}
+
+html[data-theme='light'] main.demo .demo-header .hover\:bg-white\/5:hover {
+  background-color: color-mix(in srgb, var(--accent-1) 8%, transparent) !important;
+}
+
+/* Logo switching (light scope only; dark remains default) */
+html[data-theme='light'] .logo--dark { display: none !important; }
+html[data-theme='light'] .logo--light { display: block !important; }
+
+/* WhatsApp button (header) */
+html[data-theme='light'] main.demo a.demo-whatsapp {
+  background: var(--bg-secondary) !important;
+  border-color: color-mix(in srgb, var(--success) 28%, transparent) !important;
+  color: color-mix(in srgb, var(--success) 65%, var(--text-primary)) !important;
+  box-shadow: var(--shadow-subtle);
+}
+
+html[data-theme='light'] main.demo a.demo-whatsapp:hover {
+  background: color-mix(in srgb, var(--success) 10%, var(--bg-secondary)) !important;
+}
+
+/* Floating pill/badge cards */
+html[data-theme='light'] main.demo .demo-pill {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-subtle) !important;
+}
+
+html[data-theme='light'] main.demo .demo-pill .text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] main.demo .demo-pill span.text-2xl {
+  position: relative;
+  z-index: 0;
+}
+
+html[data-theme='light'] main.demo .demo-pill span.text-2xl::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  z-index: -1;
+}
+
+/* Phone mockup: light interior only (frame stays as-is) */
+html[data-theme='light'] main.demo .demo-phone-screen {
+  background: var(--bg-primary) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-soft) !important;
+  border-radius: 18px;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .text-gray-400,
+html[data-theme='light'] main.demo .demo-phone-card .text-gray-500 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .border-white\/10 {
+  border-color: var(--border-color) !important;
+}
+
+/* Progress step colors */
+html[data-theme='light'] main.demo .demo-phone-card .bg-green-500 {
+  background-color: var(--success) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .text-green-400 {
+  color: var(--success) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .bg-orange-500\/20 {
+  background-color: color-mix(in srgb, var(--warning) 14%, transparent) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .border-orange-500 {
+  border-color: color-mix(in srgb, var(--warning) 60%, transparent) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .text-orange-400 {
+  color: var(--warning) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .bg-gray-700 {
+  background-color: var(--surface-soft) !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .bg-gray-500 {
+  background-color: color-mix(in srgb, var(--text-primary) 35%, transparent) !important;
+}
+
+/* Admin preview tiles: keep color family, make pastel on light */
+html[data-theme='light'] main.demo .demo-phone-card .bg-gradient-to-br {
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-subtle) !important;
+  filter: saturate(0.70) brightness(1.24);
+}
+
+html[data-theme='light'] main.demo .demo-phone-card .bg-black\/20 {
+  background-color: transparent !important;
+}
+
+html[data-theme='light'] main.demo .demo-phone-card p.text-white {
+  color: var(--text-primary) !important;
+}
+
+/* Sticky form band */
+html[data-theme='light'] main.demo .demo-form-band {
+  background: var(--bg-secondary) !important;
+  border-top-width: 1px !important;
+  border-top-style: solid !important;
+  border-top-color: var(--border-color) !important;
+  box-shadow: var(--shadow-band) !important;
+}
+
+html[data-theme='light'] main.demo .demo-form-band .text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] main.demo .demo-form-band .text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* Replace hardcoded orange highlight text (#EF742C) with token gradient text */
+html[data-theme='light'] main.demo .demo-form-band span[class*='text-\[\#EF742C\]'] {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+/* Inputs & select */
+html[data-theme='light'] main.demo .demo-form-band input,
+html[data-theme='light'] main.demo .demo-form-band select {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-strong) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme='light'] main.demo .demo-form-band input::placeholder {
+  color: color-mix(in srgb, var(--text-secondary) 75%, transparent) !important;
+}
+
+html[data-theme='light'] main.demo .demo-form-band input:focus,
+html[data-theme='light'] main.demo .demo-form-band select:focus {
+  border-color: rgba(var(--accent-primary-rgb), 0.55) !important;
+  box-shadow: 0 0 0 4px rgba(var(--accent-primary-rgb), 0.18) !important;
+}
+
+/* In light: avoid hardcoded SVG stroke in inline background-image; let native arrow render */
+html[data-theme='light'] main.demo .demo-form-band select {
+  background-image: none !important;
+}
+
+html[data-theme='light'] main.demo .demo-form-band option {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* CTA button */
+html[data-theme='light'] main.demo .demo-form-band button[type='submit'] {
+  background: var(--accent-grad) !important;
+  color: var(--bg-secondary) !important;
+  box-shadow: 0 16px 40px rgba(var(--accent-primary-rgb), 0.18) !important;
+}
+
+@media (hover: hover) {
+  html[data-theme='light'] main.demo .demo-form-band button[type='submit']:hover {
+    box-shadow: 0 18px 46px rgba(var(--accent-primary-rgb), 0.22) !important;
+  }
+}
+
+/* ================================
+   /login – LIGHT ONLY
+   Scope: .login-light
+   Dark login must remain identical
+   ================================ */
+
+html[data-theme='light'] .login-light {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+
+  --login-radius: 20px;
+  --login-card-shadow: 0 10px 40px color-mix(in srgb, var(--text-primary) 8%, transparent);
+  --login-input-bg: color-mix(in srgb, var(--bg-secondary) 70%, var(--bg-primary));
+}
+
+html[data-theme='light'] .login-light__back {
+  background: rgba(255, 255, 255, 0.70);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-subtle);
+}
+
+html[data-theme='light'] .login-light__back:hover {
+  color: var(--accent-1);
+  border-color: color-mix(in srgb, var(--accent-1) 28%, var(--border-color));
+}
+
+html[data-theme='light'] .login-light__side {
+  width: 100%;
+}
+
+html[data-theme='light'] .login-light__brandTitle {
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+html[data-theme='light'] .login-light__brandSub {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+html[data-theme='light'] .login-light__logo {
+  height: 64px;
+  width: auto;
+}
+
+html[data-theme='light'] .login-light__sideCard {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: var(--login-radius);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+html[data-theme='light'] .login-light__sideIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--accent-grad);
+  color: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16px 40px rgba(var(--accent-primary-rgb), 0.18);
+  flex: 0 0 auto;
+}
+
+html[data-theme='light'] .login-light__sideTitle {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+html[data-theme='light'] .login-light__sideText {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-top: 2px;
+}
+
+html[data-theme='light'] .login-light__card {
+  background: var(--bg-secondary);
+  border-radius: var(--login-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--login-card-shadow);
+  padding: 32px;
+}
+
+html[data-theme='light'] .login-light__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--accent-grad);
+  color: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16px 40px rgba(var(--accent-primary-rgb), 0.18);
+}
+
+html[data-theme='light'] .login-light__title {
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .login-light__subtitle {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .login-light__label {
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .login-light__input {
+  background: var(--login-input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  outline: none;
+}
+
+html[data-theme='light'] .login-light__input::placeholder {
+  color: color-mix(in srgb, var(--text-secondary) 70%, transparent);
+}
+
+html[data-theme='light'] .login-light__input:focus {
+  border-color: transparent;
+  background-image:
+    linear-gradient(var(--login-input-bg), var(--login-input-bg)),
+    var(--accent-grad);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.15);
+}
+
+html[data-theme='light'] .login-light__toggle {
+  color: var(--text-muted);
+}
+
+html[data-theme='light'] .login-light__toggle:hover {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .login-light__muted {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .login-light__checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+  background: var(--login-input-bg);
+  accent-color: var(--accent-1);
+}
+
+html[data-theme='light'] .login-light__link {
+  color: var(--accent-1);
+  font-weight: 600;
+}
+
+html[data-theme='light'] .login-light__link:hover {
+  color: color-mix(in srgb, var(--accent-1) 84%, var(--text-primary));
+}
+
+html[data-theme='light'] .login-light__submit {
+  background: var(--accent-grad);
+  color: var(--bg-secondary);
+  box-shadow: 0 16px 40px rgba(var(--accent-primary-rgb), 0.18);
+  transform: translateZ(0);
+}
+
+@media (hover: hover) {
+  html[data-theme='light'] .login-light__submit:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 18px 46px rgba(var(--accent-primary-rgb), 0.22);
+  }
+}
+
+html[data-theme='light'] .login-light__divider {
+  border-top: 1px solid var(--border-color);
+}
+
+html[data-theme='light'] .login-light__dividerText {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+}
+
+html[data-theme='light'] .login-light__secondary {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-subtle);
+}
+
+@media (hover: hover) {
+  html[data-theme='light'] .login-light__secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+  }
+}
+
+html[data-theme='light'] .login-light__footer {
+  background: var(--surface-soft);
+}
+
+html[data-theme='light'] .login-light__footerText {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .login-light__error {
+  background: color-mix(in srgb, var(--accent-2) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 35%, transparent);
+  color: color-mix(in srgb, var(--accent-2) 70%, var(--text-primary));
+}
+
+/* Left-side light mockup (login) */
+html[data-theme='light'] .login-light__mockStage {
+  width: 100%;
+  max-width: 520px;
+  position: relative;
+}
+
+html[data-theme='light'] .login-light {
+  --login-mock-border: color-mix(in srgb, var(--text-primary) 88%, transparent);
+}
+
+html[data-theme='light'] .login-light__mockGlow {
+  position: absolute;
+  inset: -60px;
+  background:
+    radial-gradient(520px 420px at 55% 35%, color-mix(in srgb, var(--accent-1) 10%, transparent) 0%, transparent 60%),
+    radial-gradient(520px 420px at 35% 65%, color-mix(in srgb, var(--accent-2) 8%, transparent) 0%, transparent 60%);
+  filter: blur(24px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+html[data-theme='light'] .login-light__mockWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+html[data-theme='light'] .login-light__phoneFrame {
+  width: 320px;
+  height: 620px;
+  border-radius: 56px;
+  padding: 14px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--text-primary) 10%, var(--bg-secondary)),
+    color-mix(in srgb, var(--text-primary) 6%, var(--bg-secondary))
+  );
+  border: 1px solid var(--login-mock-border);
+  box-shadow: var(--shadow-strong);
+}
+
+html[data-theme='light'] .login-light__phoneScreen {
+  width: 100%;
+  height: 100%;
+  border-radius: 46px;
+  background: var(--bg-primary);
+  border: 1px solid var(--login-mock-border);
+  overflow: hidden;
+  position: relative;
+}
+
+html[data-theme='light'] .login-light__statusBar {
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+
+html[data-theme='light'] .login-light__notch {
+  width: 120px;
+  height: 18px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-primary) 10%, transparent);
+}
+
+html[data-theme='light'] .login-light__phoneContent {
+  padding: 22px;
+  display: grid;
+  gap: 18px;
+}
+
+html[data-theme='light'] .login-light__phoneHeader {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+html[data-theme='light'] .login-light__phoneLogo {
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--login-mock-border);
+  box-shadow: var(--shadow-subtle);
+  display: grid;
+  place-items: center;
+}
+
+html[data-theme='light'] .login-light__phoneLogoImg {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+html[data-theme='light'] .login-light__phoneTitle {
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+html[data-theme='light'] .login-light__phoneSub {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+html[data-theme='light'] .login-light__phoneGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+html[data-theme='light'] .login-light__tile {
+  height: 92px;
+  border-radius: 18px;
+  border: 1px solid var(--login-mock-border);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-subtle);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+}
+
+html[data-theme='light'] .login-light__tileIcon {
+  font-size: 26px;
+}
+
+html[data-theme='light'] .login-light__tileText {
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* Pastel tones (token-based, no hardcoded colors) */
+html[data-theme='light'] .login-light__tile--a { background: color-mix(in srgb, var(--accent-1) 10%, var(--bg-secondary)); }
+html[data-theme='light'] .login-light__tile--b { background: color-mix(in srgb, var(--accent-2) 8%, var(--bg-secondary)); }
+html[data-theme='light'] .login-light__tile--c { background: color-mix(in srgb, var(--accent-1) 7%, var(--bg-secondary)); }
+html[data-theme='light'] .login-light__tile--d { background: color-mix(in srgb, var(--accent-2) 9%, var(--bg-secondary)); }
+html[data-theme='light'] .login-light__tile--e { background: color-mix(in srgb, var(--success) 10%, var(--bg-secondary)); }
+
+html[data-theme='light'] .login-light__tile--qr {
+  background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-secondary));
+}
+
+html[data-theme='light'] .login-light__qrIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--accent-grad);
+  box-shadow: 0 16px 40px rgba(var(--accent-primary-rgb), 0.16);
+  position: relative;
+}
+
+html[data-theme='light'] .login-light__qrIcon::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: 6px;
+  border: 2px solid color-mix(in srgb, var(--bg-secondary) 75%, transparent);
+}
+
+html[data-theme='light'] .login-light__float {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--login-mock-border);
+  box-shadow: var(--shadow-subtle);
+  color: var(--text-primary);
+  animation: float 3.6s ease-in-out infinite;
+}
+
+html[data-theme='light'] .login-light__float--1 { right: 22px; bottom: 26px; animation-delay: 0.2s; }
+html[data-theme='light'] .login-light__float--2 { right: -10px; top: 160px; animation-delay: 0.8s; }
+html[data-theme='light'] .login-light__float--3 { left: -10px; top: 280px; animation-delay: 1.2s; }
+html[data-theme='light'] .login-light__float--4 { left: 18px; bottom: 140px; animation-delay: 0.5s; }
+html[data-theme='light'] .login-light__float--5 { right: 44px; top: 62px; animation-delay: 1.5s; }
+
+/* Slightly tint some floats for depth */
+html[data-theme='light'] .login-light__float--2 { background: color-mix(in srgb, var(--accent-1) 10%, var(--bg-secondary)); }
+html[data-theme='light'] .login-light__float--4 { background: color-mix(in srgb, var(--accent-2) 9%, var(--bg-secondary)); }
+html[data-theme='light'] .login-light__float--1 { background: color-mix(in srgb, var(--success) 10%, var(--bg-secondary)); }
+
+/* Landing pricing header corner circles: remove ONLY in dark mode */
+html[data-theme='dark'] #fiyatlandirma .pricing-corner {
+  display: none !important;
+}
+
+/* Landing pricing header corner circles: orange + no radius in light mode */
+html[data-theme='light'] #fiyatlandirma .pricing-corner {
+  background-color: rgba(var(--accent-primary-rgb), 0.18) !important;
+  border-radius: 0 !important;
+}
+
+
+/* ================================
+   /ornek-menuler – LIGHT ONLY
+   Scope: main.bg-[#0B0B0D]
+   ================================ */
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary);
+}
+
+/* Global text remaps within this page (keeps layout/classes intact) */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .text-gray-300 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+/* Divider line blocks (bg-gray-700) */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-gray-700 {
+  background-color: color-mix(in srgb, var(--text-primary) 12%, transparent) !important;
+}
+
+/* Borders that are tuned for dark */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .border-white\/5,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .border-white\/10,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .border-white\/20 {
+  border-color: var(--border-color) !important;
+}
+
+/* Glass cards: prefer solid premium surface on light */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .glass-effect {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-subtle) !important;
+}
+
+/* Background glow orbs / gradients: soften on light */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-orange-500\/20,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-pink-500\/20,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-purple-500\/10,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-orange-500\/10,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-pink-500\/10,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-purple-500\/5 {
+  filter: opacity(0.22) !important;
+}
+
+/* Hero particles: reduce visual noise */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-gradient-to-r.from-orange-500\/30.to-pink-500\/30 {
+  filter: opacity(0.30) saturate(0.9) !important;
+}
+
+/* Category cards: keep hover/anim, switch to light surfaces */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .hover\:shadow-2xl {
+  box-shadow: var(--shadow-soft) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .shadow-amber-500\/30,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .shadow-purple-500\/30,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .shadow-red-500\/30 {
+  --tw-shadow-color: color-mix(in srgb, var(--accent-1) 18%, transparent) !important;
+}
+
+/* Template cards: premium light card look */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] #menu-templates .glass-effect {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+/* Pastelize the colored top areas without changing layout */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] #menu-templates .bg-gradient-to-br {
+  filter: saturate(0.80) brightness(1.08);
+}
+
+/* Feature pills inside template cards */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] #menu-templates .bg-white\/5 {
+  background-color: var(--surface-soft) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Load more button */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] #menu-templates button.glass-effect {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-subtle) !important;
+}
+
+/* Phone preview section: only screen interiors get light UI */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-\[\#0B0B0D\].rounded-\[2\.5rem\] {
+  background: var(--bg-primary) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-gradient-to-br.from-\[\#0B0B0D\].to-\[\#1a1a2e\] {
+  background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary)) !important;
+}
+
+/* Mobile menu item cards inside phone */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-\[\#0B0B0D\].rounded-\[2\.5rem\] .bg-white\/5 {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-subtle) !important;
+}
+
+/* Bottom nav glass on light */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-white\/10 {
+  background: color-mix(in srgb, var(--bg-secondary) 70%, transparent) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Desktop preview “browser” frame */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-white\/5.rounded-lg {
+  background: var(--surface-soft) !important;
+}
+
+/* Desktop menu grid cards */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .hover\:border-orange-500\/30:hover {
+  border-color: color-mix(in srgb, var(--accent-1) 35%, var(--border-color)) !important;
+}
+
+/* Preview modal */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-black\/80 {
+  background: color-mix(in srgb, var(--text-primary) 55%, transparent) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-gradient-to-br.from-\[\#0B0B0D\].to-\[\#1a1a2e\].rounded-3xl {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] .bg-gradient-to-br.from-\[\#0B0B0D\].to-\[\#1a1a2e\].rounded-3xl .bg-white\/10 {
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* CTA section grid stroke (was white) */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] svg path[stroke='white'] {
+  stroke: color-mix(in srgb, var(--text-primary) 18%, transparent) !important;
+}
+
+/* Footer (same rules as landing light footer, but scoped here) */
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer {
+  background: var(--footer-bg) !important;
+  border-top: 1px solid var(--footer-border) !important;
+  box-shadow: var(--footer-shadow) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer p,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer li,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer span {
+  color: var(--footer-text-secondary);
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer h4,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer h1,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer h2,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer h3 {
+  color: var(--footer-text) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer a {
+  color: var(--footer-link) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer a:hover {
+  color: var(--footer-link-hover) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer a:active {
+  color: var(--footer-link-active) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer .bg-gray-600 {
+  background-color: color-mix(in srgb, var(--text-primary) 25%, transparent) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer a.w-10.h-10.rounded-lg {
+  background: var(--footer-social-bg) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer a.w-10.h-10.rounded-lg svg {
+  color: var(--footer-social-icon) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer a.w-10.h-10.rounded-lg:hover {
+  background: var(--footer-social-hover-bg) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer a.w-10.h-10.rounded-lg:hover svg {
+  color: var(--bg-secondary) !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer .pt-8.border-t {
+  position: relative;
+  border-top-color: transparent !important;
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer .pt-8.border-t::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--footer-divider);
+}
+
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer .pt-8.border-t,
+html[data-theme='light'] main.bg-\[\#0B0B0D\] footer .pt-8.border-t p {
+  color: var(--footer-text-tertiary) !important;
 }

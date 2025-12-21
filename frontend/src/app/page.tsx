@@ -7,17 +7,67 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof document === 'undefined') return 'dark';
+    const current = document.documentElement.dataset.theme;
+    return current === 'light' ? 'light' : 'dark';
+  });
 
   useEffect(() => {
     setMounted(true);
+    const current = document.documentElement.dataset.theme;
+    if (current === 'dark' || current === 'light') setTheme(current);
+
+    let mql: MediaQueryList | null = null;
+    let onChange: ((e: MediaQueryListEvent) => void) | null = null;
+
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'dark' || stored === 'light') {
+        return;
+      }
+
+      mql = window.matchMedia('(prefers-color-scheme: dark)');
+      onChange = (e) => {
+        try {
+          const latestStored = localStorage.getItem('theme');
+          if (latestStored === 'dark' || latestStored === 'light') return;
+        } catch {}
+        const next = e.matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = next;
+        document.documentElement.style.colorScheme = next;
+        setTheme(next);
+      };
+
+      if (typeof mql.addEventListener === 'function') mql.addEventListener('change', onChange);
+      else if (typeof mql.addListener === 'function') mql.addListener(onChange);
+    } catch {
+      // ignore
+    }
+
+    return () => {
+      if (!mql || !onChange) return;
+      if (typeof mql.removeEventListener === 'function') mql.removeEventListener('change', onChange);
+      else if (typeof mql.removeListener === 'function') mql.removeListener(onChange);
+    };
   }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    document.documentElement.style.colorScheme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {}
+    setTheme(next);
+  };
 
   const toggleFAQ = (index: number) => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824]">
+    <main className="landing min-h-screen">
       {/* Header/Navbar */}
       <nav className="fixed w-full top-0 z-50 glass-effect border-b border-white/5 pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto px-4 sm:px-6 py-4">
@@ -60,6 +110,31 @@ export default function Home() {
               >
                 Giriş Yap
               </Link>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                title="Açık / Koyu Mod"
+                aria-label="Açık / Koyu Mod"
+                className="p-2.5 rounded-lg glass-effect border border-white/10 text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300"
+              >
+                {theme === 'dark' ? (
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2" />
+                    <path d="M12 20v2" />
+                    <path d="M4.93 4.93l1.41 1.41" />
+                    <path d="M17.66 17.66l1.41 1.41" />
+                    <path d="M2 12h2" />
+                    <path d="M20 12h2" />
+                    <path d="M6.34 17.66l-1.41 1.41" />
+                    <path d="M19.07 4.93l-1.41 1.41" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                )}
+              </button>
               <Link 
                 href="/demo"
                 className="px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-orange-500/50 transition-all duration-300"
@@ -69,18 +144,46 @@ export default function Home() {
             </div>
 
             {/* Mobile Menu Button */}
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden shrink-0 p-2 -mr-1 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <div className="lg:hidden flex items-center gap-2 -mr-1">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                title="Açık / Koyu Mod"
+                aria-label="Açık / Koyu Mod"
+                className="shrink-0 p-2 rounded-lg glass-effect border border-white/10 text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                {theme === 'dark' ? (
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2" />
+                    <path d="M12 20v2" />
+                    <path d="M4.93 4.93l1.41 1.41" />
+                    <path d="M17.66 17.66l1.41 1.41" />
+                    <path d="M2 12h2" />
+                    <path d="M20 12h2" />
+                    <path d="M6.34 17.66l-1.41 1.41" />
+                    <path d="M19.07 4.93l-1.41 1.41" />
+                  </svg>
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
                 )}
-              </svg>
-            </button>
+              </button>
+
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="shrink-0 p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {mobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu */}
@@ -204,7 +307,7 @@ export default function Home() {
                 </div>
 
                 {/* Phone Mockup */}
-                <div className="relative animate-float z-10 hover:scale-105 transition-transform duration-500">
+                <div className="mobile-mockup relative animate-float z-10 hover:scale-105 transition-transform duration-500">
                   {/* Multi-layer Glow Effects */}
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/30 via-pink-500/30 to-purple-500/30 blur-[100px] animate-pulse"></div>
                   <div className="absolute inset-0 bg-gradient-to-tl from-blue-500/20 via-transparent to-pink-500/20 blur-[80px] animate-pulse" style={{animationDelay: '1s'}}></div>
@@ -212,7 +315,7 @@ export default function Home() {
                   {/* Phone Frame */}
                   <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3.5rem] p-4 shadow-2xl border border-white/10" style={{overflow: 'visible'}}>
                     {/* Screen */}
-                    <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] rounded-[3rem] w-[280px] h-[580px]" style={{overflow: 'visible'}}>
+                    <div className="mobile-screen bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] rounded-[3rem] w-[280px] h-[580px]" style={{overflow: 'visible'}}>
                       {/* Status Bar */}
                       <div className="h-8 flex items-center justify-center">
                         <div className="w-28 h-6 bg-black rounded-full"></div>
@@ -264,7 +367,7 @@ export default function Home() {
                               
                               {/* QR Card Container */}
                               <div 
-                                className="relative w-full h-full rounded-2xl overflow-hidden bg-[linear-gradient(180deg,rgba(12,14,24,0.98)_0%,rgba(8,10,18,0.96)_100%)] border border-[rgba(239,116,44,0.55)] shadow-[0_25px_50px_rgba(0,0,0,0.5)] animate-slideUp group-hover:-translate-y-2 group-hover:scale-[1.05] transition-all duration-500 ease-out"
+                                className="mobile-qr-card relative w-full h-full rounded-2xl overflow-hidden bg-[linear-gradient(180deg,rgba(12,14,24,0.98)_0%,rgba(8,10,18,0.96)_100%)] border border-[rgba(239,116,44,0.55)] shadow-[0_25px_50px_rgba(0,0,0,0.5)] animate-slideUp group-hover:-translate-y-2 group-hover:scale-[1.05] transition-all duration-500 ease-out"
                                 style={{ animationDelay: '0.75s' }}
                               >
                                 {/* Shimmer Effect */}
@@ -619,8 +722,8 @@ export default function Home() {
               <div className="relative glass-effect rounded-3xl overflow-hidden border border-white/10">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 p-8 text-center relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+                  <div className="pricing-corner absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+                  <div className="pricing-corner absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
                   
                   <div className="relative z-10">
                     <div className="inline-block px-4 py-1 bg-white/20 backdrop-blur rounded-full mb-4">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { apiClient } from '@/lib/api-client';
@@ -9,11 +9,42 @@ import { useAuthStore } from '@/store/auth.store';
 export default function LoginPage() {
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof document === 'undefined') return 'dark';
+    const current = document.documentElement.dataset.theme;
+    return current === 'light' ? 'light' : 'dark';
+  });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const sync = () => {
+      const current = document.documentElement.dataset.theme;
+      setTheme(current === 'light' ? 'light' : 'dark');
+    };
+
+    sync();
+
+    const observer = new MutationObserver(() => sync());
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== 'theme') return;
+      sync();
+    };
+    window.addEventListener('storage', onStorage);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +79,215 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  const LightSideMockup = () => {
+    const tiles = [
+      { name: 'Ana Yemekler', icon: '🍽️', tone: 'a' },
+      { name: 'İçecekler', icon: '🥤', tone: 'b' },
+      { name: 'Tatlılar', icon: '🍰', tone: 'c' },
+      { name: 'Atıştırmalık', icon: '🍟', tone: 'd' },
+      { name: 'Kahvaltı', icon: '☕', tone: 'e' },
+    ] as const;
+
+    return (
+      <div className="login-light__mockStage" aria-hidden="true">
+        <div className="login-light__mockGlow" />
+
+        <div className="login-light__mockWrap">
+          <div className="login-light__phoneFrame">
+            <div className="login-light__phoneScreen">
+              <div className="login-light__statusBar">
+                <div className="login-light__notch" />
+              </div>
+
+              <div className="login-light__phoneContent">
+                <div className="login-light__phoneHeader">
+                  <div className="login-light__phoneLogo">
+                    <img src="/benmedya.png" alt="" aria-hidden="true" className="login-light__phoneLogoImg" />
+                  </div>
+                  <h3 className="login-light__phoneTitle">Menü Ben</h3>
+                  <p className="login-light__phoneSub">Masa #12</p>
+                </div>
+
+                <div className="login-light__phoneGrid">
+                  {tiles.map((t) => (
+                    <div key={t.name} className={`login-light__tile login-light__tile--${t.tone}`}>
+                      <span className="login-light__tileIcon">{t.icon}</span>
+                      <p className="login-light__tileText">{t.name}</p>
+                    </div>
+                  ))}
+
+                  <div className="login-light__tile login-light__tile--qr">
+                    <div className="login-light__qrIcon" aria-hidden="true" />
+                    <p className="login-light__tileText">Masanızı Tarayın</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="login-light__float login-light__float--1">✨</div>
+          <div className="login-light__float login-light__float--2">🍔</div>
+          <div className="login-light__float login-light__float--3">☕</div>
+          <div className="login-light__float login-light__float--4">🎂</div>
+          <div className="login-light__float login-light__float--5">🎉</div>
+        </div>
+      </div>
+    );
+  };
+
+  if (theme === 'light') {
+    return (
+      <div className="login-light min-h-screen grid lg:grid-cols-2 relative">
+        {/* Back Button */}
+        <Link
+          href="/"
+          className="login-light__back fixed top-6 left-6 z-50 px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 group"
+        >
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Ana Sayfa
+        </Link>
+
+        {/* Left Side (keeps layout parity on desktop) */}
+        <div className="hidden lg:flex items-center justify-center p-12 relative">
+          <LightSideMockup />
+        </div>
+
+        {/* Right Side - Light Login Form */}
+        <div className="flex items-center justify-center p-6 relative z-10">
+          <div className="login-light__card w-full max-w-md">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center mb-6">
+                <div className="login-light__icon">
+                  <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z" />
+                  </svg>
+                </div>
+              </div>
+              <h1 className="login-light__title text-3xl font-bold mb-2">Hoş Geldiniz</h1>
+              <p className="login-light__subtitle">Hesabınıza giriş yapın</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="login-light__error px-4 py-3 rounded-xl">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="login-light__label block text-sm font-medium mb-2">
+                  E-Posta veya Kullanıcı Adı
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="login-light__input w-full px-4 py-3 rounded-xl transition-all"
+                  placeholder="ornek@email.com"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="login-light__label block text-sm font-medium mb-2">
+                  Şifre
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="login-light__input w-full px-4 py-3 pr-12 rounded-xl transition-all"
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="login-light__toggle absolute right-3 top-1/2 -translate-y-1/2 transition-colors p-1"
+                    aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
+                  >
+                    {showPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input type="checkbox" className="login-light__checkbox" />
+                  <span className="login-light__muted group-hover:opacity-90 transition-opacity">Beni Hatırla</span>
+                </label>
+                <a href="#" className="login-light__link transition-colors">Şifremi Unuttum</a>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="login-light__submit w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Giriş yapılıyor...
+                  </>
+                ) : (
+                  <>
+                    Giriş Yap
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full login-light__divider"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 login-light__dividerText">veya</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3 mt-6">
+              <Link href="/register">
+                <button type="button" className="login-light__secondary w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 3 3 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                  </svg>
+                  Yeni İşletme Kaydı Oluştur
+                </button>
+              </Link>
+            </div>
+
+            <div className="login-light__footer mt-8 pt-6 text-center rounded-2xl">
+              <p className="text-xs login-light__footerText">
+                İşletme hesabı oluşturun ve işletmenizi dijital dünyaya taşıyın! 🚀
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824] grid lg:grid-cols-2 relative">
