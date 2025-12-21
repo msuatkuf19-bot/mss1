@@ -64,7 +64,8 @@ export default function RestaurantLogo({ name, logoUrl, size = 'md', className =
             console.error('❌ Logo load FAILED:', {
               url: cleanLogoUrl,
               name,
-              error: e.currentTarget.error
+              eventType: e.type,
+              currentSrc: e.currentTarget.currentSrc
             });
             
             // Hata durumunda avatar'a düş
