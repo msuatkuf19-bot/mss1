@@ -113,6 +113,15 @@ html[data-theme='light'] {
   --footer-social-icon: #0F172A;
   --footer-social-hover-bg: linear-gradient(135deg, #FF6A00, #FF3D3D);
 
+  /* Brand colors (used for social icons in light footer) */
+  --brand-instagram: #E1306C;
+  --brand-facebook: #1877F2;
+  --brand-x: #0F172A;
+  --brand-tiktok: #0F172A;
+  --brand-youtube: #FF0000;
+  --brand-linkedin: #0A66C2;
+  --brand-whatsapp: #25D366;
+
   --footer-divider: linear-gradient(
     to right,
     transparent,
@@ -415,6 +424,81 @@ html {
   --tw-shadow-color: rgba(var(--accent-primary-rgb), 0.5) !important;
 }
 
+/* Register-only theme bridging (Business signup page)
+   Keep the existing Tailwind structure identical; remap visuals ONLY in light theme.
+*/
+html[data-theme='light'] .register {
+  background: var(--page-bg) !important;
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .register .text-white {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='light'] .register .text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] .register .text-gray-300 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme='light'] .register .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+html[data-theme='light'] .register .placeholder-gray-500::placeholder {
+  color: var(--text-muted) !important;
+}
+
+html[data-theme='light'] .register .border-white\/5,
+html[data-theme='light'] .register .border-white\/10,
+html[data-theme='light'] .register .border-white\/20 {
+  border-color: var(--border-color) !important;
+}
+
+html[data-theme='light'] .register .bg-white\/5,
+html[data-theme='light'] .register .bg-white\/10 {
+  background-color: var(--bg-glass) !important;
+}
+
+html[data-theme='light'] .register .hover\:bg-white\/10:hover {
+  background-color: var(--bg-glass) !important;
+}
+
+html[data-theme='light'] .register .bg-orange-500\/10 {
+  background-color: rgba(var(--accent-primary-rgb), 0.10) !important;
+}
+
+html[data-theme='light'] .register .bg-pink-500\/10 {
+  background-color: rgba(var(--accent-secondary-rgb), 0.10) !important;
+}
+
+html[data-theme='light'] .register input[type='checkbox'] {
+  accent-color: var(--accent-primary);
+}
+
+html[data-theme='light'] .register input.w-full,
+html[data-theme='light'] .register textarea.w-full {
+  background-color: var(--bg-elevated) !important;
+  border-color: var(--border-strong) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-subtle) !important;
+}
+
+html[data-theme='light'] .register input.w-full:focus,
+html[data-theme='light'] .register textarea.w-full:focus {
+  border-color: rgba(var(--accent-primary-rgb), 0.55) !important;
+  box-shadow:
+    0 0 0 4px rgba(var(--accent-primary-rgb), 0.12),
+    var(--shadow-subtle) !important;
+}
+
+html[data-theme='light'] .register .focus\:bg-white\/10:focus {
+  background-color: var(--bg-elevated) !important;
+}
+
 /* Phone mockup: LIGHT ONLY
    Important: these rules must never affect dark mode.
 */
@@ -543,6 +627,37 @@ html[data-theme='light'] .landing footer a.w-10.h-10.rounded-lg svg {
   color: var(--footer-social-icon) !important;
 }
 
+/* Social icons: brand colors in light mode (icons only, not layout) */
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='instagram'] {
+  color: var(--brand-instagram) !important;
+}
+
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='facebook'] {
+  color: var(--brand-facebook) !important;
+}
+
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='x.com'],
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='twitter.com'] {
+  color: var(--brand-x) !important;
+}
+
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='tiktok'] {
+  color: var(--brand-tiktok) !important;
+}
+
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='youtube'] {
+  color: var(--brand-youtube) !important;
+}
+
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='linkedin'] {
+  color: var(--brand-linkedin) !important;
+}
+
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='wa.me'],
+html[data-theme='light'] footer a.w-10.h-10.rounded-lg[href*='whatsapp'] {
+  color: var(--brand-whatsapp) !important;
+}
+
 html[data-theme='light'] .landing footer a.w-10.h-10.rounded-lg:hover {
   background: var(--footer-social-hover-bg) !important;
 }
@@ -572,11 +687,11 @@ html[data-theme='light'] .landing footer .pt-8.border-t {
   color: var(--footer-text-tertiary) !important;
 }
 
-/* Logo: light theme should render as black (keep DOM/layout identical) */
+/* Logo: show original asset in light theme (override any invert helpers) */
 html[data-theme='light'] img[alt='Menü Ben'],
 html[data-theme='light'] img[src='/benmedya.png'] {
-  -webkit-filter: brightness(0) invert(0) !important;
-  filter: brightness(0) invert(0) !important;
+  -webkit-filter: none !important;
+  filter: none !important;
 }
 
 /* Custom Cursor - Hide default cursor on desktop devices */

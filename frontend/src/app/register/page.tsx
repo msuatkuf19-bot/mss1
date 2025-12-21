@@ -78,7 +78,7 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824] flex items-center justify-center p-6">
+      <div className="register min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824] flex items-center justify-center p-6">
         <div className="glass-effect rounded-3xl p-12 border border-white/10 text-center max-w-md animate-scaleIn">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,7 +98,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824] relative">
+    <div className="register min-h-screen bg-gradient-to-b from-[#05070B] via-[#0C111C] to-[#141824] relative">
       {/* Back Button */}
       <Link 
         href="/login"
