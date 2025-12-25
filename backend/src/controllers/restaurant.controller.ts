@@ -3,6 +3,8 @@ import prisma from '../config/database';
 import { ApiError, sendSuccess } from '../utils/response';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { hashPassword } from '../utils/bcrypt';
+import { sendWelcomeKvkkEmail } from '../lib/email/sendWelcomeKvkk';
+import logger from '../utils/logger';
 
 // PostgreSQL UserRole enum values
 const UserRole = {
@@ -168,6 +170,29 @@ export const createRestaurant = async (
         },
       },
     });
+
+    // Restoran sahibine hoşgeldin e-postası gönder (başarısız olursa işlemi durdurmaz)
+    try {
+      const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      const emailResult = await sendWelcomeKvkkEmail({
+        to: owner.email,
+        name: owner.name,
+        loginEmail: owner.email,
+        loginUrl: `${appUrl}/login`,
+        tempPassword: ownerPassword,
+        includePassword: !existingOwner, // Sadece yeni kullanıcı için şifre göster
+        restaurantName: name,
+      });
+
+      if (emailResult.success) {
+        logger.info(`✅ Welcome email sent for restaurant "${name}" to ${owner.email}`);
+      } else {
+        logger.warn(`⚠️ Welcome email failed for restaurant "${name}": ${emailResult.error}`);
+      }
+    } catch (emailError: any) {
+      // E-posta hatası restoran oluşturmayı engellemez
+      logger.error(`❌ Welcome email error for restaurant "${name}":`, emailError.message);
+    }
 
     sendSuccess(res, restaurant, 'Restoran başarıyla oluşturuldu', 201);
   } catch (error) {

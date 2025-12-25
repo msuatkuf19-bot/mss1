@@ -9,6 +9,7 @@ interface SendWelcomeEmailParams {
   loginUrl?: string;
   tempPassword?: string;
   includePassword?: boolean;
+  restaurantName?: string;
 }
 
 interface SendEmailResult {
@@ -53,14 +54,15 @@ export const sendWelcomeKvkkEmail = async (
       loginUrl,
       tempPassword: params.tempPassword,
       includePassword: params.includePassword || false,
+      restaurantName: params.restaurantName,
     });
 
-    logger.info(`📧 Sending welcome email to: ${params.to}`);
+    logger.info(`📧 Sending welcome email to: ${params.to}${params.restaurantName ? ` (${params.restaurantName})` : ''}`);
 
     const result = await client.emails.send({
       from: mailFrom,
       to: params.to,
-      subject: getWelcomeEmailSubject(),
+      subject: getWelcomeEmailSubject(params.restaurantName),
       html,
       text,
     });

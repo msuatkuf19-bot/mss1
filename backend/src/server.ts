@@ -35,6 +35,7 @@ import analyticsRoutes from './routes/analytics.routes';
 import uploadRoutes from './routes/upload.routes';
 import userRoutes from './routes/user.routes';
 import userExampleRoutes from './routes/user-example.routes'; // Railway deployment örneği
+import demoRequestRoutes from './routes/demo-requests.routes';
 
 /**
  * Environment variables validasyonu
@@ -93,6 +94,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/demo-requests', demoRequestRoutes);
 
 // Railway Deployment Test Endpoints
 app.use('/api/users/example', userExampleRoutes);

@@ -4,253 +4,224 @@ interface WelcomeEmailData {
   loginUrl: string;
   tempPassword?: string;
   includePassword?: boolean;
+  restaurantName?: string;
 }
 
+/**
+ * Base URL oluşturma - logo ve panel linkleri için
+ */
+const getBaseUrl = (): string => {
+  return (
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.APP_URL ||
+    process.env.NEXTAUTH_URL ||
+    'http://localhost:3000'
+  );
+};
+
+/**
+ * Logo URL - public/benmedya.png dosyası için tam URL
+ */
+const getLogoUrl = (): string => {
+  return `${getBaseUrl()}/benmedya.png`;
+};
+
 export const getWelcomeKvkkEmailTemplate = (data: WelcomeEmailData) => {
-  const { name, loginEmail, loginUrl, tempPassword, includePassword = false } = data;
+  const { name, loginEmail, loginUrl, tempPassword, includePassword = false, restaurantName } = data;
   
   const kvkkContactEmail = process.env.KVKK_CONTACT_EMAIL || 'kvkk@menuben.com';
   const supportEmail = process.env.SUPPORT_EMAIL || 'destek@menuben.com';
+  const logoUrl = getLogoUrl();
+  const currentYear = new Date().getFullYear();
+  const panelUrl = loginUrl || `${getBaseUrl()}/login`;
 
-  // HTML Template
+  // HTML Template - Modern Dark Theme
   const html = `
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MenüBen'e Hoş Geldiniz</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-    .container {
-      background-color: #ffffff;
-      border-radius: 8px;
-      padding: 40px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 3px solid #3b82f6;
-    }
-    .logo {
-      font-size: 32px;
-      font-weight: bold;
-      color: #3b82f6;
-      margin-bottom: 10px;
-    }
-    h1 {
-      color: #1e293b;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .info-box {
-      background-color: #f0f9ff;
-      border-left: 4px solid #3b82f6;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-    .info-box strong {
-      color: #1e40af;
-    }
-    .button {
-      display: inline-block;
-      padding: 14px 32px;
-      background-color: #3b82f6;
-      color: #ffffff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      margin: 20px 0;
-      text-align: center;
-    }
-    .button:hover {
-      background-color: #2563eb;
-    }
-    .kvkk-section {
-      background-color: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 20px;
-      margin-top: 30px;
-      font-size: 13px;
-      color: #64748b;
-    }
-    .kvkk-section h2 {
-      font-size: 16px;
-      color: #334155;
-      margin-bottom: 15px;
-    }
-    .kvkk-section ul {
-      margin: 10px 0;
-      padding-left: 20px;
-    }
-    .kvkk-section li {
-      margin: 8px 0;
-    }
-    .footer {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #e2e8f0;
-      text-align: center;
-      font-size: 12px;
-      color: #94a3b8;
-    }
-    .highlight {
-      background-color: #fef3c7;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-weight: 600;
-    }
-  </style>
+  <title>Menü Ben'e Hoş Geldiniz</title>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">🎉 MenüBen</div>
-      <p style="color: #64748b; margin: 0;">QR Menü Yönetim Sistemi</p>
-    </div>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0a0a0f;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0a0a0f; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%;">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px 16px 0 0; padding: 32px 40px; text-align: center; border-bottom: 2px solid #EF742C;">
+              <img src="${logoUrl}" alt="Menü Ben" style="height: 48px; width: auto; margin-bottom: 12px;" />
+              <p style="margin: 0; color: #9ca3af; font-size: 14px;">QR Menü Yönetim Sistemi</p>
+            </td>
+          </tr>
 
-    <h1>MenüBen Ailesine Hoş Geldiniz!</h1>
-    
-    <p>Merhaba <strong>${name || 'Değerli Kullanıcı'}</strong>,</p>
-    
-    <p>QR menü yönetim paneliniz başarıyla oluşturuldu. Artık restoranınızın dijital menüsünü kolayca yönetebilir, QR kodlarınızı oluşturabilir ve müşterilerinize modern bir deneyim sunabilirsiniz.</p>
+          <!-- Main Content -->
+          <tr>
+            <td style="background-color: #111827; padding: 40px;">
+              
+              <!-- Welcome Message -->
+              <h1 style="margin: 0 0 8px 0; color: #ffffff; font-size: 24px; font-weight: 700;">
+                Hoş geldiniz, ${name || 'Değerli Kullanıcı'}
+              </h1>
+              
+              ${restaurantName ? `
+              <p style="margin: 0 0 24px 0; color: #10b981; font-size: 16px; font-weight: 600;">
+                ✓ ${restaurantName} restoranınız başarıyla oluşturuldu.
+              </p>
+              ` : `
+              <p style="margin: 0 0 24px 0; color: #10b981; font-size: 16px; font-weight: 600;">
+                ✓ QR menü paneliniz başarıyla oluşturuldu.
+              </p>
+              `}
 
-    <div class="info-box">
-      <p style="margin: 0 0 10px 0;"><strong>📧 Giriş E-postanız:</strong></p>
-      <p style="margin: 0; font-size: 16px;">${loginEmail}</p>
-      
-      ${includePassword && tempPassword ? `
-      <p style="margin: 20px 0 10px 0;"><strong>🔑 Geçici Şifreniz:</strong></p>
-      <p style="margin: 0; font-size: 16px;" class="highlight">${tempPassword}</p>
-      <p style="margin: 10px 0 0 0; font-size: 12px; color: #64748b;">⚠️ İlk girişten sonra şifrenizi değiştirmenizi öneririz.</p>
-      ` : `
-      <p style="margin: 20px 0 0 0; font-size: 14px; color: #64748b;">🔐 Şifreniz admin tarafından belirlenmiştir.</p>
-      `}
-    </div>
+              <p style="margin: 0 0 28px 0; color: #d1d5db; font-size: 15px; line-height: 1.6;">
+                Artık restoranınızın dijital menüsünü kolayca yönetebilir, QR kodlarınızı oluşturabilir ve müşterilerinize modern bir deneyim sunabilirsiniz.
+              </p>
 
-    <div style="text-align: center;">
-      <a href="${loginUrl}" class="button">🚀 Panele Giriş Yap</a>
-    </div>
+              <!-- Credentials Box -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #1f2937; border-radius: 12px; margin-bottom: 28px; border-left: 4px solid #EF742C;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <p style="margin: 0 0 12px 0; color: #9ca3af; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">📧 Giriş E-postanız</p>
+                    <p style="margin: 0 0 16px 0; color: #ffffff; font-size: 16px; font-weight: 600;">${loginEmail}</p>
+                    
+                    ${includePassword && tempPassword ? `
+                    <p style="margin: 16px 0 12px 0; color: #9ca3af; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">🔑 Geçici Şifreniz</p>
+                    <p style="margin: 0; padding: 8px 12px; background-color: #fef3c7; border-radius: 6px; color: #92400e; font-size: 16px; font-weight: 600; display: inline-block;">${tempPassword}</p>
+                    <p style="margin: 12px 0 0 0; color: #fbbf24; font-size: 12px;">⚠️ İlk girişten sonra şifrenizi değiştirmenizi öneririz.</p>
+                    ` : `
+                    <p style="margin: 0; color: #9ca3af; font-size: 13px;">🔐 Şifreniz admin tarafından belirlenmiştir.</p>
+                    `}
+                  </td>
+                </tr>
+              </table>
 
-    <div class="kvkk-section">
-      <h2>📋 Kişisel Verilerin Korunması (KVKK) Bilgilendirmesi</h2>
-      
-      <p><strong>Veri Sorumlusu:</strong> MenüBen</p>
-      
-      <p><strong>İşlenen Veriler:</strong></p>
-      <ul>
-        <li>Kimlik bilgileri (ad, soyad)</li>
-        <li>İletişim bilgileri (e-posta, telefon)</li>
-        <li>Restoran ve menü içerikleri</li>
-        <li>Kullanıcı hesap bilgileri</li>
-      </ul>
+              <!-- CTA Button -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center" style="padding: 8px 0 32px 0;">
+                    <a href="${panelUrl}" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #EF742C 0%, #ff9a5a 100%); color: #000000; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 14px rgba(239, 116, 44, 0.4);">
+                      Panele Git →
+                    </a>
+                  </td>
+                </tr>
+              </table>
 
-      <p><strong>İşleme Amacı:</strong></p>
-      <ul>
-        <li>Kullanıcı hesabının oluşturulması ve yönetimi</li>
-        <li>QR menü hizmetinin sunulması</li>
-        <li>Müşteri destek ve iletişim hizmetleri</li>
-        <li>Platform güvenliğinin sağlanması</li>
-      </ul>
+              <!-- Quick Start Guide -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #1f2937; border-radius: 12px; margin-bottom: 28px;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <p style="margin: 0 0 16px 0; color: #ffffff; font-size: 16px; font-weight: 600;">🚀 Hızlı Başlangıç</p>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="padding: 8px 0; color: #d1d5db; font-size: 14px;">
+                          <span style="color: #10b981; margin-right: 8px;">✓</span> Menü ve kategorileri ekleyin
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; color: #d1d5db; font-size: 14px;">
+                          <span style="color: #10b981; margin-right: 8px;">✓</span> Masa / QR kodları oluşturun
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; color: #d1d5db; font-size: 14px;">
+                          <span style="color: #10b981; margin-right: 8px;">✓</span> Tema ve görünümü yönetin
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; color: #d1d5db; font-size: 14px;">
+                          <span style="color: #10b981; margin-right: 8px;">✓</span> Analizleri takip edin
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
 
-      <p><strong>Hukuki Sebep:</strong> Hizmet sözleşmesinin kurulması ve ifası, 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında meşru menfaat</p>
+              <!-- KVKK Section -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <p style="margin: 0 0 16px 0; color: #94a3b8; font-size: 14px; font-weight: 600;">📋 KVKK Bilgilendirmesi</p>
+                    <p style="margin: 0 0 12px 0; color: #64748b; font-size: 13px; line-height: 1.6;">
+                      Bu e-posta, Menü Ben hizmeti kapsamında hesabınız ve restoran kaydınız oluşturulduğu için gönderilmiştir. Kişisel verileriniz hizmetin sunulması, iletişim kurulması ve operasyonel süreçler için işlenebilir.
+                    </p>
+                    <p style="margin: 0; color: #64748b; font-size: 12px;">
+                      KVKK hakları için: <a href="mailto:${kvkkContactEmail}" style="color: #EF742C; text-decoration: none;">${kvkkContactEmail}</a> | 
+                      Destek: <a href="mailto:${supportEmail}" style="color: #EF742C; text-decoration: none;">${supportEmail}</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
 
-      <p><strong>Saklama Süresi:</strong> Hizmetin devamı süresince ve yasal mevzuatın öngördüğü süreler boyunca</p>
+            </td>
+          </tr>
 
-      <p><strong>Haklarınız (KVKK Madde 11):</strong></p>
-      <ul>
-        <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
-        <li>İşlenmişse buna ilişkin bilgi talep etme</li>
-        <li>İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme</li>
-        <li>Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme</li>
-        <li>Eksik veya yanlış işlenmişse düzeltilmesini isteme</li>
-        <li>Silme veya yok edilmesini isteme</li>
-        <li>İşlenen verilerin münhasıran otomatik sistemler ile analiz edilmesi sonucu aleyhinize bir sonuç doğması halinde itiraz etme</li>
-        <li>Kanuna aykırı olarak işlenmesi sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme</li>
-      </ul>
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #0f172a; border-radius: 0 0 16px 16px; padding: 24px 40px; text-align: center; border-top: 1px solid #1e293b;">
+              <p style="margin: 0 0 8px 0; color: #64748b; font-size: 12px;">Bu e-posta otomatik olarak gönderilmiştir.</p>
+              <p style="margin: 0; color: #475569; font-size: 11px;">© ${currentYear} Menü Ben — Tüm hakları saklıdır.</p>
+            </td>
+          </tr>
 
-      <p><strong>İletişim:</strong></p>
-      <p>KVKK hakları ile ilgili başvurularınız için: <a href="mailto:${kvkkContactEmail}">${kvkkContactEmail}</a></p>
-      <p>Destek için: <a href="mailto:${supportEmail}">${supportEmail}</a></p>
-    </div>
-
-    <div class="footer">
-      <p>Bu e-posta otomatik olarak gönderilmiştir.</p>
-      <p style="margin-top: 10px;">© ${new Date().getFullYear()} MenüBen - Tüm hakları saklıdır.</p>
-    </div>
-  </div>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
   `;
 
   // Plain Text Template
   const text = `
-MenüBen Ailesine Hoş Geldiniz! 🎉
+MENÜ BEN'E HOŞ GELDİNİZ
 
-Merhaba ${name || 'Değerli Kullanıcı'},
+Hoş geldiniz, ${name || 'Değerli Kullanıcı'}
 
-QR menü yönetim paneliniz başarıyla oluşturuldu.
+${restaurantName ? `✓ ${restaurantName} restoranınız başarıyla oluşturuldu.` : '✓ QR menü paneliniz başarıyla oluşturuldu.'}
 
-GİRİŞ BİLGİLERİNİZ:
+Artık restoranınızın dijital menüsünü kolayca yönetebilir, QR kodlarınızı oluşturabilir ve müşterilerinize modern bir deneyim sunabilirsiniz.
+
+━━━━━━━━━━━━━━━━━━━━━━
+GİRİŞ BİLGİLERİNİZ
 ━━━━━━━━━━━━━━━━━━━━━━
 📧 E-posta: ${loginEmail}
 ${includePassword && tempPassword ? `🔑 Geçici Şifre: ${tempPassword}\n⚠️  İlk girişten sonra şifrenizi değiştirmenizi öneririz.` : '🔐 Şifreniz admin tarafından belirlenmiştir.'}
 
-🚀 Panel Linki: ${loginUrl}
+🚀 Panel Linki: ${panelUrl}
+
+━━━━━━━━━━━━━━━━━━━━━━
+HIZLI BAŞLANGIÇ
+━━━━━━━━━━━━━━━━━━━━━━
+✓ Menü ve kategorileri ekleyin
+✓ Masa / QR kodları oluşturun
+✓ Tema ve görünümü yönetin
+✓ Analizleri takip edin
 
 ━━━━━━━━━━━━━━━━━━━━━━
 KVKK BİLGİLENDİRMESİ
 ━━━━━━━━━━━━━━━━━━━━━━
+Bu e-posta, Menü Ben hizmeti kapsamında hesabınız ve restoran kaydınız oluşturulduğu için gönderilmiştir. Kişisel verileriniz hizmetin sunulması, iletişim kurulması ve operasyonel süreçler için işlenebilir.
 
-Veri Sorumlusu: MenüBen
-
-İşlenen Veriler:
-• Kimlik bilgileri (ad, soyad)
-• İletişim bilgileri (e-posta, telefon)
-• Restoran ve menü içerikleri
-• Kullanıcı hesap bilgileri
-
-İşleme Amacı:
-• Kullanıcı hesabının oluşturulması ve yönetimi
-• QR menü hizmetinin sunulması
-• Müşteri destek ve iletişim hizmetleri
-• Platform güvenliğinin sağlanması
-
-Hukuki Sebep: Hizmet sözleşmesinin kurulması ve ifası
-
-Saklama Süresi: Hizmet süresince ve yasal mevzuat süresi boyunca
-
-KVKK Haklarınız (Madde 11):
-• Kişisel verilerinizin işlenip işlenmediğini öğrenme
-• İşlenmişse buna ilişkin bilgi talep etme
-• Düzeltme, silme veya yok edilmesini isteme
-• İtiraz etme ve zarar giderimini talep etme
-
-İletişim:
 KVKK: ${kvkkContactEmail}
 Destek: ${supportEmail}
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
 Bu e-posta otomatik olarak gönderilmiştir.
-© ${new Date().getFullYear()} MenüBen - Tüm hakları saklıdır.
+© ${currentYear} Menü Ben — Tüm hakları saklıdır.
   `;
 
   return { html, text };
 };
 
-export const getWelcomeEmailSubject = (): string => {
-  return 'MenüBen Ailesine Hoş Geldiniz 🎉';
+export const getWelcomeEmailSubject = (restaurantName?: string): string => {
+  if (restaurantName) {
+    return `Menü Ben'e Hoş Geldiniz — ${restaurantName}`;
+  }
+  return "Menü Ben'e Hoş Geldiniz 🎉";
 };

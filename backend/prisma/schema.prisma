@@ -201,6 +201,22 @@ model User {
   @@map("users")
 }
 
+model DemoRequest {
+  id             String            @id @default(cuid())
+  fullName       String
+  restaurantName String
+  phone          String
+  email          String?
+  restaurantType String
+  tableCount     Int
+  status         DemoRequestStatus @default(PENDING)
+  createdAt      DateTime          @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("demo_requests")
+}
+
 enum ImageType {
   LOGO
   PRODUCT
@@ -212,4 +228,11 @@ enum UserRole {
   SUPER_ADMIN
   RESTAURANT_ADMIN
   CUSTOMER
+}
+
+enum DemoRequestStatus {
+  PENDING
+  CONTACTED
+  DEMO_CREATED
+  CANCELLED
 }

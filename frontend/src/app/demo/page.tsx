@@ -252,9 +252,11 @@ function StickyFormBand() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     setIsSubmitting(true);
     
     // Simulate progress
@@ -268,9 +270,36 @@ function StickyFormBand() {
       });
     }, 200);
 
-    await new Promise((resolve) => setTimeout(resolve, 2500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    try {
+      const { apiClient } = await import('@/lib/api-client');
+      await apiClient.createDemoRequest({
+        fullName: formData.name,
+        restaurantName: formData.restaurant,
+        phone: formData.phone,
+        email: formData.email || null,
+        restaurantType: formData.type,
+        tableCount: formData.tables ? Number(formData.tables) : 0,
+      });
+
+      setIsSubmitted(true);
+
+      // Optional reset
+      setFormData({
+        name: '',
+        restaurant: '',
+        phone: '',
+        email: '',
+        type: '',
+        tables: '',
+      });
+    } catch (error: any) {
+      const message = error?.response?.data?.message || 'Demo talebi gönderilemedi';
+      setSubmitError(message);
+    } finally {
+      clearInterval(interval);
+      setProgress(100);
+      setIsSubmitting(false);
+    }
   };
 
   const restaurantTypes = ['Kafe', 'Restoran', 'Fast Food', 'Otel', 'Diğer'];
@@ -303,8 +332,8 @@ function StickyFormBand() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
                 </motion.div>
-                <h3 className="text-xl font-bold text-white mb-2">Demo panelin hazır, WhatsApp'ını kontrol et.</h3>
-                <p className="text-gray-400">Giriş bilgilerini en kısa sürede WhatsApp üzerinden ileteceğiz.</p>
+                <h3 className="text-xl font-bold text-white mb-2">Demo talebin alındı, panelin hazırlanıyor</h3>
+                <p className="text-gray-400">En kısa sürede WhatsApp üzerinden iletişime geçeceğiz.</p>
               </motion.div>
             ) : (
               <motion.div
@@ -340,6 +369,11 @@ function StickyFormBand() {
 
                 {/* Right - Form */}
                 <form onSubmit={handleSubmit} className="flex-1 w-full">
+                  {submitError && (
+                    <div className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                      {submitError}
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
                     {/* Row 1 */}
                     <input

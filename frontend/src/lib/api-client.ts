@@ -308,6 +308,29 @@ class ApiClient {
     return data;
   }
 
+  // Demo Requests (Public create, Super Admin manage)
+  async createDemoRequest(payload: {
+    fullName: string;
+    restaurantName: string;
+    phone: string;
+    email?: string | null;
+    restaurantType?: string;
+    tableCount?: number;
+  }) {
+    const { data } = await this.client.post('/demo-requests', payload);
+    return data;
+  }
+
+  async getDemoRequests() {
+    const { data } = await this.client.get('/demo-requests');
+    return data;
+  }
+
+  async updateDemoRequestStatus(id: string, status: 'PENDING' | 'CONTACTED' | 'DEMO_CREATED' | 'CANCELLED') {
+    const { data } = await this.client.patch(`/demo-requests/${id}/status`, { status });
+    return data;
+  }
+
   async getProductDetail(id: string) {
     const { data } = await this.client.get(`/public/product/${id}`);
     return data;

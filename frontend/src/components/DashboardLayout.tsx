@@ -185,6 +185,11 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
                 icon={<LineChart size={20} strokeWidth={2} />}
                 label="Analitik"
               />
+              <SidebarLink
+                href="/admin/demo-requests"
+                icon={<ClipboardList size={20} strokeWidth={2} />}
+                label="Demo Talepleri"
+              />
             </>
           )}
 
