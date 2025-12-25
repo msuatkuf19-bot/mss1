@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken, JWTPayload } from '../utils/jwt';
 import { ApiError } from '../utils/response';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 
 // AuthRequest - authenticated request with user info
 export interface AuthRequest extends Request {
