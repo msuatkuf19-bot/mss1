@@ -3,6 +3,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { useAutoLogout } from '@/hooks/useAutoLogout';
+
+// Auto-logout işleyicisi - hook'u bir kez çağırmak için wrapper
+function AutoLogoutHandler() {
+  useAutoLogout();
+  return null;
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -19,6 +26,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AutoLogoutHandler />
       <Toaster 
         position="top-right"
         toastOptions={{
