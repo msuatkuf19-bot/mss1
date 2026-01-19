@@ -882,24 +882,24 @@ export default function AdminRestaurants() {
                         </div>
 
                         {/* QR Preview */}
-                        <div className="flex-shrink-0">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <div className="flex-shrink-0 ml-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
                             QR Kod Önizleme
                           </label>
-                          <div className="w-28 h-28 bg-white border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden">
+                          <div className="w-36 h-36 bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm p-2">
                             {slugPreview ? (
                               <QrBox 
                                 slug={slugPreview}
-                                size={100}
+                                size={128}
                               />
                             ) : (
                               <div className="text-center p-2">
-                                <QrCode className="h-8 w-8 text-gray-300 mx-auto" />
-                                <p className="text-[10px] text-gray-400 mt-1">Slug girin</p>
+                                <QrCode className="h-12 w-12 text-gray-300 mx-auto" />
+                                <p className="text-xs text-gray-400 mt-2">Slug girin</p>
                               </div>
                             )}
                           </div>
-                          <p className="text-[10px] text-gray-500 text-center mt-1">Kayıt sonrası indirilir</p>
+                          <p className="text-xs text-gray-500 text-center mt-2">Kayıt sonrası indirilir</p>
                         </div>
                       </div>
                     </div>
