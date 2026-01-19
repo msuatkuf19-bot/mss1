@@ -26,6 +26,7 @@ interface Restaurant {
   instagramUrl?: string;
   facebookUrl?: string;
   workingHours?: string;
+  openingHoursText?: string;
   internalNote?: string;
   membershipStartDate?: string | null;
   membershipEndDate?: string | null;
@@ -54,6 +55,7 @@ interface FormData {
   email: string;
   googleMapsUrl: string;
   workingHours: string;
+  openingHoursText: string;
   instagramUrl: string;
   facebookUrl: string;
   membershipStartDate: string;
@@ -118,6 +120,7 @@ export default function AdminRestaurants() {
     email: '',
     googleMapsUrl: '',
     workingHours: '',
+    openingHoursText: '',
     instagramUrl: '',
     facebookUrl: '',
     membershipStartDate: new Date().toISOString().split('T')[0],
@@ -346,6 +349,7 @@ export default function AdminRestaurants() {
       email: restaurant.email || '',
       googleMapsUrl: restaurant.googleMapsUrl || '',
       workingHours: restaurant.workingHours || '',
+      openingHoursText: restaurant.openingHoursText || '',
       instagramUrl: restaurant.instagramUrl || '',
       facebookUrl: restaurant.facebookUrl || '',
       membershipStartDate: restaurant.membershipStartDate?.split('T')[0] || '',
@@ -379,6 +383,7 @@ export default function AdminRestaurants() {
       email: '',
       googleMapsUrl: '',
       workingHours: '',
+      openingHoursText: '',
       instagramUrl: '',
       facebookUrl: '',
       membershipStartDate: new Date().toISOString().split('T')[0],
@@ -830,7 +835,7 @@ export default function AdminRestaurants() {
                       </div>
 
                       {/* Slug + QR Preview */}
-                      <div className="flex gap-4">
+                      <div className="flex flex-col sm:flex-row gap-4">
                         {/* Slug Input */}
                         <div className="flex-1">
                           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -881,25 +886,43 @@ export default function AdminRestaurants() {
                           {errors.slug && <p className="mt-1 text-sm text-red-600">{errors.slug}</p>}
                         </div>
 
-                        {/* QR Preview */}
-                        <div className="flex-shrink-0 ml-4">
-                          <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
-                            QR Kod Önizleme
-                          </label>
-                          <div className="w-36 h-36 bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center shadow-sm p-2">
-                            {slugPreview ? (
-                              <QrBox 
-                                slug={slugPreview}
-                                size={128}
-                              />
-                            ) : (
-                              <div className="text-center p-2">
-                                <QrCode className="h-12 w-12 text-gray-300 mx-auto" />
-                                <p className="text-xs text-gray-400 mt-2">Slug girin</p>
-                              </div>
-                            )}
+                        {/* QR Preview Card */}
+                        <div className="flex-shrink-0 w-full sm:w-auto sm:ml-4">
+                          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 w-full sm:w-56">
+                            <h4 className="text-sm font-medium text-gray-700 text-center mb-3">
+                              QR Kod Önizleme
+                            </h4>
+                            
+                            <div className="flex flex-col items-center justify-center">
+                              {slugPreview ? (
+                                <>
+                                  <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] rounded-xl bg-white p-3 shadow-sm border border-gray-200 overflow-hidden flex items-center justify-center">
+                                    <QrBox 
+                                      slug={slugPreview}
+                                      size={150}
+                                    />
+                                  </div>
+                                  
+                                  {/* URL Display */}
+                                  <div className="w-full mt-3 space-y-2">
+                                    <p className="text-[10px] text-gray-500 text-center break-all leading-snug line-clamp-2">
+                                      /menu/{slugPreview}
+                                    </p>
+                                    <p className="text-xs text-gray-400 text-center">
+                                      Kayıt sonrası QR indirilecek
+                                    </p>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="w-full rounded-xl border border-dashed border-gray-300 bg-gray-100/50 p-6 text-center">
+                                  <QrCode className="h-10 w-10 text-gray-300 mx-auto mb-2" />
+                                  <p className="text-xs text-gray-400">
+                                    Slug girdikten sonra<br />QR önizleme görünecek
+                                  </p>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <p className="text-xs text-gray-500 text-center mt-2">Kayıt sonrası indirilir</p>
                         </div>
                       </div>
                     </div>
@@ -967,6 +990,26 @@ export default function AdminRestaurants() {
                         />
                         {errors.googleMapsUrl && (
                           <p className="mt-1 text-sm text-red-600">{errors.googleMapsUrl}</p>
+                        )}
+                      </div>
+
+                      {/* Çalışma Saatleri */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Çalışma Saatleri
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.openingHoursText}
+                          onChange={(e) => setFormData({ ...formData, openingHoursText: e.target.value })}
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="07:00 - 21:00"
+                        />
+                        <p className="mt-1 text-xs text-gray-500">
+                          Örn: "07:00 - 21:00" veya "Hafta içi 08:00-22:00 / Pazar Kapalı"
+                        </p>
+                        {errors.openingHoursText && (
+                          <p className="mt-1 text-sm text-red-600">{errors.openingHoursText}</p>
                         )}
                       </div>
 

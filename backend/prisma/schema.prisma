@@ -176,6 +176,7 @@ model Restaurant {
   facebookUrl         String?
   googleMapsUrl       String?
   workingHours        String?
+  openingHoursText    String?               // Basit çalışma saatleri metni örn: "07:00 - 21:00"
   themeColor          String?               @default("#3B82F6")
   themeSettings       String?
   internalNote        String?
