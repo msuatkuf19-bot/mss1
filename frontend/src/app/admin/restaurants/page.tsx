@@ -889,7 +889,7 @@ export default function AdminRestaurants() {
                           <div className="w-28 h-28 bg-white border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden">
                             {slugPreview ? (
                               <QrBox 
-                                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/menu/${slugPreview}`}
+                                slug={slugPreview}
                                 size={100}
                               />
                             ) : (
