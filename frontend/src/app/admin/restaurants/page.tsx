@@ -2,11 +2,11 @@
 
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { apiClient } from '@/lib/api-client';
 import QrBox from '@/components/QrBox';
 import { slugifyTR } from '@/utils/slugify';
-import { Store, Plus, Pencil, Trash2, User, Phone, Mail, MapPin, Eye, EyeOff, Copy, RefreshCw } from 'lucide-react';
+import { Store, Plus, Pencil, Trash2, User, Phone, Mail, MapPin, Eye, EyeOff, Copy, RefreshCw, Download, CheckCircle, X, QrCode } from 'lucide-react';
 import WorkingHoursEditor from '@/components/WorkingHoursEditor';
 
 interface Restaurant {
@@ -84,6 +84,24 @@ export default function AdminRestaurants() {
         error?: string;
       }
   >(null);
+  
+  // Success state for showing QR after creation
+  const [createdRestaurant, setCreatedRestaurant] = useState<{
+    id: string;
+    name: string;
+    slug: string;
+    memberNo: string;
+    qrCode: {
+      imageData: string;
+      menuUrl: string;
+    };
+    owner: {
+      email: string;
+      name: string;
+    };
+  } | null>(null);
+  
+  const qrDownloadRef = useRef<HTMLAnchorElement>(null);
   
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
 
@@ -280,16 +298,37 @@ export default function AdminRestaurants() {
       
       if (editingRestaurant) {
         await apiClient.updateRestaurant(editingRestaurant.id, { ...formData, slug: normalizedSlug });
+        setShowModal(false);
+        resetForm();
+        loadRestaurants();
+        alert('Restoran başarıyla güncellendi!');
       } else {
-        await apiClient.createRestaurant({ ...formData, slug: normalizedSlug });
+        const response = await apiClient.createRestaurant({ ...formData, slug: normalizedSlug });
+        
+        // Set created restaurant data for QR preview
+        if (response.data) {
+          const { restaurant, qrCode, menuUrl } = response.data;
+          setCreatedRestaurant({
+            id: restaurant.id,
+            name: restaurant.name,
+            slug: restaurant.slug,
+            memberNo: restaurant.memberNo || formData.memberNo,
+            qrCode: {
+              imageData: qrCode?.imageData || '',
+              menuUrl: menuUrl || `${window.location.origin}/menu/${restaurant.slug}`,
+            },
+            owner: {
+              email: restaurant.owner?.email || formData.ownerEmail,
+              name: restaurant.owner?.name || formData.ownerName,
+            },
+          });
+        }
+        
+        loadRestaurants();
       }
-      
-      setShowModal(false);
-      resetForm();
-      loadRestaurants();
-      alert('Restoran başarıyla oluşturuldu!');
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Bir hata oluştu');
+      const errorMessage = error.response?.data?.message || 'Bir hata oluştu';
+      alert(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -341,6 +380,7 @@ export default function AdminRestaurants() {
     setSlugPreview('');
     setSlugCheck(null);
     setErrors({});
+    setCreatedRestaurant(null);
     setFormData({
       businessType: 'Restoran',
       memberNo: '',
@@ -379,6 +419,22 @@ export default function AdminRestaurants() {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     alert('Kopyalandı!');
+  };
+
+  const downloadQRCode = () => {
+    if (!createdRestaurant?.qrCode?.imageData) return;
+    
+    const link = document.createElement('a');
+    link.href = createdRestaurant.qrCode.imageData;
+    link.download = `qr-${createdRestaurant.slug}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const closeModalAndReset = () => {
+    setShowModal(false);
+    resetForm();
   };
 
   return (
@@ -580,19 +636,133 @@ export default function AdminRestaurants() {
 
         {/* Professional Registration Modal */}
         {showModal && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-8">
-              <div className="p-6 sm:p-8">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                  {editingRestaurant ? 'Restoran Düzenle' : 'Restoran Kayıt Ekranı'}
-                </h2>
-                <p className="text-sm text-gray-600 mb-6">
-                  {editingRestaurant
-                    ? 'Restoran bilgilerini güncelleyin'
-                    : 'Yeni restoran kaydı oluşturmak için aşağıdaki bilgileri doldurun'}
-                </p>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-0 sm:p-4 overflow-y-auto">
+            <div className="bg-white sm:rounded-2xl shadow-2xl w-full max-w-5xl min-h-screen sm:min-h-0 sm:my-8 sm:max-h-[90vh] flex flex-col">
+              {/* Modal Header - Fixed */}
+              <div className="flex-shrink-0 p-4 sm:p-6 border-b border-gray-200 sticky top-0 bg-white z-10 sm:rounded-t-2xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                      {createdRestaurant ? '✅ Restoran Oluşturuldu!' : editingRestaurant ? 'Restoran Düzenle' : 'Yeni Restoran Ekle'}
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-0.5">
+                      {createdRestaurant
+                        ? 'Restoran başarıyla oluşturuldu. QR kodunu indirebilirsiniz.'
+                        : editingRestaurant
+                        ? 'Restoran bilgilerini güncelleyin'
+                        : 'Yeni restoran kaydı oluşturmak için bilgileri doldurun'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={closeModalAndReset}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    title="Kapat"
+                  >
+                    <X className="h-5 w-5 text-gray-500" />
+                  </button>
+                </div>
+              </div>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Modal Content - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                {/* Success State - QR Preview */}
+                {createdRestaurant ? (
+                  <div className="space-y-6">
+                    {/* Success Banner */}
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
+                      <CheckCircle className="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="font-semibold text-green-900">Restoran başarıyla oluşturuldu!</h3>
+                        <p className="text-sm text-green-700 mt-1">
+                          <strong>{createdRestaurant.name}</strong> (#{createdRestaurant.memberNo}) sisteme eklendi.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* QR Code Section */}
+                    <div className="bg-white border border-gray-200 rounded-xl p-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <QrCode className="h-5 w-5 text-blue-600" />
+                        QR Kod
+                      </h3>
+                      
+                      <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                        {/* QR Image */}
+                        <div className="flex-shrink-0 p-4 bg-white border-2 border-gray-200 rounded-xl shadow-sm">
+                          {createdRestaurant.qrCode.imageData ? (
+                            <img
+                              src={createdRestaurant.qrCode.imageData}
+                              alt={`${createdRestaurant.name} QR Kod`}
+                              className="w-48 h-48 object-contain"
+                            />
+                          ) : (
+                            <div className="w-48 h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <QrCode className="h-16 w-16 text-gray-400" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* QR Info & Actions */}
+                        <div className="flex-1 space-y-4 text-center md:text-left">
+                          <div>
+                            <p className="text-sm font-medium text-gray-700 mb-1">Menü Linki:</p>
+                            <div className="flex flex-col sm:flex-row gap-2">
+                              <code className="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-sm font-mono text-blue-600 break-all">
+                                {createdRestaurant.qrCode.menuUrl}
+                              </code>
+                              <button
+                                onClick={() => copyToClipboard(createdRestaurant.qrCode.menuUrl)}
+                                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                              >
+                                <Copy className="h-4 w-4" />
+                                Kopyala
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <p className="text-xs font-medium text-gray-500 mb-1">Üye No</p>
+                              <p className="text-sm font-mono text-gray-900">#{createdRestaurant.memberNo}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-gray-500 mb-1">Slug</p>
+                              <p className="text-sm font-mono text-gray-900">/{createdRestaurant.slug}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-gray-500 mb-1">Sahip</p>
+                              <p className="text-sm text-gray-900">{createdRestaurant.owner.name}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-gray-500 mb-1">Sahip Email</p>
+                              <p className="text-sm text-gray-900">{createdRestaurant.owner.email}</p>
+                            </div>
+                          </div>
+
+                          {/* Download Button */}
+                          <button
+                            onClick={downloadQRCode}
+                            disabled={!createdRestaurant.qrCode.imageData}
+                            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <Download className="h-5 w-5" />
+                            QR Kodu İndir
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Owner Info Reminder */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                      <h4 className="font-semibold text-blue-900 mb-2">📧 Giriş Bilgileri</h4>
+                      <p className="text-sm text-blue-800">
+                        İşletme sahibi <strong>{createdRestaurant.owner.email}</strong> adresine giriş bilgilerini içeren bir e-posta gönderildi.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+
+                <form id="restaurant-form" onSubmit={handleSubmit} className="space-y-8">
                   {/* İŞLETME BİLGİLERİ */}
                   <div className="border border-gray-200 rounded-xl p-6 bg-gray-50/50">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -1056,11 +1226,38 @@ export default function AdminRestaurants() {
                       </div>
                     </div>
                   )}
+                </form>
+                )}
+              </div>
 
-                  {/* Form Actions */}
-                  <div className="flex gap-3 pt-4 border-t border-gray-200">
+              {/* Modal Footer - Fixed */}
+              <div className="flex-shrink-0 p-4 sm:p-6 border-t border-gray-200 bg-gray-50 sm:rounded-b-2xl">
+                {createdRestaurant ? (
+                  /* Success State Footer */
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={() => {
+                        resetForm();
+                        // Keep modal open for new entry
+                      }}
+                      className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold transition-all flex items-center justify-center gap-2"
+                    >
+                      <Plus className="h-5 w-5" />
+                      Yeni Restoran Ekle
+                    </button>
+                    <button
+                      onClick={closeModalAndReset}
+                      className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 font-semibold transition-all"
+                    >
+                      Kapat
+                    </button>
+                  </div>
+                ) : (
+                  /* Form Footer */
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       type="submit"
+                      form="restaurant-form"
                       disabled={submitting}
                       className="flex-1 px-6 py-3.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold text-base shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
@@ -1070,7 +1267,7 @@ export default function AdminRestaurants() {
                           <span>İşleniyor...</span>
                         </>
                       ) : (
-                        <span>{editingRestaurant ? 'Güncelle' : 'Oluştur'}</span>
+                        <span>{editingRestaurant ? 'Güncelle' : 'Restoran Oluştur'}</span>
                       )}
                     </button>
                     <button
@@ -1086,8 +1283,7 @@ export default function AdminRestaurants() {
                             return;
                           }
                         }
-                        setShowModal(false);
-                        resetForm();
+                        closeModalAndReset();
                       }}
                       disabled={submitting}
                       className="flex-1 px-6 py-3.5 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 font-semibold text-base transition-all disabled:opacity-50"
@@ -1095,7 +1291,7 @@ export default function AdminRestaurants() {
                       İptal
                     </button>
                   </div>
-                </form>
+                )}
               </div>
             </div>
           </div>

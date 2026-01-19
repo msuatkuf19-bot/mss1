@@ -1,19 +1,22 @@
-# 🍽️ Restoran Menü Yönetim & QR Kod Erişim Sistemi
+# 🍽️ BEN Medya - QR Menü Yönetim Sistemi
 
 <div align="center">
 
-[![Node.js](https://img.shields.io/badge/Node.js-v20.x-green.svg)](https://nodejs.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-14.0.4-blue.svg)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://www.postgresql.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-5.x-2D3748.svg)](https://www.prisma.io/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![BEN Medya Logo](https://img.shields.io/badge/BEN%20Medya-QR%20Men%C3%BC-blue?style=for-the-badge)
 
-**Modern, multi-tenant restoran menü yönetim sistemi**
+[![Node.js](https://img.shields.io/badge/Node.js-v20.x-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14.0.4-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
-Restoranların menülerini dijital ortamda kolayca yönetmesini ve müşterilerin QR kod okutarak doğrudan ilgili restorana ait menüye ulaşmasını sağlayan tam kapsamlı web uygulaması.
+**🚀 Modern, Multi-Tenant Dijital Menü Yönetim Sistemi**
 
-[Demo](https://qr-menu-demo.railway.app) • [Dokümantasyon](https://docs.qrmenu.com) • [API Referansı](#-api-dokümantasyonu)
+*Restoranlar, kafeler ve oteller için profesyonel QR kodlu dijital menü çözümü*
+
+[🌐 Demo](https://qr-menu-demo.railway.app) • [📖 Dokümantasyon](#-kurulum) • [🐛 Sorun Bildir](https://github.com/benmedya/qr-menu/issues)
 
 </div>
 
@@ -25,776 +28,399 @@ Restoranların menülerini dijital ortamda kolayca yönetmesini ve müşterileri
 - [🛠️ Teknoloji Stack](#️-teknoloji-stack)
 - [📁 Proje Yapısı](#-proje-yapısı)
 - [🚀 Hızlı Başlangıç](#-hızlı-başlangıç)
-- [📦 Kurulum](#-kurulum)
-- [🔧 Konfigürasyon](#-konfigürasyon)
+- [⚙️ Konfigürasyon](#️-konfigürasyon)
 - [📚 API Dokümantasyonu](#-api-dokümantasyonu)
-- [🎨 Frontend Özellikleri](#-frontend-özellikleri)
-- [🐳 Docker ile Çalıştırma](#-docker-ile-çalıştırma)
-- [🚀 Deployment](#-deployment)
-- [🧪 Test](#-test)
-- [📊 Performans](#-performans)
+- [🐳 Docker](#-docker)
+- [☁️ Deployment](#️-deployment)
 - [🔒 Güvenlik](#-güvenlik)
-- [📱 Mobile & PWA](#-mobile--pwa)
-- [🛠️ Geliştirme Araçları](#️-geliştirme-araçları)
-- [🔧 Troubleshooting](#-troubleshooting)
-- [📈 Roadmap](#-roadmap)
+- [📊 Performans](#-performans)
 - [🤝 Katkıda Bulunma](#-katkıda-bulunma)
 - [📜 Lisans](#-lisans)
+
+---
 
 ## ✨ Özellikler
 
 ### 🎯 Ana Özellikler
 
-- **Multi-Tenant Mimari**: Her restoran kendi bağımsız veri alanına sahip
-- **QR Kod Entegrasyonu**: Otomatik QR kod üretimi ve okutma sistemi
-- **Gerçek Zamanlı Güncelleme**: Anlık menü değişiklikleri
-- **Responsive Design**: Mobil ve masaüstü uyumlu arayüz
-- **Rol Bazlı Erişim**: Süper Admin, Restoran Admin, Müşteri rolleri
-- **Analitik Dashboard**: Görüntüleme istatistikleri ve raporlar
-- **Görsel Yönetimi**: Cloudinary entegrasyonu ile görsel optimizasyonu
-- **Çoklu Dil Desteği**: İngilizce ve Türkçe dil seçenekleri
+| Özellik | Açıklama |
+|---------|----------|
+| 🏢 **Multi-Tenant Mimari** | Her işletme kendi bağımsız veri alanına sahip |
+| 📱 **QR Kod Entegrasyonu** | Otomatik QR kod üretimi ve yönetimi |
+| ⚡ **Gerçek Zamanlı Güncelleme** | Anlık menü değişiklikleri |
+| 🎨 **Responsive Design** | Mobil ve masaüstü uyumlu arayüz |
+| 🔐 **Rol Bazlı Erişim** | Süper Admin, Restoran Admin, Müşteri rolleri |
+| 📈 **Analytics Dashboard** | Detaylı görüntüleme istatistikleri ve raporlar |
+| 🖼️ **Cloudinary Entegrasyonu** | Profesyonel görsel yönetimi |
+| 🌍 **Çoklu Dil Desteği** | Türkçe ve İngilizce |
 
-### 👑 Süper Admin Özellikleri
-- ✅ Tüm restoranları görüntüleme ve yönetme
-- ✅ **Yeni Restoran Ekleme (Gelişmiş Kayıt Sistemi)**
-  - Otomatik 6 haneli üye numarası üretimi
-  - Türkçe karakter desteğiyle otomatik slug oluşturma
-  - Sahip hesabı otomatik oluşturma (RESTAURANT_ADMIN rolü)
-  - QR kod otomatik üretimi ve restaurant ile ilişkilendirme
-  - Üyelik başlangıç/bitiş tarihi yönetimi
-  - İşletme tipi seçimi (Restoran/Kafe/Otel/Diğer)
-- ✅ Restoran ekleme/düzenleme/silme
-- ✅ Kullanıcı oluşturma ve yetki verme
-- ✅ Platform geneli raporlar ve istatistikler
-- ✅ Sistem geneli ayarlar ve konfigürasyon
-- ✅ Advanced analytics ve dashboard
-- ✅ Bulk işlemler ve veri export/import
+### 👑 Süper Admin Paneli
 
-### 🏪 Restoran Admin Özellikleri
-- ✅ Kendi restoranına özel admin paneli
-- ✅ Menü kategorileri ve ürünleri yönetimi (CRUD)
-- ✅ Ürün görselleri, fiyatlar ve açıklamalar güncelleme
-- ✅ QR kod oluşturma, özelleştirme ve indirme
-- ✅ Müşteri görüntüleme raporları ve analytics
-- ✅ Restoran bilgileri ve ayarlar yönetimi
-- ✅ Kategori sıralaması ve görünürlük kontrolü
+```
+✅ Tüm işletmeleri görüntüleme ve yönetme
+✅ Yeni işletme ekleme (otomatik üye numarası, slug, QR kod)
+✅ Kullanıcı oluşturma ve yetkilendirme
+✅ Platform geneli raporlar ve istatistikler
+✅ Üyelik yönetimi (başlangıç/bitiş tarihi)
+✅ İşletme tipi seçimi (Restoran/Kafe/Otel/Diğer)
+```
 
-### 👥 Müşteri Özellikleri
-- ✅ QR kod ile direkt menü erişimi
-- ✅ Mobil responsive menü görüntüleme
-- ✅ Kategorilere göre ürün filtreleme
-- ✅ Ürün detayları (fiyat, açıklama, görsel)
-- ✅ Arama ve favori özellikleri
-- ✅ Türkçe/İngilizce dil seçenekleri
-- ✅ Smooth scroll ve animasyonlar
+### 🏪 İşletme Admin Paneli
+
+```
+✅ Kendi işletmesine özel admin paneli
+✅ Menü kategorileri ve ürünleri yönetimi
+✅ Ürün görselleri, fiyatlar ve açıklamalar
+✅ QR kod özelleştirme ve indirme
+✅ Müşteri görüntüleme raporları
+✅ İşletme bilgileri ve ayarlar
+```
+
+### 👥 Müşteri Deneyimi
+
+```
+✅ QR kod ile direkt menü erişimi
+✅ Mobil responsive menü görüntüleme
+✅ Kategorilere göre filtreleme
+✅ Ürün arama özelliği
+✅ Smooth animasyonlar
+✅ Hızlı yükleme süreleri
+```
+
+---
 
 ## 🛠️ Teknoloji Stack
 
 ### Backend
-| Teknoloji | Versiyon | Açıklama |
-|-----------|----------|----------|
-| Node.js | 20.x | JavaScript runtime |
-| Express.js | ^4.18.2 | Web framework |
-| TypeScript | ^5.3.3 | Type safety |
-| PostgreSQL | 15+ | Ana veritabanı |
-| Prisma | ^5.22.0 | ORM ve database toolkit |
-| JWT | ^9.0.2 | Authentication |
-| bcryptjs | ^2.4.3 | Şifre hashleme |
-| Multer | ^1.4.5 | File upload |
-| Sharp | ^0.33.1 | Image processing |
-| QRCode | ^1.5.3 | QR kod üretimi |
-| CORS | ^2.8.5 | Cross-origin resource sharing |
-| Rate Limit | ^7.1.0 | API rate limiting |
+
+| Teknoloji | Versiyon | Kullanım Alanı |
+|-----------|----------|----------------|
+| ![Node.js](https://img.shields.io/badge/-Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) | 20.x | JavaScript Runtime |
+| ![Express](https://img.shields.io/badge/-Express-000000?style=flat-square&logo=express&logoColor=white) | 4.18 | Web Framework |
+| ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) | 5.3 | Type Safety |
+| ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white) | 15+ | Veritabanı |
+| ![Prisma](https://img.shields.io/badge/-Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white) | 5.22 | ORM |
+| ![JWT](https://img.shields.io/badge/-JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white) | 9.0 | Authentication |
 
 ### Frontend
-| Teknoloji | Versiyon | Açıklama |
-|-----------|----------|----------|
-| Next.js | 14.0.4 | React framework |
-| React | ^18.2.0 | UI library |
-| TypeScript | ^5.3.3 | Type safety |
-| Tailwind CSS | ^3.3.6 | CSS framework |
-| React Query | ^5.14.2 | Server state management |
-| Zustand | ^4.4.7 | Client state management |
-| Axios | ^1.6.2 | HTTP client |
-| React Hook Form | ^7.49.2 | Form management |
-| Zod | ^3.22.4 | Schema validation |
-| Framer Motion | ^12.23.25 | Animations |
-| Lucide React | ^0.303.0 | Icons |
-| React Hot Toast | ^2.6.0 | Notifications |
-| React QR Code | ^2.0.12 | QR kod gösterimi |
-| Recharts | ^2.10.3 | Charts ve grafikler |
 
-### DevOps & Tools
-- **Docker**: Container platformu
-- **Docker Compose**: Multi-container orchestration
-- **Railway**: Cloud deployment platform
-- **Vercel**: Frontend deployment
-- **Neon**: Serverless PostgreSQL
-- **Cloudinary**: Görsel yönetimi
-- **GitHub Actions**: CI/CD pipeline
+| Teknoloji | Versiyon | Kullanım Alanı |
+|-----------|----------|----------------|
+| ![Next.js](https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white) | 14.0 | React Framework |
+| ![React](https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black) | 18.2 | UI Library |
+| ![Tailwind](https://img.shields.io/badge/-Tailwind-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white) | 3.4 | CSS Framework |
+| ![React Query](https://img.shields.io/badge/-React%20Query-FF4154?style=flat-square&logo=reactquery&logoColor=white) | 5.14 | State Management |
+| ![Zustand](https://img.shields.io/badge/-Zustand-brown?style=flat-square) | 4.4 | Client State |
+| ![Framer](https://img.shields.io/badge/-Framer%20Motion-0055FF?style=flat-square&logo=framer&logoColor=white) | 12.x | Animations |
+
+### DevOps & Servisler
+
+| Servis | Kullanım |
+|--------|----------|
+| 🐳 Docker | Container Platform |
+| 🚂 Railway | Backend Deployment |
+| ▲ Vercel | Frontend Deployment |
+| 🐘 Neon | Serverless PostgreSQL |
+| ☁️ Cloudinary | Görsel CDN |
+
+---
 
 ## 📁 Proje Yapısı
 
 ```
-qr-menu-system/
-├── 📁 backend/
+ben medya qr menü/
+├── 📁 backend/                    # Backend API
 │   ├── 📁 src/
-│   │   ├── 📁 config/         # Database ve JWT konfigürasyonu
-│   │   ├── 📁 controllers/    # API endpoint controllers
-│   │   ├── 📁 middleware/     # Auth, CORS, rate limiting
-│   │   ├── 📁 routes/         # Express routes
-│   │   ├── 📁 services/       # Business logic
-│   │   ├── 📁 utils/          # Yardımcı fonksiyonlar
-│   │   └── 📄 server.ts       # Ana server dosyası
+│   │   ├── 📁 config/            # Konfigürasyon dosyaları
+│   │   ├── 📁 controllers/       # API Controllers
+│   │   ├── 📁 middlewares/       # Auth, CORS, Rate Limit
+│   │   ├── 📁 routes/            # Express Routes
+│   │   ├── 📁 services/          # İş Mantığı
+│   │   ├── 📁 types/             # TypeScript Tipleri
+│   │   ├── 📁 utils/             # Yardımcı Fonksiyonlar
+│   │   └── 📄 server.ts          # Ana Sunucu
 │   ├── 📁 prisma/
-│   │   ├── 📁 migrations/     # Database migrations
-│   │   ├── 📄 schema.prisma   # Database schema
-│   │   └── 📄 seed.ts         # Demo data seeder
-│   ├── 📁 uploads/            # Yüklenen dosyalar
-│   ├── 📄 Dockerfile          # Docker konfigürasyonu
+│   │   ├── 📄 schema.prisma      # Veritabanı Şeması
+│   │   └── 📄 seed.ts            # Demo Veriler
+│   ├── 📄 Dockerfile
 │   └── 📄 package.json
-├── 📁 frontend/
+│
+├── 📁 frontend/                   # Next.js Frontend
 │   ├── 📁 src/
-│   │   ├── 📁 app/            # Next.js 14 App Router
-│   │   │   ├── 📁 admin/      # Admin paneli sayfaları
-│   │   │   ├── 📁 auth/       # Authentication sayfaları
-│   │   │   ├── 📁 menu/       # Müşteri menü sayfaları
-│   │   │   └── 📁 api/        # API route handlers
-│   │   ├── 📁 components/     # Reusable components
-│   │   │   ├── 📁 ui/         # Base UI components
-│   │   │   ├── 📁 admin/      # Admin özel components
-│   │   │   ├── 📁 customer/   # Müşteri özel components
-│   │   │   └── 📁 shared/     # Ortak components
-│   │   ├── 📁 hooks/          # Custom React hooks
-│   │   ├── 📁 lib/            # Utility libraries
-│   │   ├── 📁 stores/         # Zustand stores
-│   │   ├── 📁 types/          # TypeScript type definitions
-│   │   └── 📁 utils/          # Helper functions
-│   ├── 📁 public/             # Static assets
-│   ├── 📄 Dockerfile          # Docker konfigürasyonu
+│   │   ├── 📁 app/               # Next.js App Router
+│   │   │   ├── 📁 admin/         # Admin Paneli
+│   │   │   ├── 📁 auth/          # Giriş/Kayıt
+│   │   │   └── 📁 menu/          # Müşteri Menü
+│   │   ├── 📁 components/        # React Bileşenleri
+│   │   ├── 📁 hooks/             # Custom Hooks
+│   │   ├── 📁 lib/               # Kütüphaneler
+│   │   ├── 📁 store/             # Zustand Store
+│   │   ├── 📁 types/             # TypeScript Tipleri
+│   │   └── 📁 utils/             # Yardımcı Fonksiyonlar
+│   ├── 📄 Dockerfile
 │   └── 📄 package.json
-├── 📄 docker-compose.yml      # Multi-container setup
-├── 📄 package.json            # Root package.json
-├── 📄 HIZLI_BASLANGIC.md     # Hızlı başlangıç rehberi
-├── 📄 PROJE_DURUMU.md        # Proje durumu ve todo
-├── 📄 RAILWAY_DEPLOYMENT.md   # Railway deployment rehberi
-└── 📄 README.md               # Bu dosya
+│
+├── 📄 docker-compose.yml          # Docker Compose
+├── 📄 package.json                # Root Package
+└── 📄 README.md                   # Bu Dosya
 ```
+
+---
 
 ## 🚀 Hızlı Başlangıç
 
 ### Ön Koşullar
+
 ```bash
-# Node.js kontrol et
-node --version  # v20.x.x olmalı
+# Node.js v20.x
+node --version
 
-# PostgreSQL kontrol et
-psql --version  # 15.x olmalı
+# PostgreSQL 15+
+psql --version
 
-# Git kontrol et
+# Git
 git --version
 ```
 
-### 1. Proje Kurulumu
+### 1️⃣ Projeyi Klonlayın
+
 ```bash
-# Repository'yi klonla
-git clone https://github.com/your-username/qr-menu-system.git
+git clone https://github.com/benmedya/qr-menu-system.git
 cd qr-menu-system
-
-# Tüm dependencies'leri yükle
-npm install
 ```
 
-### 2. Environment Konfigürasyonu
+### 2️⃣ Bağımlılıkları Yükleyin
 
-**Backend .env dosyası oluştur:**
 ```bash
-cp backend/.env.example backend/.env
+# Root dependencies
+npm install
+
+# Backend dependencies
+cd backend && npm install && cd ..
+
+# Frontend dependencies
+cd frontend && npm install && cd ..
 ```
 
+### 3️⃣ Environment Dosyalarını Oluşturun
+
+**Backend `.env`:**
 ```env
 # Database
 DATABASE_URL="postgresql://qrmenu:qrmenu123@localhost:5432/qr_menu_db"
 DIRECT_URL="postgresql://qrmenu:qrmenu123@localhost:5432/qr_menu_db"
 
 # JWT
-JWT_SECRET="your-super-secret-jwt-key-min-32-characters"
+JWT_SECRET="your-super-secret-jwt-key-minimum-32-characters"
 
 # Server
 PORT=5000
 NODE_ENV=development
+CORS_ORIGIN=http://localhost:3000
 
-# File Upload
-MAX_FILE_SIZE=5000000
-UPLOAD_DIR=uploads
-
-# Cloudinary (opsiyonel)
+# Cloudinary (Opsiyonel)
 CLOUDINARY_CLOUD_NAME=""
 CLOUDINARY_API_KEY=""
 CLOUDINARY_API_SECRET=""
 ```
 
-**Frontend .env.local dosyası oluştur:**
-```bash
-cp frontend/.env.local.example frontend/.env.local
-```
-
+**Frontend `.env.local`:**
 ```env
-# API Base URL
 NEXT_PUBLIC_API_URL=http://localhost:5000
-
-# App Settings
-NEXT_PUBLIC_APP_NAME="QR Menü Sistemi"
-NEXT_PUBLIC_DEFAULT_LANGUAGE=tr
+NEXT_PUBLIC_APP_NAME="BEN Medya QR Menü"
 ```
 
-### 3. Veritabanı Kurulumu
-```bash
-# PostgreSQL database oluştur
-createdb qr_menu_db
+### 4️⃣ Veritabanını Hazırlayın
 
-# Prisma migrations çalıştır
+```bash
 cd backend
+
+# Migration çalıştır
 npm run prisma:migrate
+
+# Prisma Client oluştur
 npm run prisma:generate
 
 # Demo data yükle
 npm run prisma:seed
+
 cd ..
 ```
 
-### 4. Development Server Başlat
+### 5️⃣ Geliştirme Sunucusunu Başlatın
+
 ```bash
-# Hem backend hem frontend'i aynı anda başlat
-npm run dev
-
-# Alternatif olarak ayrı ayrı:
-# npm run dev:backend  # http://localhost:5000
-# npm run dev:frontend # http://localhost:3000
-```
-
-### 5. Demo Hesapları
-
-**Süper Admin:**
-```
-Email: admin@qrmenu.com
-Şifre: admin123
-URL: http://localhost:3000/admin
-```
-
-**Restoran Admin:**
-```
-Email: restaurant1@example.com  
-Şifre: password123
-URL: http://localhost:3000/admin
-```
-
-**Test Menüsü:**
-```
-URL: http://localhost:3000/menu/restaurant-1
-```
-
-## 📦 Kurulum Seçenekleri
-
-### Otomatik Kurulum (Windows)
-```powershell
-# PowerShell scripti ile otomatik kurulum
-.\setup.ps1
-```
-
-### Manuel Kurulum
-```bash
-# 1. Dependencies
-npm install
-
-# 2. Backend setup
-cd backend
-npm install
-npm run prisma:migrate
-npm run prisma:generate
-npm run prisma:seed
-
-# 3. Frontend setup  
-cd ../frontend
-npm install
-npm run build
-
-# 4. Start servers
-cd ..
+# Her iki servisi aynı anda başlat
 npm run dev
 ```
 
-## 🔧 Konfigürasyon
+| Servis | URL |
+|--------|-----|
+| 🌐 Frontend | http://localhost:3000 |
+| 🔧 Backend API | http://localhost:5000 |
+| 📊 Prisma Studio | `npm run prisma:studio` |
 
-### Environment Variables
+### 🔑 Demo Hesapları
 
-#### Backend (.env)
-```env
-# Database Configuration
-DATABASE_URL="postgresql://user:password@host:port/database"
-DIRECT_URL="postgresql://user:password@host:port/database"
+| Rol | Email | Şifre |
+|-----|-------|-------|
+| 👑 Süper Admin | admin@qrmenu.com | admin123 |
+| 🏪 Restoran Admin | restaurant1@example.com | password123 |
 
-# JWT Configuration  
-JWT_SECRET="your-super-secret-jwt-key-at-least-32-chars"
-JWT_EXPIRES_IN="7d"
+---
 
-# Server Configuration
-PORT=5000
-NODE_ENV="development"
-CORS_ORIGIN="http://localhost:3000"
+## ⚙️ Konfigürasyon
 
-# File Upload Settings
-MAX_FILE_SIZE=5000000
-ALLOWED_FILE_TYPES="jpg,jpeg,png,gif,webp"
-UPLOAD_DIR="uploads"
+### Backend Environment Variables
 
-# Cloudinary Settings (Opsiyonel)
-CLOUDINARY_CLOUD_NAME=""
-CLOUDINARY_API_KEY=""
-CLOUDINARY_API_SECRET=""
+| Değişken | Açıklama | Varsayılan |
+|----------|----------|------------|
+| `DATABASE_URL` | PostgreSQL bağlantı URL'i | - |
+| `JWT_SECRET` | JWT imzalama anahtarı (min 32 karakter) | - |
+| `PORT` | Sunucu portu | 5000 |
+| `NODE_ENV` | Ortam (development/production) | development |
+| `CORS_ORIGIN` | İzin verilen origin | http://localhost:3000 |
+| `CLOUDINARY_*` | Cloudinary API bilgileri | - |
 
-# Email Settings (Gelecek için)
-SMTP_HOST=""
-SMTP_PORT=587
-SMTP_USER=""
-SMTP_PASS=""
-```
+### Frontend Environment Variables
 
-#### Frontend (.env.local)
-```env
-# API Configuration
-NEXT_PUBLIC_API_URL="http://localhost:5000"
-NEXT_PUBLIC_API_TIMEOUT=10000
-
-# App Configuration
-NEXT_PUBLIC_APP_NAME="QR Menü Sistemi"
-NEXT_PUBLIC_APP_VERSION="1.0.0"
-NEXT_PUBLIC_DEFAULT_LANGUAGE="tr"
-
-# Features Flags
-NEXT_PUBLIC_ENABLE_ANALYTICS=true
-NEXT_PUBLIC_ENABLE_PWA=false
-NEXT_PUBLIC_DEBUG_MODE=false
-
-# External Services
-NEXT_PUBLIC_GOOGLE_ANALYTICS=""
-NEXT_PUBLIC_SENTRY_DSN=""
-```
-
-### Veritabanı Şeması
-
-```sql
--- Ana tablolar
-Users           # Kullanıcılar (Admin, Restaurant Admin)
-Restaurants     # Restoranlar
-Categories      # Menü kategorileri
-Products        # Ürünler
-QrCodes         # QR kodları
-Analytics       # Görüntüleme istatistikleri
-Images          # Görsel yönetimi
-Settings        # Sistem ayarları
-```
-
-## 🆕 Yeni Özellik: Gelişmiş Restoran Kayıt Sistemi
-
-### Özet
-Super Admin artık gelişmiş bir form ile yeni restoran ekleyebilir. Sistem otomatik olarak:
-- 6 haneli benzersiz üye numarası üretir
-- Restoran slug'ını oluşturur (Türkçe karakter desteği)
-- Sahip hesabı (RESTAURANT_ADMIN) oluşturur
-- QR kod üretir ve ilişkilendirir
-- Üyelik durumunu yönetir
-
-### Kullanım
-
-**1. Yeni Restoran Oluşturma**
-```
-Adım 1: Super Admin olarak giriş yapın
-Adım 2: /admin/restaurants/new sayfasına gidin
-Adım 3: Formu doldurun:
-  - İşletme Bilgileri: İşletme tipi, ad, slug, iletişim bilgileri
-  - Üyelik Bilgileri: Başlangıç ve bitiş tarihleri
-  - Sahip Bilgileri: Ad, email, şifre
-Adım 4: "Restoran Oluştur" butonuna tıklayın
-```
-
-**2. Oluşturma Sonrası**
-- Sistem sizi restaurant detay sayfasına yönlendirir
-- QR kod görselini görebilir ve indirebilirsiniz
-- Menü linkini kopyalayabilirsiniz
-- Sahibe otomatik hoşgeldin emaili gönderilir
-
-**3. QR Kod Kullanımı**
-```
-- QR kod taratıldığında /menu/{slug} sayfasına redirect olur
-- Üyelik süresi dolmuşsa özel uyarı ekranı gösterilir
-- Tarama sayısı otomatik güncellenir
-```
-
-### API Endpoints
-
-**Yeni Endpoints:**
-```
-POST   /api/admin/restaurants           - Restoran + QR + Owner oluştur
-GET    /api/admin/restaurants/check-slug - Slug müsaitlik kontrolü
-POST   /api/admin/restaurants/generate-slug - Slug üretimi
-GET    /api/qr/scan/:code                - QR scan ve redirect
-GET    /api/public/menu/:slug            - Menü (membership check ile)
-```
-
-### Teknik Detaylar
-
-**Backend:**
-- Transaction ile atomik işlem (restaurant + user + qr)
-- Unique constraints: memberNo, slug, email, qr code
-- Automatic slug generation with Turkish character normalization
-- QR code as base64 PNG (400x400)
-- Membership status calculation
-
-**Frontend:**
-- React Hook Form + Zod validation
-- Real-time slug availability check
-- Auto slug generation from name
-- Responsive form design
-- Error handling with toast notifications
-
-### Database Schema Değişiklikleri
-```prisma
-enum BusinessType { RESTORAN, KAFE, OTEL, DIGER }
-enum MembershipStatus { ACTIVE, EXPIRED, SUSPENDED }
-
-Restaurant {
-  businessType: BusinessType
-  membershipStatus: MembershipStatus
-  ...
-}
-
-QRCode {
-  restaurantId: unique // One QR per restaurant
-  imageData: String    // Base64 PNG
-  ...
-}
-```
-
-### Test Senaryosu
-```bash
-# 1. Migration çalıştır
-cd backend
-npm run prisma:migrate
-
-# 2. Backend başlat
-npm run dev
-
-# 3. Frontend başlat (yeni terminal)
-cd ../frontend
-npm run dev
-
-# 4. Super Admin ile giriş yap
-# Email: admin@qrmenu.com
-# Şifre: admin123
-
-# 5. Yeni restoran ekle
-# /admin/restaurants/new
-
-# 6. QR kodu tarat veya menü linkini aç
-# /menu/{slug}
-```
+| Değişken | Açıklama | Varsayılan |
+|----------|----------|------------|
+| `NEXT_PUBLIC_API_URL` | Backend API URL | http://localhost:5000 |
+| `NEXT_PUBLIC_APP_NAME` | Uygulama adı | QR Menü |
 
 ---
 
 ## 📚 API Dokümantasyonu
 
-### Authentication Endpoints
+### Authentication
 
-#### POST /api/auth/register
-Yeni kullanıcı kaydı
-```json
-{
-  "name": "Restaurant Owner",
-  "email": "owner@restaurant.com", 
-  "password": "password123",
-  "role": "RESTAURANT_ADMIN"
-}
-```
+```http
+POST /api/auth/login
+Content-Type: application/json
 
-#### POST /api/auth/login  
-Kullanıcı girişi
-```json
 {
   "email": "admin@qrmenu.com",
   "password": "admin123"
 }
 ```
 
-#### GET /api/auth/profile
-Kullanıcı profil bilgileri (Auth gerekli)
+```http
+POST /api/auth/register
+Content-Type: application/json
 
-### Restaurant Management (Süper Admin)
-
-#### GET /api/restaurants
-Tüm restoranları listele
-```bash
-# Headers: Authorization: Bearer <token>
-# Response: Restaurant[] with pagination
-```
-
-#### POST /api/restaurants
-Yeni restoran oluştur
-```json
 {
-  "name": "Delicious Restaurant",
-  "description": "Amazing food experience",
-  "address": "123 Main St, City",
-  "phone": "+90 555 123 4567",
-  "email": "info@restaurant.com",
-  "website": "https://restaurant.com",
-  "logo": "base64_image_or_url"
+  "name": "İşletme Sahibi",
+  "email": "owner@restaurant.com",
+  "password": "password123"
 }
 ```
 
-### Menu Management (Restaurant Admin)
+### Restoranlar
 
-#### GET /api/menu/categories?restaurantId=uuid
-Kategorileri listele
+```http
+# Tüm restoranları listele (Admin)
+GET /api/restaurants
+Authorization: Bearer <token>
 
-#### POST /api/menu/categories
-Yeni kategori oluştur
-```json
+# Yeni restoran oluştur (Super Admin)
+POST /api/admin/restaurants
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "businessType": "RESTORAN",
+  "name": "Lezzet Durağı",
+  "email": "info@lezzetduragi.com",
+  "phone": "+90 555 123 4567",
+  "address": "İstanbul, Türkiye",
+  "membershipStartDate": "2026-01-01",
+  "membershipEndDate": "2027-01-01",
+  "ownerName": "Ahmet Yılmaz",
+  "ownerEmail": "ahmet@lezzetduragi.com",
+  "ownerPassword": "secure123"
+}
+```
+
+### Menü Yönetimi
+
+```http
+# Kategorileri listele
+GET /api/menu/categories?restaurantId=<uuid>
+
+# Yeni kategori oluştur
+POST /api/menu/categories
 {
   "name": "Ana Yemekler",
   "description": "Nefis ana yemek seçenekleri",
-  "image": "category-image.jpg",
-  "order": 1,
-  "isActive": true
+  "order": 1
 }
-```
 
-#### POST /api/menu/products
-Yeni ürün oluştur
-```json
+# Yeni ürün oluştur
+POST /api/menu/products
 {
   "name": "Izgara Köfte",
-  "description": "Özel baharatlarla marine edilmiş köfte",
-  "price": 45.00,
-  "image": "product-image.jpg",
-  "categoryId": "category-uuid",
-  "isActive": true,
-  "ingredients": ["Dana eti", "Soğan", "Baharatlar"],
-  "allergens": ["Süt"],
-  "nutritionInfo": {
-    "calories": 350,
-    "protein": 25,
-    "carbs": 10,
-    "fat": 20
-  }
+  "description": "Özel baharatlarla hazırlanmış köfte",
+  "price": 89.90,
+  "categoryId": "<category-uuid>"
 }
 ```
 
-### QR Code Management
+### QR Kod
 
-#### GET /api/qr/:restaurantId
-Restoran için QR kod oluştur/getir
+```http
+# QR kod oluştur/getir
+GET /api/qr/:restaurantId
 
-#### GET /api/qr/scan/:code
-QR kod tarama ve menu redirect
+# QR kod tara (redirect)
+GET /api/qr/scan/:code
 
-#### POST /api/qr/generate
-Özel QR kod parametreleri ile oluştur
-```json
-{
-  "restaurantId": "uuid",
-  "customization": {
-    "size": 300,
-    "margin": 4,
-    "darkColor": "#000000",
-    "lightColor": "#FFFFFF",
-    "logo": "restaurant-logo.png"
-  }
-}
+# Public menü (üyelik kontrolü ile)
+GET /api/public/menu/:slug
 ```
 
-### Analytics Endpoints
+---
 
-#### GET /api/analytics/dashboard
-Dashboard için genel istatistikler
+## 🐳 Docker
 
-#### GET /api/analytics/views
-Görüntüleme istatistikleri
-```bash
-# Query params: startDate, endDate, restaurantId, productId
-# Response: View counts, trends, popular items
-```
-
-## 🎨 Frontend Özellikleri
-
-### Component Yapısı
-
-```typescript
-// Reusable UI Components
-components/
-├── ui/
-│   ├── Button.tsx          # Base button component
-│   ├── Input.tsx           # Form input component  
-│   ├── Modal.tsx           # Modal wrapper
-│   ├── Table.tsx           # Data table component
-│   ├── Card.tsx            # Card layout component
-│   └── LoadingSpinner.tsx  # Loading indicator
-├── admin/
-│   ├── Dashboard/          # Admin dashboard components
-│   ├── RestaurantForm/     # Restaurant CRUD forms
-│   ├── MenuManager/        # Menu management interface
-│   └── Analytics/          # Analytics charts
-├── customer/
-│   ├── MenuView/           # Customer menu display
-│   ├── ProductCard/        # Product display card
-│   ├── CategoryFilter/     # Category filtering
-│   └── SearchBar/          # Product search
-└── shared/
-    ├── Header/             # App header/navigation
-    ├── Footer/             # App footer
-    ├── Sidebar/            # Admin sidebar
-    └── AuthGuard/          # Route protection
-```
-
-### State Management (Zustand)
-
-```typescript
-// stores/authStore.ts
-interface AuthStore {
-  user: User | null;
-  token: string | null;
-  login: (credentials: LoginData) => Promise<void>;
-  logout: () => void;
-  refreshToken: () => Promise<void>;
-}
-
-// stores/menuStore.ts  
-interface MenuStore {
-  categories: Category[];
-  products: Product[];
-  selectedCategory: string | null;
-  searchQuery: string;
-  filters: MenuFilters;
-  fetchMenu: (restaurantId: string) => Promise<void>;
-  setCategory: (categoryId: string | null) => void;
-  setSearchQuery: (query: string) => void;
-}
-
-// stores/adminStore.ts
-interface AdminStore {
-  restaurants: Restaurant[];
-  currentRestaurant: Restaurant | null;
-  analytics: AnalyticsData;
-  fetchRestaurants: () => Promise<void>;
-  createRestaurant: (data: RestaurantData) => Promise<void>;
-  updateRestaurant: (id: string, data: RestaurantData) => Promise<void>;
-}
-```
-
-### React Query Hooks
-
-```typescript
-// hooks/useMenu.ts
-export const useMenu = (restaurantId: string) => {
-  return useQuery({
-    queryKey: ['menu', restaurantId],
-    queryFn: () => menuApi.getMenu(restaurantId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-// hooks/useAnalytics.ts
-export const useAnalytics = (dateRange: DateRange) => {
-  return useQuery({
-    queryKey: ['analytics', dateRange],
-    queryFn: () => analyticsApi.getAnalytics(dateRange),
-    refetchInterval: 30 * 1000, // 30 seconds
-  });
-};
-```
-
-### Form Validation (Zod)
-
-```typescript
-// lib/validations/restaurant.ts
-export const restaurantSchema = z.object({
-  name: z.string().min(2, 'Restaurant adı en az 2 karakter olmalı'),
-  email: z.string().email('Geçerli email adresi girin'),
-  phone: z.string().regex(/^\+90\s\d{3}\s\d{3}\s\d{4}$/, 'Geçerli telefon numarası girin'),
-  address: z.string().min(10, 'Adres en az 10 karakter olmalı'),
-  description: z.string().optional(),
-});
-
-// lib/validations/product.ts
-export const productSchema = z.object({
-  name: z.string().min(2, 'Ürün adı en az 2 karakter olmalı'),
-  price: z.number().min(0, 'Fiyat 0 dan büyük olmalı'),
-  categoryId: z.string().uuid('Geçerli kategori seçin'),
-  description: z.string().optional(),
-  image: z.string().optional(),
-  isActive: z.boolean().default(true),
-});
-```
-
-## 🐳 Docker ile Çalıştırma
-
-### Development Ortamı
+### Development
 
 ```bash
-# Tüm servisleri başlat (PostgreSQL, Backend, Frontend)
+# Tüm servisleri başlat
 docker-compose up -d
 
 # Logları izle
 docker-compose logs -f
 
-# Servisleri durdur  
+# Servisleri durdur
 docker-compose down
-
-# Verileri temizle
-docker-compose down -v
 ```
 
-### Production Build
-
-```bash
-# Production image'larını build et
-docker-compose -f docker-compose.prod.yml build
-
-# Production ortamını başlat
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Docker Compose Konfigürasyonu
+### Docker Compose Yapısı
 
 ```yaml
-# docker-compose.yml
 version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: qr_menu_db
-      POSTGRES_USER: qrmenu  
+      POSTGRES_USER: qrmenu
       POSTGRES_PASSWORD: qrmenu123
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   backend:
     build: ./backend
-    environment:
-      DATABASE_URL: postgresql://qrmenu:qrmenu123@postgres:5432/qr_menu_db
-      JWT_SECRET: your-secret-key
     ports:
       - "5000:5000"
     depends_on:
       - postgres
 
-  frontend:  
+  frontend:
     build: ./frontend
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:5000
     ports:
       - "3000:3000"
     depends_on:
@@ -804,524 +430,164 @@ volumes:
   postgres_data:
 ```
 
-## 🚀 Deployment
+---
 
-### Railway Deployment
+## ☁️ Deployment
 
-Railway modern, geliştiriciler için optimize edilmiş cloud platformudur.
+### 🚂 Railway (Backend)
 
 ```bash
-# Railway CLI kurulumu
+# Railway CLI
 npm install -g @railway/cli
-
-# Railway'e login
 railway login
-
-# Proje oluştur ve deploy et
 railway init
 railway up
 ```
 
-**Detaylı Railway Rehberi:** [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md)
+**Detaylı Rehber:** [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md)
 
-### Vercel Deployment (Frontend)
+### ▲ Vercel (Frontend)
 
 ```bash
-# Vercel CLI kurulumu  
+# Vercel CLI
 npm install -g vercel
-
-# Frontend'i deploy et
 cd frontend
 vercel --prod
 ```
 
-### Neon Database (PostgreSQL)
+**Detaylı Rehber:** [FRONTEND_DEPLOY_GUIDE.md](FRONTEND_DEPLOY_GUIDE.md)
 
-Serverless PostgreSQL çözümü
+### 🐘 Neon (Database)
 
-1. [Neon.tech](https://neon.tech) hesabı oluştur
-2. Yeni database oluştur
-3. Connection string'i kopyala
-4. Environment variables'larda güncelle
+1. [neon.tech](https://neon.tech) hesabı oluşturun
+2. Yeni veritabanı oluşturun
+3. Connection string'i `DATABASE_URL`'e ekleyin
 
-**Detaylı Neon Rehberi:** [NEON_DEPLOYMENT_GUIDE.md](NEON_DEPLOYMENT_GUIDE.md)
+**Detaylı Rehber:** [NEON_DEPLOYMENT_GUIDE.md](NEON_DEPLOYMENT_GUIDE.md)
 
-### Production Environment Variables
-
-```env
-# Backend Production
-DATABASE_URL="postgresql://user:pass@neon-host/db?sslmode=require"
-DIRECT_URL="postgresql://user:pass@neon-host/db?sslmode=require"
-JWT_SECRET="production-jwt-secret-key"
-NODE_ENV="production"
-CORS_ORIGIN="https://your-frontend-domain.com"
-
-# Frontend Production  
-NEXT_PUBLIC_API_URL="https://your-backend-domain.railway.app"
-```
-
-## 🧪 Test
-
-### Backend Testleri
-
-```bash
-# Unit testleri çalıştır
-cd backend  
-npm test
-
-# API testleri
-npm run test:api
-
-# Database testleri
-npm run test:db
-
-# Test coverage raporu
-npm run test:coverage
-```
-
-### Frontend Testleri
-
-```bash
-# Component testleri
-cd frontend
-npm test
-
-# E2E testleri (Cypress)
-npm run test:e2e
-
-# Accessibility testleri
-npm run test:a11y
-```
-
-### Test Dosya Yapısı
-
-```
-backend/
-├── tests/
-│   ├── unit/           # Unit testler
-│   │   ├── services/
-│   │   ├── controllers/  
-│   │   └── utils/
-│   ├── integration/    # Integration testler
-│   │   ├── auth.test.ts
-│   │   ├── restaurants.test.ts
-│   │   └── menu.test.ts
-│   └── fixtures/       # Test data
-│       ├── users.json
-│       └── restaurants.json
-
-frontend/
-├── __tests__/          # Jest testleri
-│   ├── components/
-│   ├── pages/
-│   └── utils/
-├── cypress/            # E2E testleri
-│   ├── e2e/
-│   ├── fixtures/
-│   └── support/
-```
-
-### API Test Örnekleri
-
-```bash
-# Manual API testleri için
-# Backend test scripti çalıştır
-./test-backend.ps1
-
-# Veya curl ile test et
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@qrmenu.com","password":"admin123"}'
-```
-
-## 📊 Performans
-
-### Backend Performans
-
-- **Response Time**: < 200ms (ortalama)
-- **Database Queries**: Prisma ORM optimizasyonu
-- **File Upload**: Sharp ile image compression
-- **Rate Limiting**: 100 request/minute per IP
-- **Caching**: Redis (gelecek sürümde)
-
-### Frontend Performans
-
-- **First Contentful Paint**: < 1.5s
-- **Largest Contentful Paint**: < 2.5s  
-- **Time to Interactive**: < 3s
-- **Bundle Size**: < 500KB (gzipped)
-
-### Optimizasyon Teknikleri
-
-```typescript
-// Image optimization
-import Image from 'next/image'
-
-<Image
-  src="/menu-item.jpg"
-  alt="Menu Item"
-  width={300}
-  height={200}
-  placeholder="blur"
-  priority={false}
-/>
-
-// Code splitting
-const AdminPanel = dynamic(() => import('./AdminPanel'), {
-  ssr: false,
-  loading: () => <LoadingSpinner />
-});
-
-// Data prefetching
-export async function generateStaticParams() {
-  const restaurants = await getRestaurants();
-  return restaurants.map(r => ({ id: r.id }));
-}
-```
-
-### Database Optimizasyon
-
-```sql
--- Index'ler (Prisma schema'da)
-@@index([restaurantId, isActive])
-@@index([categoryId])  
-@@index([createdAt])
-@@unique([restaurantId, slug])
-
--- N+1 Problem çözümü
-include: {
-  categories: {
-    include: {
-      products: true
-    }
-  }
-}
-```
+---
 
 ## 🔒 Güvenlik
 
-### Authentication & Authorization
+| Özellik | Uygulama |
+|---------|----------|
+| 🔐 **Authentication** | JWT Tokens (7 gün geçerlilik) |
+| 👤 **Authorization** | Role-based Access Control (RBAC) |
+| 🔑 **Password** | bcrypt (12 rounds) |
+| 🛡️ **Rate Limiting** | 100 istek/dakika per IP |
+| 🌐 **CORS** | Whitelist origin yapılandırması |
+| 💉 **SQL Injection** | Prisma ORM koruması |
+| ⚔️ **XSS** | Content Security Policy |
+| 📁 **File Upload** | Tip ve boyut validasyonu |
 
-- **JWT Tokens**: Secure, stateless authentication
-- **Role-based Access Control**: SUPER_ADMIN, RESTAURANT_ADMIN, USER
-- **Password Hashing**: bcrypt (12 rounds)
-- **Token Expiry**: 7 days default
+---
 
-### API Güvenliği
+## 📊 Performans
 
-- **CORS**: Configured origins
-- **Rate Limiting**: DDoS protection
-- **Input Validation**: Zod schemas
-- **SQL Injection**: Prisma ORM protection
-- **XSS Prevention**: Content Security Policy
+### Backend Metrikleri
 
-### File Upload Güvenliği
+| Metrik | Hedef |
+|--------|-------|
+| Response Time | < 200ms |
+| Throughput | 1000 req/s |
+| Database Queries | Optimized with Prisma |
+| File Upload | Sharp compression |
 
-```typescript
-// Allowed file types
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+### Frontend Metrikleri
 
-// File validation middleware
-export const validateFile = (req: Request, res: Response, next: NextFunction) => {
-  const file = req.file;
-  if (!file) return res.status(400).json({ error: 'Dosya yüklenmelidir' });
-  
-  if (!ALLOWED_TYPES.includes(file.mimetype)) {
-    return res.status(400).json({ error: 'Desteklenmeyen dosya formatı' });
-  }
-  
-  if (file.size > MAX_FILE_SIZE) {
-    return res.status(400).json({ error: 'Dosya boyutu çok büyük' });
-  }
-  
-  next();
-};
-```
+| Metrik | Hedef |
+|--------|-------|
+| First Contentful Paint | < 1.5s |
+| Largest Contentful Paint | < 2.5s |
+| Time to Interactive | < 3s |
+| Bundle Size | < 500KB (gzipped) |
 
-## 📱 Mobile & PWA
-
-### Responsive Design
-
-- **Mobile-First**: Tailwind CSS approach
-- **Breakpoints**: sm, md, lg, xl, 2xl
-- **Touch Friendly**: 44px minimum touch targets
-- **Swipe Gestures**: Category navigation
-
-### PWA Özellikleri (Gelecek)
-
-```json
-// manifest.json
-{
-  "name": "QR Menü Sistemi",
-  "short_name": "QRMenu",
-  "description": "Dijital restoran menü sistemi",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
-  "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
-}
-```
-
-## 🛠️ Geliştirme Araçları
-
-### VS Code Extensions
-
-```json
-// .vscode/extensions.json
-{
-  "recommendations": [
-    "ms-vscode.vscode-typescript-next",
-    "bradlc.vscode-tailwindcss",
-    "prisma.prisma",
-    "esbenp.prettier-vscode",
-    "ms-vscode.vscode-eslint"
-  ]
-}
-```
-
-### Git Hooks (Husky)
-
-```json
-// package.json
-{
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm test"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["prettier --write", "eslint --fix"],
-    "*.{md,json}": ["prettier --write"]
-  }
-}
-```
-
-### Development Scripts
-
-```powershell
-# Windows PowerShell scripts
-.\setup.ps1          # İlk kurulum
-.\git-push.ps1       # Git push with checks  
-.\test-backend.ps1   # API testleri
-.\quick-setup.ps1    # Hızlı geliştirme ortamı
-```
+---
 
 ## 🔧 Troubleshooting
 
-### Sık Karşılaşılan Problemler
+### Sık Karşılaşılan Sorunlar
 
-#### Database Connection Error
+**🔴 Database bağlantı hatası:**
 ```bash
-# Problem: Database connection refused
-# Çözüm: PostgreSQL servisini kontrol et
+# PostgreSQL servisini kontrol et
 pg_ctl status
-pg_ctl start
 
-# Connection string'i kontrol et
+# Bağlantı string'ini doğrula
 echo $DATABASE_URL
 ```
 
-#### Port Already in Use  
-```bash
-# Problem: Port 3000 or 5000 already in use
-# Çözüm: Portu değiştir veya process'i öldür
-lsof -ti:3000 | xargs kill -9
-lsof -ti:5000 | xargs kill -9
-
-# Alternatif portlar kullan
-PORT=3001 npm run dev:frontend
-PORT=5001 npm run dev:backend
+**🔴 Port kullanımda:**
+```powershell
+# Windows'ta portu kapat
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
 ```
 
-#### Prisma Migration Failed
+**🔴 Prisma migration hatası:**
 ```bash
-# Problem: Migration failed
-# Çözüm: Database'i reset et
-npm run prisma:reset
+cd backend
+npx prisma migrate reset
 npm run prisma:migrate
 npm run prisma:seed
 ```
 
-#### Frontend Build Error
-```bash
-# Problem: Next.js build fails
-# Çözüm: Cache'i temizle
-rm -rf .next
-npm run build
-```
-
-### Debug Modları
-
-```typescript
-// Backend debug
-DEBUG=app:* npm run dev
-
-// Frontend debug  
-NEXT_PUBLIC_DEBUG=true npm run dev
-
-// Database queries debug
-DEBUG=prisma:query npm run dev:backend
-```
-
-### Log Dosyaları
-
-```
-logs/
-├── app.log          # Genel uygulama logları
-├── error.log        # Hata logları  
-├── access.log       # API access logları
-└── db.log           # Database sorgu logları
-```
-
-## 📈 Roadmap
-
-### v1.1 (Q1 2026)
-- [ ] Multi-language support (EN, TR, AR)
-- [ ] PWA support
-- [ ] Offline menu viewing
-- [ ] Push notifications
-- [ ] Advanced analytics dashboard
-
-### v1.2 (Q2 2026)  
-- [ ] Table ordering system
-- [ ] Payment integration
-- [ ] Customer reviews
-- [ ] Loyalty program
-- [ ] Email notifications
-
-### v1.3 (Q3 2026)
-- [ ] Multi-location restaurants
-- [ ] Franchise management
-- [ ] Advanced reporting
-- [ ] API webhooks
-- [ ] Third-party integrations
-
-### v2.0 (Q4 2026)
-- [ ] Mobile apps (iOS/Android)
-- [ ] AI-powered recommendations
-- [ ] Voice ordering
-- [ ] AR menu experience
-- [ ] Kitchen display system
+---
 
 ## 🤝 Katkıda Bulunma
 
-### Development Workflow
+1. 🍴 Fork yapın
+2. 🌿 Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. 💾 Commit yapın (`git commit -m 'feat: add amazing feature'`)
+4. 📤 Push yapın (`git push origin feature/amazing-feature`)
+5. 🔄 Pull Request açın
 
-1. **Fork** the repository
-2. **Create** a feature branch
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. **Commit** your changes
-   ```bash
-   git commit -m 'feat: add amazing feature'
-   ```
-4. **Push** to the branch
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-5. **Create** a Pull Request
+### Commit Kuralları
 
-### Commit Convention
-
-```bash
-# Format: type(scope): description
-
-feat(auth): add password reset functionality
-fix(menu): resolve category sorting issue  
-docs(api): update authentication endpoints
-style(ui): improve button hover states
-refactor(db): optimize restaurant queries
-test(api): add menu CRUD tests
-chore(deps): update dependencies
+```
+feat: yeni özellik
+fix: hata düzeltme
+docs: dokümantasyon
+style: kod formatı
+refactor: kod yeniden yapılandırma
+test: test ekleme
+chore: genel bakım
 ```
 
-### Code Style
+---
 
-```typescript
-// TypeScript/JavaScript
-- Use TypeScript for type safety
-- Follow ESLint + Prettier configuration
-- Use descriptive variable names
-- Add JSDoc comments for functions
-- Prefer const over let
-- Use async/await over Promises
+## 📜 Lisans
 
-// React/Next.js
-- Use functional components with hooks
-- Extract custom hooks for complex logic
-- Use proper prop types
-- Implement error boundaries
-- Use Next.js best practices (Image, Link, etc.)
-
-// CSS/Styling
-- Use Tailwind CSS classes
-- Follow mobile-first approach  
-- Use semantic HTML elements
-- Ensure accessibility (WCAG 2.1)
-- Test on multiple devices
-```
-
-### Pull Request Guidelines
-
-- ✅ Tests pass
-- ✅ Code follows style guide
-- ✅ Documentation updated
-- ✅ No console.log statements
-- ✅ Performance impact considered
-- ✅ Accessibility tested
-- ✅ Mobile responsive
-
-## 📄 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
+Bu proje **MIT Lisansı** altında lisanslanmıştır.
 
 ```
 MIT License
 
-Copyright (c) 2024 QR Menü Sistemi
+Copyright (c) 2024-2026 BEN Medya
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+copies of the Software...
 ```
-
-## 📞 İletişim
-
-- **Email**: info@qrmenu.com
-- **GitHub**: [QR Menu System](https://github.com/your-username/qr-menu-system)
-- **Website**: [https://qrmenu.com](https://qrmenu.com)
-- **Documentation**: [https://docs.qrmenu.com](https://docs.qrmenu.com)
 
 ---
 
+## 📞 İletişim
+
 <div align="center">
+
+| Platform | Link |
+|----------|------|
+| 🌐 Website | [benmedya.com](https://benmedya.com) |
+| 📧 Email | info@benmedya.com |
+| 🐙 GitHub | [github.com/benmedya](https://github.com/benmedya) |
+
+---
 
 **⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın! ⭐**
 
-Made with ❤️ for restaurants and their customers
+<sub>Made with ❤️ by BEN Medya Team</sub>
 
 </div>
