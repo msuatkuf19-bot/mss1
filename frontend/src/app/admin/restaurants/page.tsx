@@ -107,7 +107,7 @@ export default function AdminRestaurants() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
 
   const [formData, setFormData] = useState<FormData>({
-    businessType: 'Restoran',
+    businessType: 'RESTORAN',
     memberNo: '',
     name: '',
     slug: '',
@@ -336,7 +336,7 @@ export default function AdminRestaurants() {
     setSlugTouched(true);
     setSlugPreview(restaurant.slug);
     setFormData({
-      businessType: restaurant.businessType || 'Restoran',
+      businessType: restaurant.businessType || 'RESTORAN',
       memberNo: restaurant.memberNo || '',
       name: restaurant.name,
       slug: restaurant.slug,
@@ -370,7 +370,7 @@ export default function AdminRestaurants() {
     setErrors({});
     setCreatedRestaurant(null);
     setFormData({
-      businessType: 'Restoran',
+      businessType: 'RESTORAN',
       memberNo: '',
       name: '',
       slug: '',
@@ -771,11 +771,10 @@ export default function AdminRestaurants() {
                           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                           <option value="">Seçiniz</option>
-                          <option value="Restoran">Restoran</option>
-                          <option value="Kafe">Kafe</option>
-                          <option value="Otel">Otel</option>
-                          <option value="Bar">Bar</option>
-                          <option value="Diğer">Diğer</option>
+                          <option value="RESTORAN">Restoran</option>
+                          <option value="KAFE">Kafe</option>
+                          <option value="OTEL">Otel</option>
+                          <option value="DIGER">Diğer</option>
                         </select>
                         {errors.businessType && (
                           <p className="mt-1 text-sm text-red-600">{errors.businessType}</p>
