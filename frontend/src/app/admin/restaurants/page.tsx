@@ -894,64 +894,62 @@ export default function AdminRestaurants() {
                         {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                       </div>
 
-                      {/* Slug + QR Preview */}
-                      <div className="flex flex-col sm:flex-row gap-4">
-                        {/* Slug Input */}
-                        <div className="flex-1">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Slug (URL) <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={formData.slug}
-                            onChange={(e) => {
-                              setSlugTouched(true);
-                              const normalized = slugifyTR(e.target.value);
-                              setSlugPreview(normalized);
-                              setFormData({ ...formData, slug: normalized });
-                            }}
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
-                            placeholder="guler-kebap-lahmacun"
-                          />
-                          <div className="mt-1.5 text-xs space-y-1">
-                            <div className="text-gray-600">
-                              Menü linki:{' '}
-                              <span className="font-mono text-blue-600">/menu/{slugPreview || '...'}</span>
-                            </div>
-                            {slugCheck?.loading ? (
-                              <div className="text-gray-500">Kontrol ediliyor...</div>
-                            ) : slugCheck?.error ? (
-                              <div className="text-red-600">{slugCheck.error}</div>
-                            ) : slugCheck?.available === true ? (
-                              <div className="text-green-700 font-medium">✓ Slug uygun</div>
-                            ) : slugCheck?.available === false ? (
-                              <div className="text-red-700">
-                                ✗ Slug kullanımda
-                                {slugCheck.suggestion && (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setFormData({ ...formData, slug: slugCheck.suggestion || formData.slug });
-                                      setSlugPreview(slugCheck.suggestion || slugPreview);
-                                    }}
-                                    className="ml-2 underline text-blue-600 hover:text-blue-800"
-                                  >
-                                    Öneri: {slugCheck.suggestion}
-                                  </button>
-                                )}
-                              </div>
-                            ) : null}
+                      {/* Slug (URL) - Restoran Adı'nın hemen altında */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Slug (URL) <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.slug}
+                          onChange={(e) => {
+                            setSlugTouched(true);
+                            const normalized = slugifyTR(e.target.value);
+                            setSlugPreview(normalized);
+                            setFormData({ ...formData, slug: normalized });
+                          }}
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                          placeholder="guler-kebap-lahmacun"
+                        />
+                        <div className="mt-1.5 text-xs space-y-1">
+                          <div className="text-gray-600">
+                            Menü linki:{' '}
+                            <span className="font-mono text-blue-600">/menu/{slugPreview || '...'}</span>
                           </div>
-                          {errors.slug && <p className="mt-1 text-sm text-red-600">{errors.slug}</p>}
+                          {slugCheck?.loading ? (
+                            <div className="text-gray-500">Kontrol ediliyor...</div>
+                          ) : slugCheck?.error ? (
+                            <div className="text-red-600">{slugCheck.error}</div>
+                          ) : slugCheck?.available === true ? (
+                            <div className="text-green-700 font-medium">✓ Slug uygun</div>
+                          ) : slugCheck?.available === false ? (
+                            <div className="text-red-700">
+                              ✗ Slug kullanımda
+                              {slugCheck.suggestion && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, slug: slugCheck.suggestion || formData.slug });
+                                    setSlugPreview(slugCheck.suggestion || slugPreview);
+                                  }}
+                                  className="ml-2 underline text-blue-600 hover:text-blue-800"
+                                >
+                                  Öneri: {slugCheck.suggestion}
+                                </button>
+                              )}
+                            </div>
+                          ) : null}
                         </div>
+                        {errors.slug && <p className="mt-1 text-sm text-red-600">{errors.slug}</p>}
+                      </div>
 
-                        {/* QR Preview Card */}
-                        <div className="flex-shrink-0 w-full sm:w-auto sm:ml-4">
-                          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 w-full sm:w-72">
-                            <h4 className="text-sm font-medium text-gray-700 text-center mb-3">
-                              QR Kod Önizleme
-                            </h4>
+                      {/* QR Preview Card - Ayrı satırda */}
+                      <div className="w-full">
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 w-full sm:w-72 mx-auto sm:mx-0">
+                          <h4 className="text-sm font-medium text-gray-700 text-center mb-3">
+                            QR Kod Önizleme
+                          </h4>
                             
                             <div className="flex flex-col items-center justify-center">
                               {slugPreview ? (
@@ -1065,7 +1063,6 @@ export default function AdminRestaurants() {
                             </div>
                           </div>
                         </div>
-                      </div>
                     </div>
 
                     {/* Açıklama */}
