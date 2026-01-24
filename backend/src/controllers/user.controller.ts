@@ -19,46 +19,19 @@ export const getAllUsers = async (
   next: NextFunction
 ) => {
   try {
-    // İlk önce temel sorgu yap (assignedRestaurant olmadan)
-    let users;
-    try {
-      // Yeni şema ile dene (assignedRestaurant dahil)
-      users = await prisma.user.findMany({
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true,
-          assignedRestaurantId: true,
-          assignedRestaurant: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-    } catch (schemaError) {
-      // Eski şema ile dene (migration henüz çalışmadıysa)
-      console.log('[USER] Falling back to basic user query (migration pending)');
-      users = await prisma.user.findMany({
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-    }
+    // Basit sorgu (assignedRestaurant sonradan eklenecek)
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
 
     sendSuccess(res, users);
   } catch (error) {
@@ -106,7 +79,7 @@ export const createUser = async (
 ) => {
   try {
     console.log('[USER CREATE] Request received:', { email: req.body.email, name: req.body.name });
-    const { email, name, password, role, restaurantId } = req.body;
+    const { email, name, password, role } = req.body;
 
     // Email kontrolü
     const existingUser = await prisma.user.findUnique({
@@ -117,67 +90,26 @@ export const createUser = async (
       throw new ApiError(400, 'Bu email zaten kullanılıyor');
     }
 
-    // Restoran kontrolü (eğer gönderildiyse)
-    if (restaurantId) {
-      const restaurant = await prisma.restaurant.findUnique({
-        where: { id: restaurantId },
-      });
-      if (!restaurant) {
-        throw new ApiError(400, 'Seçilen restoran bulunamadı');
-      }
-    }
-
     // Şifre hash
     const hashedPassword = await hashPassword(password);
 
-    let user;
-    try {
-      // Yeni şema ile dene (assignedRestaurantId dahil)
-      user = await prisma.user.create({
-        data: {
-          email,
-          name,
-          password: hashedPassword,
-          role: (role || UserRole.CUSTOMER) as any,
-          assignedRestaurantId: restaurantId || null,
-        },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          assignedRestaurantId: true,
-          assignedRestaurant: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-        },
-      });
-    } catch (schemaError) {
-      // Eski şema ile dene (migration henüz çalışmadıysa)
-      console.log('[USER CREATE] Falling back to basic create (migration pending)');
-      user = await prisma.user.create({
-        data: {
-          email,
-          name,
-          password: hashedPassword,
-          role: (role || UserRole.CUSTOMER) as any,
-        },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-        },
-      });
-    }
+    // Basit kullanıcı oluştur (assignedRestaurantId sonradan eklenecek)
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        password: hashedPassword,
+        role: (role || UserRole.CUSTOMER) as any,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
+    });
 
     // Hoş geldiniz + KVKK maili gönder (async, hata durumunda kullanıcı kaydı yine başarılı)
     let emailSent = false;
