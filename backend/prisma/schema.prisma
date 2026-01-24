@@ -194,7 +194,8 @@ model Restaurant {
   productViews        ProductView[]
   qrCodes             QRCode[]
   restaurantStatDaily RestaurantStatDaily[]
-  owner               User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner               User                  @relation("RestaurantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  assignedUsers       User[]                @relation("AssignedUsers")
 
   @@index([ownerId])
   @@index([slug])
@@ -205,16 +206,23 @@ model Restaurant {
 }
 
 model User {
-  id          String       @id @default(uuid())
-  email       String       @unique
-  password    String
-  name        String
-  role        UserRole     @default(CUSTOMER)
-  isActive    Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  restaurants Restaurant[]
+  id                   String       @id @default(uuid())
+  email                String       @unique
+  password             String
+  name                 String
+  role                 UserRole     @default(CUSTOMER)
+  isActive             Boolean      @default(true)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  
+  // Kullanıcının atandığı restoran (opsiyonel)
+  assignedRestaurantId String?
+  assignedRestaurant   Restaurant?  @relation("AssignedUsers", fields: [assignedRestaurantId], references: [id], onDelete: SetNull)
+  
+  // Kullanıcının sahip olduğu restoranlar (owner ilişkisi)
+  restaurants          Restaurant[] @relation("RestaurantOwner")
 
+  @@index([assignedRestaurantId])
   @@map("users")
 }
 

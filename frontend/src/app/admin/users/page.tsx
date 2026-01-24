@@ -4,7 +4,13 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
-import { Plus, Trash2, Users, Pencil } from 'lucide-react';
+import { Plus, Trash2, Users, Pencil, Store } from 'lucide-react';
+
+interface Restaurant {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 interface User {
   id: string;
@@ -13,10 +19,13 @@ interface User {
   role: string;
   isActive: boolean;
   createdAt: string;
+  assignedRestaurantId?: string;
+  assignedRestaurant?: Restaurant;
 }
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<User[]>([]);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -27,10 +36,12 @@ export default function AdminUsers() {
     password: '',
     role: 'CUSTOMER',
     isActive: true,
+    restaurantId: '',
   });
 
   useEffect(() => {
     loadUsers();
+    loadRestaurants();
   }, []);
 
   const loadUsers = async () => {
@@ -45,13 +56,27 @@ export default function AdminUsers() {
     }
   };
 
+  const loadRestaurants = async () => {
+    try {
+      const result = await apiClient.getRestaurants();
+      setRestaurants(result.data || []);
+    } catch (error) {
+      console.error('Restoranlar yüklenemedi:', error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const payload = {
+        ...formData,
+        restaurantId: formData.restaurantId || undefined,
+      };
+      
       if (editingUser) {
-        await apiClient.updateUser(editingUser.id, formData);
+        await apiClient.updateUser(editingUser.id, payload);
       } else {
-        await apiClient.createUser(formData);
+        await apiClient.createUser(payload);
       }
       
       setShowModal(false);
@@ -80,6 +105,7 @@ export default function AdminUsers() {
       password: '',
       role: user.role,
       isActive: user.isActive,
+      restaurantId: user.assignedRestaurantId || '',
     });
     setShowModal(true);
   };
@@ -92,7 +118,18 @@ export default function AdminUsers() {
       password: '',
       role: 'CUSTOMER',
       isActive: true,
+      restaurantId: '',
     });
+  };
+
+  // Rol değiştiğinde restoran seçimini kontrol et
+  const handleRoleChange = (newRole: string) => {
+    setFormData(prev => ({
+      ...prev,
+      role: newRole,
+      // SUPER_ADMIN ise restoran seçimini temizle
+      restaurantId: newRole === 'SUPER_ADMIN' ? '' : prev.restaurantId,
+    }));
   };
 
   const getRoleBadge = (role: string) => {
@@ -188,6 +225,12 @@ export default function AdminUsers() {
                         <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[12px] font-semibold ${getRoleBadge(user.role)}`}>
                           {getRoleLabel(user.role)}
                         </span>
+                        {user.assignedRestaurant && (
+                          <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-medium bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200/80">
+                            <Store className="h-3 w-3" />
+                            {user.assignedRestaurant.name}
+                          </span>
+                        )}
                         <span className="text-[12px] text-slate-500">
                           {new Date(user.createdAt).toLocaleDateString('tr-TR')}
                         </span>
@@ -221,6 +264,7 @@ export default function AdminUsers() {
                   <tr>
                     <th className="text-left py-3.5 px-6 text-[12px] font-semibold text-slate-600">Kullanıcı</th>
                     <th className="text-center py-3.5 px-6 text-[12px] font-semibold text-slate-600">Rol</th>
+                    <th className="text-left py-3.5 px-6 text-[12px] font-semibold text-slate-600">Restoran</th>
                     <th className="text-center py-3.5 px-6 text-[12px] font-semibold text-slate-600">Durum</th>
                     <th className="text-left py-3.5 px-6 text-[12px] font-semibold text-slate-600">Kayıt Tarihi</th>
                     <th className="text-right py-3.5 px-6 text-[12px] font-semibold text-slate-600">İşlemler</th>
@@ -239,6 +283,16 @@ export default function AdminUsers() {
                         <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[12px] font-semibold ${getRoleBadge(user.role)}`}>
                           {getRoleLabel(user.role)}
                         </span>
+                      </td>
+                      <td className="py-4 px-6">
+                        {user.assignedRestaurant ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-medium bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200/80">
+                            <Store className="h-3 w-3" />
+                            {user.assignedRestaurant.name}
+                          </span>
+                        ) : (
+                          <span className="text-[12px] text-slate-400">—</span>
+                        )}
                       </td>
                       <td className="py-4 px-6 text-center">
                         <span
@@ -347,7 +401,7 @@ export default function AdminUsers() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Rol *</label>
                     <select
                       value={formData.role}
-                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      onChange={(e) => handleRoleChange(e.target.value)}
                       className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="CUSTOMER">Müşteri</option>
@@ -355,6 +409,33 @@ export default function AdminUsers() {
                       <option value="SUPER_ADMIN">Süper Admin</option>
                     </select>
                   </div>
+
+                  {/* Restoran Seçimi - SUPER_ADMIN hariç göster */}
+                  {formData.role !== 'SUPER_ADMIN' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Atanacak Restoran {formData.role === 'RESTAURANT_ADMIN' && <span className="text-red-500">*</span>}
+                      </label>
+                      <select
+                        value={formData.restaurantId}
+                        onChange={(e) => setFormData({ ...formData, restaurantId: e.target.value })}
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                        required={formData.role === 'RESTAURANT_ADMIN'}
+                      >
+                        <option value="">-- Restoran Seçin --</option>
+                        {restaurants.map((restaurant) => (
+                          <option key={restaurant.id} value={restaurant.id}>
+                            {restaurant.name} ({restaurant.slug})
+                          </option>
+                        ))}
+                      </select>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {formData.role === 'RESTAURANT_ADMIN' 
+                          ? 'Restoran Admin için restoran seçimi zorunludur' 
+                          : 'Opsiyonel - Kullanıcıyı bir restorana atayabilirsiniz'}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="flex items-center gap-3">
                     <input

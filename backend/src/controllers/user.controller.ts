@@ -28,6 +28,14 @@ export const getAllUsers = async (
         isActive: true,
         createdAt: true,
         updatedAt: true,
+        assignedRestaurantId: true,
+        assignedRestaurant: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -78,7 +86,7 @@ export const createUser = async (
 ) => {
   try {
     console.log('[USER CREATE] Request received:', { email: req.body.email, name: req.body.name });
-    const { email, name, password, role } = req.body;
+    const { email, name, password, role, restaurantId } = req.body;
 
     // Email kontrolü
     const existingUser = await prisma.user.findUnique({
@@ -87,6 +95,16 @@ export const createUser = async (
 
     if (existingUser) {
       throw new ApiError(400, 'Bu email zaten kullanılıyor');
+    }
+
+    // Restoran kontrolü (eğer gönderildiyse)
+    if (restaurantId) {
+      const restaurant = await prisma.restaurant.findUnique({
+        where: { id: restaurantId },
+      });
+      if (!restaurant) {
+        throw new ApiError(400, 'Seçilen restoran bulunamadı');
+      }
     }
 
     // Şifre hash
@@ -98,6 +116,7 @@ export const createUser = async (
         name,
         password: hashedPassword,
         role: (role || UserRole.CUSTOMER) as any,
+        assignedRestaurantId: restaurantId || null,
       },
       select: {
         id: true,
@@ -106,6 +125,14 @@ export const createUser = async (
         role: true,
         isActive: true,
         createdAt: true,
+        assignedRestaurantId: true,
+        assignedRestaurant: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
       },
     });
 
