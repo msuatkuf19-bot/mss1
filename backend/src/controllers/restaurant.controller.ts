@@ -222,10 +222,18 @@ export const createRestaurant = async (
       throw new ApiError(400, 'Bu email adresi zaten kullanılıyor. Lütfen farklı bir email girin.');
     }
 
-    // Generate QR code
+    // Generate QR code with correct public menu URL
     const qrCode = await generateQRCodeString();
-    const frontendUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'http://localhost:3000';
-    const menuUrl = `${frontendUrl}/menu/${finalSlug}`;
+    // Priority: PUBLIC_MENU_BASE_URL > FRONTEND_URL > CORS_ORIGIN > fallback
+    const publicMenuBaseUrl = process.env.PUBLIC_MENU_BASE_URL 
+      || process.env.FRONTEND_URL 
+      || process.env.CORS_ORIGIN 
+      || process.env.NEXT_PUBLIC_APP_URL 
+      || process.env.APP_URL 
+      || 'http://localhost:3000';
+    // Normalize: remove trailing slash
+    const normalizedBaseUrl = publicMenuBaseUrl.replace(/\/$/, '');
+    const menuUrl = `${normalizedBaseUrl}/menu/${finalSlug}`;
     const qrImageData = await generateQRCodeImage(menuUrl);
 
     // Calculate membership status
@@ -298,6 +306,7 @@ export const createRestaurant = async (
 
     // Send welcome email (non-blocking)
     try {
+      const frontendUrl = process.env.FRONTEND_URL || process.env.CORS_ORIGIN || 'http://localhost:3000';
       const loginUrl = `${frontendUrl}/login`;
       const emailResult = await sendWelcomeKvkkEmail({
         to: result.owner.email,
@@ -367,6 +376,7 @@ export const updateRestaurant = async (
       email,
       logo,
       workingHours,
+      openingHoursText,
       themeColor,
       themeSettings,
       headerImage,
@@ -377,10 +387,14 @@ export const updateRestaurant = async (
       membershipStartDate,
       membershipEndDate,
       isActive,
+      ownerPassword, // Optional: only update if provided
     } = req.body;
 
-    // Check restaurant exists
-    const restaurant = await prisma.restaurant.findUnique({ where: { id } });
+    // Check restaurant exists with owner
+    const restaurant = await prisma.restaurant.findUnique({ 
+      where: { id },
+      include: { owner: true }
+    });
     if (!restaurant) {
       throw new ApiError(404, 'Restoran bulunamadı');
     }
@@ -395,6 +409,16 @@ export const updateRestaurant = async (
       const slugAvailable = await isSlugAvailable(slug, id);
       if (!slugAvailable) {
         throw new ApiError(400, 'Bu slug URL zaten kullanılıyor');
+      }
+    }
+
+    // Validate password if provided
+    if (ownerPassword && ownerPassword.length > 0) {
+      if (ownerPassword.length < 8) {
+        throw new ApiError(400, 'Şifre en az 8 karakter olmalıdır');
+      }
+      if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(ownerPassword)) {
+        throw new ApiError(400, 'Şifre en az 1 harf ve 1 rakam içermelidir');
       }
     }
 
@@ -439,55 +463,76 @@ export const updateRestaurant = async (
       }
     }
 
-    const updatedRestaurant = await prisma.restaurant.update({
-      where: { id },
-      data: {
-        ...(businessType && { businessType: businessType as any }),
-        ...(name && { name }),
-        ...(slug && { slug }),
-        ...(description !== undefined && { description }),
-        ...(address && { address }),
-        ...(city !== undefined && { city }),
-        ...(district !== undefined && { district }),
-        ...(neighborhood !== undefined && { neighborhood }),
-        ...(fullAddress !== undefined && { fullAddress }),
-        ...(phone && { phone }),
-        ...(email && { email }),
-        ...(logo !== undefined && { logo }),
-        ...(headerImage !== undefined && { headerImage }),
-        ...(instagramUrl !== undefined && { instagramUrl }),
-        ...(facebookUrl !== undefined && { facebookUrl }),
-        ...(googleMapsUrl !== undefined && { googleMapsUrl }),
-        ...(internalNote !== undefined && { internalNote }),
-        ...(workingHoursStr !== undefined && { workingHours: workingHoursStr }),
-        ...(themeColor && { themeColor }),
-        ...(themeSettingsString !== undefined && { themeSettings: themeSettingsString }),
-        ...(startDate && { membershipStartDate: startDate }),
-        ...(endDate && { membershipEndDate: endDate }),
-        ...(isActive !== undefined && { isActive }),
-        ...(membershipStatus && { membershipStatus: membershipStatus as any }),
-      },
-      include: {
-        owner: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+    // Hash password if provided
+    let hashedPassword: string | undefined;
+    if (ownerPassword && ownerPassword.length > 0) {
+      hashedPassword = await hashPassword(ownerPassword);
+    }
+
+    // Update owner password if provided (in a transaction)
+    const result = await prisma.$transaction(async (tx) => {
+      // Update owner password if provided
+      if (hashedPassword && restaurant.ownerId) {
+        await tx.user.update({
+          where: { id: restaurant.ownerId },
+          data: { password: hashedPassword },
+        });
+      }
+
+      // Update restaurant
+      const updatedRestaurant = await tx.restaurant.update({
+        where: { id },
+        data: {
+          ...(businessType && { businessType: businessType as any }),
+          ...(name && { name }),
+          ...(slug && { slug }),
+          ...(description !== undefined && { description }),
+          ...(address && { address }),
+          ...(city !== undefined && { city }),
+          ...(district !== undefined && { district }),
+          ...(neighborhood !== undefined && { neighborhood }),
+          ...(fullAddress !== undefined && { fullAddress }),
+          ...(phone && { phone }),
+          ...(email && { email }),
+          ...(logo !== undefined && { logo }),
+          ...(headerImage !== undefined && { headerImage }),
+          ...(instagramUrl !== undefined && { instagramUrl }),
+          ...(facebookUrl !== undefined && { facebookUrl }),
+          ...(googleMapsUrl !== undefined && { googleMapsUrl }),
+          ...(internalNote !== undefined && { internalNote }),
+          ...(workingHoursStr !== undefined && { workingHours: workingHoursStr }),
+          ...(openingHoursText !== undefined && { openingHoursText }),
+          ...(themeColor && { themeColor }),
+          ...(themeSettingsString !== undefined && { themeSettings: themeSettingsString }),
+          ...(startDate && { membershipStartDate: startDate }),
+          ...(endDate && { membershipEndDate: endDate }),
+          ...(isActive !== undefined && { isActive }),
+          ...(membershipStatus && { membershipStatus: membershipStatus as any }),
+        },
+        include: {
+          owner: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          qrCodes: {
+            select: {
+              id: true,
+              code: true,
+              imageData: true,
+              scanCount: true,
+            },
+            take: 1,
           },
         },
-        qrCodes: {
-          select: {
-            id: true,
-            code: true,
-            imageData: true,
-            scanCount: true,
-          },
-          take: 1,
-        },
-      },
+      });
+
+      return updatedRestaurant;
     });
 
-    sendSuccess(res, updatedRestaurant, 'Restoran başarıyla güncellendi');
+    sendSuccess(res, result, 'Restoran başarıyla güncellendi');
   } catch (error) {
     next(error);
   }

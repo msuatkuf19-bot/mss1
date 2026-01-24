@@ -209,17 +209,20 @@ export default function AdminRestaurants() {
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
+    const isEditMode = !!editingRestaurant;
 
     // İşletme Bilgileri Validasyonları
     if (!formData.businessType) newErrors.businessType = 'İşletme tipi zorunludur';
     if (!formData.name || formData.name.length < 2) newErrors.name = 'Restoran adı en az 2 karakter olmalıdır';
     if (!formData.slug) newErrors.slug = 'Slug zorunludur';
     if (!formData.phone || formData.phone.length < 10) newErrors.phone = 'Geçerli bir telefon numarası giriniz';
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    
+    // Email validasyonu - opsiyonel yapabiliriz veya zorunlu
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Geçerli bir email adresi giriniz';
     }
 
-    // URL validasyonları
+    // URL validasyonları - sadece doluysa kontrol et
     if (formData.googleMapsUrl && !/^https?:\/\/.+/.test(formData.googleMapsUrl)) {
       newErrors.googleMapsUrl = 'Geçerli bir URL giriniz (http:// veya https://)';
     }
@@ -239,11 +242,13 @@ export default function AdminRestaurants() {
       }
     }
 
-    // Adres bilgileri
-    if (!formData.fullAddress) newErrors.fullAddress = 'Açık adres zorunludur';
+    // Adres bilgileri - edit modunda opsiyonel yapabiliriz
+    if (!isEditMode && !formData.fullAddress) {
+      newErrors.fullAddress = 'Açık adres zorunludur';
+    }
 
-    // Sahip Bilgileri (sadece yeni restoran için)
-    if (!editingRestaurant) {
+    // Sahip Bilgileri - sadece yeni restoran oluştururken zorunlu
+    if (!isEditMode) {
       if (!formData.ownerName || formData.ownerName.length < 2) {
         newErrors.ownerName = 'Sahip adı en az 2 karakter olmalıdır';
       }
@@ -255,9 +260,25 @@ export default function AdminRestaurants() {
       } else if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(formData.ownerPassword)) {
         newErrors.ownerPassword = 'Şifre en az 1 harf ve 1 rakam içermelidir';
       }
+    } else {
+      // Edit modunda şifre opsiyonel - ama doluysa validasyondan geçmeli
+      if (formData.ownerPassword && formData.ownerPassword.length > 0) {
+        if (formData.ownerPassword.length < 8) {
+          newErrors.ownerPassword = 'Şifre en az 8 karakter olmalıdır';
+        } else if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(formData.ownerPassword)) {
+          newErrors.ownerPassword = 'Şifre en az 1 harf ve 1 rakam içermelidir';
+        }
+      }
     }
 
     setErrors(newErrors);
+    
+    // Hata varsa ilk hatalı alanı göster
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      console.log('Validation errors:', newErrors);
+    }
+    
     return Object.keys(newErrors).length === 0;
   };
 
@@ -265,7 +286,17 @@ export default function AdminRestaurants() {
     e.preventDefault();
     
     if (!validateForm()) {
-      alert('Lütfen tüm zorunlu alanları doğru şekilde doldurun');
+      // Hataları kullanıcıya göster
+      const errorMessages = Object.entries(errors)
+        .filter(([_, msg]) => msg)
+        .map(([field, msg]) => `• ${msg}`)
+        .join('\n');
+      
+      if (errorMessages) {
+        alert(`Lütfen aşağıdaki hataları düzeltin:\n\n${errorMessages}`);
+      } else {
+        alert('Lütfen tüm zorunlu alanları doldurun');
+      }
       return;
     }
 
@@ -284,7 +315,12 @@ export default function AdminRestaurants() {
       setSubmitting(true);
       
       if (editingRestaurant) {
-        await apiClient.updateRestaurant(editingRestaurant.id, { ...formData, slug: normalizedSlug });
+        // Update modunda şifre boşsa gönderme
+        const updateData = { ...formData, slug: normalizedSlug };
+        if (!updateData.ownerPassword) {
+          delete (updateData as any).ownerPassword;
+        }
+        await apiClient.updateRestaurant(editingRestaurant.id, updateData);
         setShowModal(false);
         resetForm();
         loadRestaurants();
@@ -395,14 +431,39 @@ export default function AdminRestaurants() {
     });
   };
 
+  /**
+   * Generate a secure password that always meets the requirements:
+   * - Minimum 8 characters (we use 12 for better security)
+   * - At least 1 letter
+   * - At least 1 digit
+   */
   const generatePassword = () => {
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const digits = '0123456789';
+    const specialChars = '!@#$%^&*';
+    const allChars = letters + digits + specialChars;
     const length = 12;
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    
+    // Start with guaranteed requirements: 1 letter + 1 digit
     let password = '';
-    for (let i = 0; i < length; i++) {
-      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    
+    // Add at least 2 letters (one lowercase, one uppercase)
+    password += letters.charAt(Math.floor(Math.random() * 26)); // lowercase
+    password += letters.charAt(26 + Math.floor(Math.random() * 26)); // uppercase
+    
+    // Add at least 2 digits
+    password += digits.charAt(Math.floor(Math.random() * digits.length));
+    password += digits.charAt(Math.floor(Math.random() * digits.length));
+    
+    // Fill the rest with random characters from all sets
+    for (let i = password.length; i < length; i++) {
+      password += allChars.charAt(Math.floor(Math.random() * allChars.length));
     }
-    setFormData(prev => ({ ...prev, ownerPassword: password }));
+    
+    // Shuffle the password to randomize positions
+    const shuffled = password.split('').sort(() => Math.random() - 0.5).join('');
+    
+    setFormData(prev => ({ ...prev, ownerPassword: shuffled }));
   };
 
   const copyToClipboard = (text: string) => {

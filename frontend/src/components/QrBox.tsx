@@ -14,32 +14,62 @@ type QrBoxProps =
       size?: number;
     };
 
-function getClientBaseUrl(): string {
-  const envBase = process.env.NEXT_PUBLIC_BASE_URL;
-  if (envBase && envBase.trim()) return envBase.trim().replace(/\/$/, '');
-  if (typeof window !== 'undefined') return window.location.origin;
+/**
+ * Get the public menu base URL
+ * Priority: NEXT_PUBLIC_PUBLIC_MENU_BASE_URL > NEXT_PUBLIC_APP_URL > window.location.origin
+ */
+function getPublicMenuBaseUrl(): string {
+  // First try PUBLIC_MENU_BASE_URL (dedicated env for QR links)
+  const publicMenuBase = process.env.NEXT_PUBLIC_PUBLIC_MENU_BASE_URL;
+  if (publicMenuBase && publicMenuBase.trim()) {
+    return publicMenuBase.trim().replace(/\/$/, '');
+  }
+  
+  // Fallback to APP_URL
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (appUrl && appUrl.trim()) {
+    return appUrl.trim().replace(/\/$/, '');
+  }
+  
+  // Final fallback to BASE_URL or window.location.origin
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  if (baseUrl && baseUrl.trim()) {
+    return baseUrl.trim().replace(/\/$/, '');
+  }
+  
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  
   return '';
 }
 
 export default function QrBox(props: QrBoxProps) {
   const size = props.size ?? 240;
-  const base = getClientBaseUrl();
+  const base = getPublicMenuBaseUrl();
   let fullUrl = '';
+  
   if ('url' in props && typeof props.url === 'string') {
     fullUrl = props.url;
   } else if ('slug' in props && typeof props.slug === 'string') {
-    fullUrl = `${base}/m/${props.slug}`;
+    // Correct format: base + /menu/ + slug
+    fullUrl = `${base}/menu/${props.slug}`;
   } else {
     fullUrl = base;
   }
 
   return (
-    <div className="w-full">
-      <div className="inline-flex flex-col items-center">
-        <div className="bg-white p-5 rounded-xl border border-gray-200">
-          <QRCode value={fullUrl} size={size} level="M" />
+    <div className="w-full flex justify-center">
+      <div className="flex flex-col items-center">
+        <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm">
+          <QRCode 
+            value={fullUrl} 
+            size={size} 
+            level="M"
+            style={{ maxWidth: '100%', height: 'auto' }}
+          />
         </div>
-        <div className="mt-3 text-xs text-gray-600 max-w-[320px] break-all text-center">
+        <div className="mt-3 text-xs text-gray-600 max-w-[280px] sm:max-w-[320px] break-all text-center">
           {fullUrl}
         </div>
       </div>

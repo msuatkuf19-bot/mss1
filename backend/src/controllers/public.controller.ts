@@ -95,6 +95,7 @@ export const getPublicMenu = async (
         headerImage: true,
         address: true,
         phone: true,
+        googleMapsUrl: true,
         workingHours: true,
         openingHoursText: true,
         instagramUrl: true,

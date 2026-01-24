@@ -25,7 +25,19 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
   }
 
   const qrCode = restaurant.qrCodes?.[0];
-  const menuUrl = `${window.location.origin}/menu/${restaurant.slug}`;
+  // Get public menu base URL with proper fallbacks
+  const getPublicMenuBaseUrl = () => {
+    const publicMenuBase = process.env.NEXT_PUBLIC_PUBLIC_MENU_BASE_URL;
+    if (publicMenuBase && publicMenuBase.trim()) {
+      return publicMenuBase.trim().replace(/\/$/, '');
+    }
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (appUrl && appUrl.trim()) {
+      return appUrl.trim().replace(/\/$/, '');
+    }
+    return window.location.origin;
+  };
+  const menuUrl = `${getPublicMenuBaseUrl()}/menu/${restaurant.slug}`;
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -71,11 +83,18 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
         {/* QR Code Section */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">QR Kod</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">QR Kod</h2>
             {qrCode?.imageData && (
               <div className="space-y-4">
-                <div className="border rounded-lg p-4 bg-gray-50">
-                  <img src={qrCode.imageData} alt="QR Code" className="w-full" />
+                <div className="flex justify-center">
+                  <div className="border rounded-lg p-4 bg-gray-50 inline-block">
+                    <img 
+                      src={qrCode.imageData} 
+                      alt="QR Code" 
+                      className="w-full max-w-[260px] mx-auto"
+                      style={{ imageRendering: 'pixelated' }}
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <button
