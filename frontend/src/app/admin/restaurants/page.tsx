@@ -6,7 +6,8 @@ import { useEffect, useState, useRef } from 'react';
 import { apiClient } from '@/lib/api-client';
 import QrBox from '@/components/QrBox';
 import { slugifyTR } from '@/utils/slugify';
-import { Store, Plus, Pencil, Trash2, User, Phone, Mail, MapPin, Eye, EyeOff, Copy, RefreshCw, Download, CheckCircle, X, QrCode } from 'lucide-react';
+import { Store, Plus, Pencil, Trash2, User, Phone, Mail, MapPin, Eye, EyeOff, Copy, RefreshCw, Download, CheckCircle, X, QrCode, ChevronDown } from 'lucide-react';
+import { getCities, getDistrictsByCity } from '@/data/turkey-cities';
 
 interface Restaurant {
   id: string;
@@ -245,6 +246,14 @@ export default function AdminRestaurants() {
     // Adres bilgileri - edit modunda opsiyonel yapabiliriz
     if (!isEditMode && !formData.fullAddress) {
       newErrors.fullAddress = 'Açık adres zorunludur';
+    }
+    
+    // İl ve İlçe validasyonları
+    if (!formData.city) {
+      newErrors.city = 'Lütfen il seçiniz';
+    }
+    if (!formData.district) {
+      newErrors.district = 'Lütfen ilçe seçiniz';
     }
 
     // Sahip Bilgileri - sadece yeni restoran oluştururken zorunlu
@@ -1230,24 +1239,54 @@ export default function AdminRestaurants() {
                       </h4>
                       <div className="grid md:grid-cols-3 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">İl</label>
-                          <input
-                            type="text"
-                            value={formData.city}
-                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Ankara"
-                          />
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            İl <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={formData.city}
+                              onChange={(e) => {
+                                const newCity = e.target.value;
+                                setFormData({ 
+                                  ...formData, 
+                                  city: newCity,
+                                  district: '' // İl değişince ilçeyi sıfırla
+                                });
+                              }}
+                              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+                            >
+                              <option value="">İl seçiniz</option>
+                              {getCities().map((city) => (
+                                <option key={city} value={city}>{city}</option>
+                              ))}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                          </div>
+                          {errors.city && (
+                            <p className="mt-1 text-sm text-red-600">{errors.city}</p>
+                          )}
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">İlçe</label>
-                          <input
-                            type="text"
-                            value={formData.district}
-                            onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Çankaya"
-                          />
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            İlçe <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={formData.district}
+                              onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                              disabled={!formData.city}
+                              className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white ${!formData.city ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                            >
+                              <option value="">İlçe seçiniz</option>
+                              {formData.city && getDistrictsByCity(formData.city).map((district) => (
+                                <option key={district} value={district}>{district}</option>
+                              ))}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                          </div>
+                          {errors.district && (
+                            <p className="mt-1 text-sm text-red-600">{errors.district}</p>
+                          )}
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
