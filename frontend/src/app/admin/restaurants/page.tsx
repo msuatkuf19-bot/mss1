@@ -1253,11 +1253,12 @@ export default function AdminRestaurants() {
                                   district: '' // İl değişince ilçeyi sıfırla
                                 });
                               }}
-                              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+                              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white text-gray-900 cursor-pointer"
+                              style={{ colorScheme: 'light' }}
                             >
-                              <option value="">İl seçiniz</option>
+                              <option value="" className="text-gray-500">İl seçiniz</option>
                               {getCities().map((city) => (
-                                <option key={city} value={city}>{city}</option>
+                                <option key={city} value={city} className="text-gray-900 bg-white">{city}</option>
                               ))}
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
@@ -1275,11 +1276,12 @@ export default function AdminRestaurants() {
                               value={formData.district}
                               onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                               disabled={!formData.city}
-                              className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white ${!formData.city ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                              className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none text-gray-900 cursor-pointer ${!formData.city ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}`}
+                              style={{ colorScheme: 'light' }}
                             >
-                              <option value="">İlçe seçiniz</option>
+                              <option value="" className="text-gray-500">İlçe seçiniz</option>
                               {formData.city && getDistrictsByCity(formData.city).map((district) => (
-                                <option key={district} value={district}>{district}</option>
+                                <option key={district} value={district} className="text-gray-900 bg-white">{district}</option>
                               ))}
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
