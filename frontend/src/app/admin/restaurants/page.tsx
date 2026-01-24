@@ -948,7 +948,7 @@ export default function AdminRestaurants() {
 
                         {/* QR Preview Card */}
                         <div className="flex-shrink-0 w-full sm:w-auto sm:ml-4">
-                          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 w-full sm:w-56">
+                          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 w-full sm:w-72">
                             <h4 className="text-sm font-medium text-gray-700 text-center mb-3">
                               QR Kod Önizleme
                             </h4>
@@ -956,19 +956,100 @@ export default function AdminRestaurants() {
                             <div className="flex flex-col items-center justify-center">
                               {slugPreview ? (
                                 <>
-                                  <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] rounded-xl bg-white p-3 shadow-sm border border-gray-200 overflow-hidden flex items-center justify-center">
-                                    <QrBox 
-                                      slug={slugPreview}
-                                      size={150}
-                                    />
+                                  {/* QR Code Container - Centered */}
+                                  <div className="w-full flex justify-center">
+                                    <div className="w-[200px] h-[200px] sm:w-[220px] sm:h-[220px] rounded-xl bg-white p-3 shadow-sm border border-gray-200 flex items-center justify-center">
+                                      <QrBox 
+                                        slug={slugPreview}
+                                        size={180}
+                                      />
+                                    </div>
                                   </div>
                                   
-                                  {/* URL Display */}
-                                  <div className="w-full mt-3 space-y-2">
-                                    <p className="text-[10px] text-gray-500 text-center break-all leading-snug line-clamp-2">
-                                      /menu/{slugPreview}
-                                    </p>
-                                    <p className="text-xs text-gray-400 text-center">
+                                  {/* Full URL Display with Copy */}
+                                  <div className="w-full mt-4 space-y-2">
+                                    {/* URL Pill - Full visible, wrappable */}
+                                    <div className="bg-white border border-gray-200 rounded-lg p-2 shadow-sm">
+                                      <div className="flex items-start gap-2">
+                                        <p 
+                                          className="flex-1 text-[11px] sm:text-xs text-gray-600 font-mono leading-relaxed"
+                                          style={{ 
+                                            overflowWrap: 'anywhere', 
+                                            wordBreak: 'break-word' 
+                                          }}
+                                        >
+                                          {(() => {
+                                            const base = process.env.NEXT_PUBLIC_PUBLIC_MENU_BASE_URL 
+                                              || process.env.NEXT_PUBLIC_APP_URL 
+                                              || process.env.NEXT_PUBLIC_BASE_URL 
+                                              || (typeof window !== 'undefined' ? window.location.origin : '');
+                                            return `${base.replace(/\/$/, '')}/menu/${slugPreview}`;
+                                          })()}
+                                        </p>
+                                        
+                                        {/* Action Buttons */}
+                                        <div className="flex flex-col sm:flex-row gap-1 flex-shrink-0">
+                                          {/* Copy Button */}
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const base = process.env.NEXT_PUBLIC_PUBLIC_MENU_BASE_URL 
+                                                || process.env.NEXT_PUBLIC_APP_URL 
+                                                || process.env.NEXT_PUBLIC_BASE_URL 
+                                                || (typeof window !== 'undefined' ? window.location.origin : '');
+                                              const fullUrl = `${base.replace(/\/$/, '')}/menu/${slugPreview}`;
+                                              
+                                              if (navigator.clipboard && navigator.clipboard.writeText) {
+                                                navigator.clipboard.writeText(fullUrl).then(() => {
+                                                  alert('Link kopyalandı!');
+                                                }).catch(() => {
+                                                  // Fallback
+                                                  const input = document.createElement('input');
+                                                  input.value = fullUrl;
+                                                  document.body.appendChild(input);
+                                                  input.select();
+                                                  document.execCommand('copy');
+                                                  document.body.removeChild(input);
+                                                  alert('Link kopyalandı!');
+                                                });
+                                              } else {
+                                                // Fallback for older browsers
+                                                const input = document.createElement('input');
+                                                input.value = fullUrl;
+                                                document.body.appendChild(input);
+                                                input.select();
+                                                document.execCommand('copy');
+                                                document.body.removeChild(input);
+                                                alert('Link kopyalandı!');
+                                              }
+                                            }}
+                                            className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                                            title="Linki Kopyala"
+                                          >
+                                            <Copy className="w-3.5 h-3.5" />
+                                          </button>
+                                          
+                                          {/* Open in New Tab Button */}
+                                          <a
+                                            href={(() => {
+                                              const base = process.env.NEXT_PUBLIC_PUBLIC_MENU_BASE_URL 
+                                                || process.env.NEXT_PUBLIC_APP_URL 
+                                                || process.env.NEXT_PUBLIC_BASE_URL 
+                                                || (typeof window !== 'undefined' ? window.location.origin : '');
+                                              return `${base.replace(/\/$/, '')}/menu/${slugPreview}`;
+                                            })()}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                            title="Yeni Sekmede Aç"
+                                          >
+                                            <Eye className="w-3.5 h-3.5" />
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    <p className="text-[10px] text-gray-400 text-center">
                                       Kayıt sonrası QR indirilecek
                                     </p>
                                   </div>

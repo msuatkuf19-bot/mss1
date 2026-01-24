@@ -59,20 +59,17 @@ export default function QrBox(props: QrBoxProps) {
   }
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="flex flex-col items-center">
-        <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm">
-          <QRCode 
-            value={fullUrl} 
-            size={size} 
-            level="M"
-            style={{ maxWidth: '100%', height: 'auto' }}
-          />
-        </div>
-        <div className="mt-3 text-xs text-gray-600 max-w-[280px] sm:max-w-[320px] break-all text-center">
-          {fullUrl}
-        </div>
-      </div>
+    <div className="w-full h-full flex items-center justify-center">
+      <QRCode 
+        value={fullUrl} 
+        size={size} 
+        level="M"
+        style={{ 
+          maxWidth: '100%', 
+          height: 'auto',
+          display: 'block'
+        }}
+      />
     </div>
   );
 }
