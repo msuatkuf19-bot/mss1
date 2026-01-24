@@ -21,11 +21,18 @@ const getBaseUrl = (): string => {
 };
 
 /**
- * Logo URL - Cloudinary CDN (absolute URL)
+ * Logo URL - Frontend public klasöründen absolute URL
+ * Email client'lar için mutlaka tam URL gerekli
  */
 const getLogoUrl = (): string => {
-  // Cloudinary CDN URL - her zaman erişilebilir
-  return 'https://res.cloudinary.com/dvgetqbza/image/upload/v1735506735/logos/benmedya.png';
+  const baseUrl = (
+    process.env.FRONTEND_URL ||
+    process.env.APP_URL ||
+    process.env.CORS_ORIGIN ||
+    'https://www.menuben.com'
+  ).replace(/\/$/, '');
+  
+  return `${baseUrl}/benmedya.png`;
 };
 
 export const getWelcomeKvkkEmailTemplate = (data: WelcomeEmailData) => {
