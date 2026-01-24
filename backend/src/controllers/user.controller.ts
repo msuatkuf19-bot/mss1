@@ -19,26 +19,46 @@ export const getAllUsers = async (
   next: NextFunction
 ) => {
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        isActive: true,
-        createdAt: true,
-        updatedAt: true,
-        assignedRestaurantId: true,
-        assignedRestaurant: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
+    // İlk önce temel sorgu yap (assignedRestaurant olmadan)
+    let users;
+    try {
+      // Yeni şema ile dene (assignedRestaurant dahil)
+      users = await prisma.user.findMany({
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+          assignedRestaurantId: true,
+          assignedRestaurant: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch (schemaError) {
+      // Eski şema ile dene (migration henüz çalışmadıysa)
+      console.log('[USER] Falling back to basic user query (migration pending)');
+      users = await prisma.user.findMany({
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    }
 
     sendSuccess(res, users);
   } catch (error) {
@@ -110,31 +130,54 @@ export const createUser = async (
     // Şifre hash
     const hashedPassword = await hashPassword(password);
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-        role: (role || UserRole.CUSTOMER) as any,
-        assignedRestaurantId: restaurantId || null,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        isActive: true,
-        createdAt: true,
-        assignedRestaurantId: true,
-        assignedRestaurant: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
+    let user;
+    try {
+      // Yeni şema ile dene (assignedRestaurantId dahil)
+      user = await prisma.user.create({
+        data: {
+          email,
+          name,
+          password: hashedPassword,
+          role: (role || UserRole.CUSTOMER) as any,
+          assignedRestaurantId: restaurantId || null,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isActive: true,
+          createdAt: true,
+          assignedRestaurantId: true,
+          assignedRestaurant: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (schemaError) {
+      // Eski şema ile dene (migration henüz çalışmadıysa)
+      console.log('[USER CREATE] Falling back to basic create (migration pending)');
+      user = await prisma.user.create({
+        data: {
+          email,
+          name,
+          password: hashedPassword,
+          role: (role || UserRole.CUSTOMER) as any,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isActive: true,
+          createdAt: true,
+        },
+      });
+    }
 
     // Hoş geldiniz + KVKK maili gönder (async, hata durumunda kullanıcı kaydı yine başarılı)
     let emailSent = false;
