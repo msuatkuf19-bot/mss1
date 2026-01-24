@@ -19,47 +19,21 @@ export const getAllUsers = async (
   next: NextFunction
 ) => {
   try {
-    console.log('[GET /api/users] Fetching all users');
+    console.log('[GET /api/users] Fetching all users (simple mode)');
     
-    let users;
-    try {
-      // Önce yeni şema ile dene (assignedRestaurant dahil)
-      users = await prisma.user.findMany({
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true,
-          assignedRestaurantId: true,
-          assignedRestaurant: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-    } catch (schemaError: any) {
-      // Migration henüz çalışmadıysa basit sorgu yap
-      console.warn('[GET /api/users] Fallback to basic query:', schemaError.message);
-      users = await prisma.user.findMany({
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-    }
+    // Basit sorgu - assignedRestaurant olmadan (migration sonrası eklenecek)
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
     
     console.log('[GET /api/users] Found', users.length, 'users');
     sendSuccess(res, users);
@@ -169,8 +143,8 @@ export const createUser = async (
     const hashedPassword = await hashPassword(password);
 
     // ===== KULLANICI OLUŞTUR =====
-    // Prisma data objesi - basit versiyon (migration bekleniyor olabilir)
-    const basicData: any = {
+    // Basit versiyon - assignedRestaurantId devre dışı (migration sonrası eklenecek)
+    const createData = {
       email: email.toLowerCase().trim(),
       name: name.trim(),
       password: hashedPassword,
@@ -178,49 +152,19 @@ export const createUser = async (
       isActive: isActive !== false, // default true
     };
     
-    console.log('[POST /api/users] Creating user with data:', { ...basicData, password: '[HIDDEN]' });
+    console.log('[POST /api/users] Creating user with data:', { ...createData, password: '[HIDDEN]' });
     
-    let user;
-    try {
-      // Önce assignedRestaurantId ile dene
-      const createData = { ...basicData };
-      if (restaurantId && userRole !== UserRole.SUPER_ADMIN) {
-        createData.assignedRestaurantId = restaurantId;
-      }
-      
-      user = await prisma.user.create({
-        data: createData,
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          assignedRestaurantId: true,
-          assignedRestaurant: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      });
-    } catch (schemaError: any) {
-      // Migration henüz çalışmadıysa basit create yap
-      console.warn('[POST /api/users] Fallback to basic create:', schemaError.message);
-      user = await prisma.user.create({
-        data: basicData,
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-        },
-      });
-    }
+    const user = await prisma.user.create({
+      data: createData,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
+    });
     
     console.log('[POST /api/users] User created successfully:', user.id);
 
@@ -268,15 +212,8 @@ export const updateUser = async (
   try {
     const { id } = req.params;
     const { name, email, role, isActive } = req.body;
-    // Frontend "restaurantId" olarak gönderiyor
-    let restaurantId = req.body.restaurantId || req.body.assignedRestaurantId;
     
-    // restaurantId boş string ise undefined yap
-    if (restaurantId === '' || restaurantId === null) {
-      restaurantId = undefined;
-    }
-    
-    console.log('[PUT /api/users/:id] Updating user:', id, { name, email, role, restaurantId });
+    console.log('[PUT /api/users/:id] Updating user:', id, { name, email, role });
 
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
@@ -291,68 +228,25 @@ export const updateUser = async (
       }
     }
 
-    // Restoran kontrolü
-    const userRole = role || user.role;
-    if (restaurantId && userRole !== UserRole.SUPER_ADMIN) {
-      const restaurant = await prisma.restaurant.findUnique({
-        where: { id: restaurantId },
-        select: { id: true },
-      });
-      if (!restaurant) {
-        throw new ApiError(400, 'Seçilen işletme bulunamadı');
-      }
-    }
+    // Update data objesi - basit versiyon (assignedRestaurantId migration sonrası eklenecek)
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name.trim();
+    if (email !== undefined) updateData.email = email.toLowerCase().trim();
+    if (role !== undefined) updateData.role = role;
+    if (isActive !== undefined) updateData.isActive = isActive;
 
-    // Update data objesi - basit versiyon
-    const basicUpdateData: any = {};
-    if (name !== undefined) basicUpdateData.name = name.trim();
-    if (email !== undefined) basicUpdateData.email = email.toLowerCase().trim();
-    if (role !== undefined) basicUpdateData.role = role;
-    if (isActive !== undefined) basicUpdateData.isActive = isActive;
-    
-    let updatedUser;
-    try {
-      // Önce assignedRestaurantId ile dene
-      const updateData = { ...basicUpdateData };
-      if (restaurantId !== undefined) {
-        updateData.assignedRestaurantId = userRole === UserRole.SUPER_ADMIN ? null : restaurantId;
-      }
-
-      updatedUser = await prisma.user.update({
-        where: { id },
-        data: updateData,
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          updatedAt: true,
-          assignedRestaurantId: true,
-          assignedRestaurant: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      });
-    } catch (schemaError: any) {
-      // Migration henüz çalışmadıysa basit update yap
-      console.warn('[PUT /api/users/:id] Fallback to basic update:', schemaError.message);
-      updatedUser = await prisma.user.update({
-        where: { id },
-        data: basicUpdateData,
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          isActive: true,
-          updatedAt: true,
-        },
-      });
-    }
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updateData,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        updatedAt: true,
+      },
+    });
 
     console.log('[PUT /api/users/:id] User updated:', updatedUser.id);
     sendSuccess(res, updatedUser, 'Kullanıcı başarıyla güncellendi');
