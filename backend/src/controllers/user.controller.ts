@@ -19,7 +19,8 @@ export const getAllUsers = async (
   next: NextFunction
 ) => {
   try {
-    // Basit sorgu (assignedRestaurant sonradan eklenecek)
+    console.log('[GET /api/users] Fetching all users');
+    
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -29,12 +30,22 @@ export const getAllUsers = async (
         isActive: true,
         createdAt: true,
         updatedAt: true,
+        assignedRestaurantId: true,
+        assignedRestaurant: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
-
+    
+    console.log('[GET /api/users] Found', users.length, 'users');
     sendSuccess(res, users);
   } catch (error) {
+    console.error('[GET /api/users] Error:', error);
     next(error);
   }
 };
@@ -78,29 +89,85 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    console.log('[USER CREATE] Request received:', { email: req.body.email, name: req.body.name });
-    const { email, name, password, role } = req.body;
+    console.log('[POST /api/users] Request body:', JSON.stringify(req.body, null, 2));
+    
+    // Request body'den alanları al
+    const { email, name, password, role, isActive } = req.body;
+    // Frontend "restaurantId" olarak gönderiyor, backend "assignedRestaurantId" olarak kullanıyor
+    let restaurantId = req.body.restaurantId || req.body.assignedRestaurantId;
+    
+    // restaurantId boş string ise undefined yap
+    if (restaurantId === '' || restaurantId === null) {
+      restaurantId = undefined;
+    }
 
-    // Email kontrolü
+    // ===== VALIDATION =====
+    if (!email || typeof email !== 'string') {
+      console.error('[POST /api/users] Validation error: Email gerekli');
+      throw new ApiError(400, 'Email adresi gereklidir');
+    }
+    
+    if (!password || typeof password !== 'string' || password.length < 6) {
+      console.error('[POST /api/users] Validation error: Şifre gerekli/kısa');
+      throw new ApiError(400, 'Şifre en az 6 karakter olmalıdır');
+    }
+    
+    if (!name || typeof name !== 'string') {
+      console.error('[POST /api/users] Validation error: İsim gerekli');
+      throw new ApiError(400, 'İsim gereklidir');
+    }
+
+    // ===== EMAIL UNIQUE KONTROLÜ =====
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: email.toLowerCase().trim() },
     });
 
     if (existingUser) {
-      throw new ApiError(400, 'Bu email zaten kullanılıyor');
+      console.error('[POST /api/users] Email already exists:', email);
+      throw new ApiError(409, 'Bu email adresi zaten kullanılıyor');
     }
 
-    // Şifre hash
+    // ===== RESTORAN KONTROLÜ =====
+    const userRole = role || UserRole.CUSTOMER;
+    
+    // SUPER_ADMIN için restaurantId zorunlu değil
+    // Diğer roller için restaurantId gönderildiyse kontrol et
+    if (restaurantId && userRole !== UserRole.SUPER_ADMIN) {
+      console.log('[POST /api/users] Checking restaurant:', restaurantId);
+      const restaurant = await prisma.restaurant.findUnique({
+        where: { id: restaurantId },
+        select: { id: true, name: true },
+      });
+      
+      if (!restaurant) {
+        console.error('[POST /api/users] Restaurant not found:', restaurantId);
+        throw new ApiError(400, 'Seçilen işletme bulunamadı');
+      }
+      console.log('[POST /api/users] Restaurant found:', restaurant.name);
+    }
+
+    // ===== ŞİFRE HASH =====
     const hashedPassword = await hashPassword(password);
 
-    // Basit kullanıcı oluştur (assignedRestaurantId sonradan eklenecek)
+    // ===== KULLANICI OLUŞTUR =====
+    // Prisma data objesi
+    const createData: any = {
+      email: email.toLowerCase().trim(),
+      name: name.trim(),
+      password: hashedPassword,
+      role: userRole as any,
+      isActive: isActive !== false, // default true
+    };
+    
+    // assignedRestaurantId varsa ekle (SUPER_ADMIN değilse)
+    if (restaurantId && userRole !== UserRole.SUPER_ADMIN) {
+      createData.assignedRestaurantId = restaurantId;
+    }
+    
+    console.log('[POST /api/users] Creating user with data:', { ...createData, password: '[HIDDEN]' });
+    
     const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-        role: (role || UserRole.CUSTOMER) as any,
-      },
+      data: createData,
       select: {
         id: true,
         email: true,
@@ -108,8 +175,17 @@ export const createUser = async (
         role: true,
         isActive: true,
         createdAt: true,
+        assignedRestaurantId: true,
+        assignedRestaurant: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
+    
+    console.log('[POST /api/users] User created successfully:', user.id);
 
     // Hoş geldiniz + KVKK maili gönder (async, hata durumunda kullanıcı kaydı yine başarılı)
     let emailSent = false;
@@ -155,6 +231,15 @@ export const updateUser = async (
   try {
     const { id } = req.params;
     const { name, email, role, isActive } = req.body;
+    // Frontend "restaurantId" olarak gönderiyor
+    let restaurantId = req.body.restaurantId || req.body.assignedRestaurantId;
+    
+    // restaurantId boş string ise undefined yap
+    if (restaurantId === '' || restaurantId === null) {
+      restaurantId = undefined;
+    }
+    
+    console.log('[PUT /api/users/:id] Updating user:', id, { name, email, role, restaurantId });
 
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
@@ -163,20 +248,40 @@ export const updateUser = async (
 
     // Email değişiyorsa kontrol et
     if (email && email !== user.email) {
-      const existingUser = await prisma.user.findUnique({ where: { email } });
+      const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
       if (existingUser) {
-        throw new ApiError(400, 'Bu email zaten kullanılıyor');
+        throw new ApiError(409, 'Bu email adresi zaten kullanılıyor');
       }
+    }
+
+    // Restoran kontrolü
+    const userRole = role || user.role;
+    if (restaurantId && userRole !== UserRole.SUPER_ADMIN) {
+      const restaurant = await prisma.restaurant.findUnique({
+        where: { id: restaurantId },
+        select: { id: true },
+      });
+      if (!restaurant) {
+        throw new ApiError(400, 'Seçilen işletme bulunamadı');
+      }
+    }
+
+    // Update data objesi
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name.trim();
+    if (email !== undefined) updateData.email = email.toLowerCase().trim();
+    if (role !== undefined) updateData.role = role;
+    if (isActive !== undefined) updateData.isActive = isActive;
+    
+    // assignedRestaurantId güncelle
+    if (restaurantId !== undefined) {
+      // SUPER_ADMIN için null yap, diğerleri için restaurantId ata
+      updateData.assignedRestaurantId = userRole === UserRole.SUPER_ADMIN ? null : restaurantId;
     }
 
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: {
-        name,
-        email,
-        role,
-        isActive,
-      },
+      data: updateData,
       select: {
         id: true,
         email: true,
@@ -184,11 +289,20 @@ export const updateUser = async (
         role: true,
         isActive: true,
         updatedAt: true,
+        assignedRestaurantId: true,
+        assignedRestaurant: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
+    console.log('[PUT /api/users/:id] User updated:', updatedUser.id);
     sendSuccess(res, updatedUser, 'Kullanıcı başarıyla güncellendi');
   } catch (error) {
+    console.error('[PUT /api/users/:id] Error:', error);
     next(error);
   }
 };
