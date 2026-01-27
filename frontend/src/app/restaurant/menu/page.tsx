@@ -2,10 +2,11 @@
 
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { apiClient } from '@/lib/api-client';
 import toast from 'react-hot-toast';
 import { DEFAULT_PRODUCT_IMAGE } from '@/lib/constants';
+import MenuFilterBar from '@/components/restaurant/MenuFilterBar';
 
 interface Product {
   id: string;
@@ -28,6 +29,8 @@ interface Category {
 
 export default function RestaurantMenu() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [totalFiltered, setTotalFiltered] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -50,6 +53,12 @@ export default function RestaurantMenu() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [restaurantId, setRestaurantId] = useState<string>('');
+
+  // Callback for filtered products from MenuFilterBar
+  const handleFilteredProducts = useCallback((filtered: Product[], total: number) => {
+    setFilteredProducts(filtered);
+    setTotalFiltered(total);
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -214,6 +223,15 @@ export default function RestaurantMenu() {
           </button>
         </div>
 
+        {/* Filter Bar */}
+        {!loading && products.length > 0 && (
+          <MenuFilterBar
+            products={products}
+            categories={categories}
+            onFilteredProducts={handleFilteredProducts}
+          />
+        )}
+
         {/* Products Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
           {loading ? (
@@ -240,7 +258,7 @@ export default function RestaurantMenu() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product) => (
+                  {filteredProducts.map((product) => (
                     <tr key={product.id} className="border-b hover:bg-gray-50">
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">

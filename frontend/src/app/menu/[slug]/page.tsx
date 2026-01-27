@@ -260,7 +260,7 @@ export default function PublicMenu() {
 
       {/* Header with Restaurant Info - Dynamic Theme */}
       <div 
-        className="shadow-md relative overflow-hidden"
+        className="shadow-md relative overflow-visible"
         style={
           restaurant.headerImage
             ? {
@@ -275,18 +275,20 @@ export default function PublicMenu() {
         {(theme.showHeaderOverlay || restaurant.headerImage) && (
           <div className="absolute inset-0 bg-black/40"></div>
         )}
-        <div className="max-w-4xl mx-auto px-4 py-8 relative z-10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <RestaurantLogo 
-                name={restaurant.name}
-                logoUrl={logoUrl}
-                size="lg"
-                className="shadow-md border-2 border-white/20"
-              />
-              <div>
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 shrink-0 flex items-center justify-center">
+                <RestaurantLogo 
+                  name={restaurant.name}
+                  logoUrl={logoUrl}
+                  size="lg"
+                  className="shadow-md border-2 border-white/20 !w-full !h-full"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
                 <h1 
-                  className="text-2xl font-bold drop-shadow-lg"
+                  className="text-lg sm:text-xl md:text-2xl font-bold drop-shadow-lg leading-tight break-words line-clamp-2"
                   style={{
                     color: theme.headerBackgroundType === 'gradient' || theme.showHeaderOverlay
                       ? '#ffffff'
@@ -297,7 +299,7 @@ export default function PublicMenu() {
                 </h1>
                 {restaurant.description && (
                   <p 
-                    className="text-sm drop-shadow"
+                    className="text-xs sm:text-sm drop-shadow line-clamp-1 sm:line-clamp-2 opacity-90"
                     style={{
                       color: theme.headerBackgroundType === 'gradient' || theme.showHeaderOverlay
                         ? '#ffffff'
