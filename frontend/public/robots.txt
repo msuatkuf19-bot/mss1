@@ -1,0 +1,15 @@
+# MenuBene Robots.txt
+# https://menubene.com
+
+User-agent: *
+Allow: /
+
+# Admin ve API sayfalarını engelle
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /restaurant/
+
+# Sitemap
+Sitemap: https://menuben.com/sitemap.xml

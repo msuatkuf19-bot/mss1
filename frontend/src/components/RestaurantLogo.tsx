@@ -10,7 +10,8 @@ interface Props {
 const sizeClasses = {
   sm: 'w-12 h-12 text-lg',
   md: 'w-16 h-16 text-2xl',
-  lg: 'w-24 h-24 text-4xl',
+  // Mobilde logo basık görünmesin: sm:w-20 sm:h-20 -> md ve üstünde w-24 h-24
+  lg: 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 text-3xl md:text-4xl',
   xl: 'w-32 h-32 text-5xl',
 };
 
@@ -55,11 +56,12 @@ export default function RestaurantLogo({ name, logoUrl, size = 'md', className =
     console.log('RestaurantLogo - Using logo URL:', cleanLogoUrl);
     
     return (
-      <div className="relative">
+      <div className="relative flex items-center justify-center">
         <img
           src={cleanLogoUrl}
           alt={`${name} Logo`}
-          className={`rounded-full object-cover ${sizeClasses[size]} ${className}`}
+          className={`rounded-full object-contain ${sizeClasses[size]} ${className}`}
+          style={{ aspectRatio: '1 / 1' }}
           onError={(e) => {
             console.error('❌ Logo load FAILED:', {
               url: cleanLogoUrl,

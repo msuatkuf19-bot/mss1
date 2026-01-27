@@ -101,11 +101,13 @@ export default function PublicMenu() {
   , [theme?.cardRadius]);
 
   // Memoized filtered categories - selectedCategory veya categories değişmedikçe yeniden hesaplanmaz
-  const filteredCategories = useMemo(() => 
-    selectedCategory === 'all' 
-      ? categories 
-      : categories.filter(cat => cat.id === selectedCategory)
-  , [selectedCategory, categories]);
+  // NOT: "Kampanya" kategorisi QR menüde gizleniyor (veri silinmiyor, sadece render edilmiyor)
+  const filteredCategories = useMemo(() => {
+    const visibleCategories = categories.filter(cat => cat.name.toLowerCase() !== 'kampanya');
+    return selectedCategory === 'all' 
+      ? visibleCategories 
+      : visibleCategories.filter(cat => cat.id === selectedCategory);
+  }, [selectedCategory, categories]);
 
   // Memoized logo URL
   const logoUrl = useMemo(() => {
@@ -356,7 +358,9 @@ export default function PublicMenu() {
           >
             Tümü
           </button>
-          {categories.map((category) => (
+          {categories
+            .filter((category) => category.name.toLowerCase() !== 'kampanya')
+            .map((category) => (
             <button
               key={category.id}
               onClick={() => handleCategorySelect(category.id)}

@@ -773,6 +773,104 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SEO Content Section */}
+      <section className="py-20 px-6 bg-gradient-to-b from-transparent via-orange-500/5 to-transparent">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16 animate-slideUp">
+            <div className="inline-block px-4 py-2 glass-effect rounded-full border border-orange-500/20 mb-4">
+              <span className="text-sm text-orange-400 font-medium">Dijital Dönüşüm</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              QR Menü Sistemi ile <span className="gradient-text">Dijital Menü</span> Deneyimi
+            </h2>
+            <p className="text-gray-400 max-w-3xl mx-auto text-lg">
+              Restoranınızı geleceğe taşıyın. Basılı menülerden dijital menülere geçiş artık çok kolay.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Block 1 */}
+            <div className="glass-effect rounded-2xl p-8 border border-white/5 hover:border-orange-500/20 transition-all animate-slideUp">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">Menü Ben QR Menü Nedir?</h3>
+              <p className="text-gray-400 leading-relaxed">
+                Menü Ben, restoranlar için geliştirilen profesyonel QR menü sistemidir. Müşterileriniz masalarındaki 
+                QR kodu tarayarak dijital menünüze anında erişir. Fiyat güncellemeleri, ürün değişiklikleri ve 
+                yeni eklemeler saniyeler içinde tüm müşterilerinize yansır. Basım maliyetlerine son verin, 
+                çevre dostu ve hijyenik bir menü deneyimi sunun.
+              </p>
+              <Link href="/blog/qr-menu-nedir" className="inline-flex items-center gap-2 text-orange-400 font-medium mt-4 hover:text-orange-300 transition-colors">
+                Daha fazla bilgi
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* Block 2 */}
+            <div className="glass-effect rounded-2xl p-8 border border-white/5 hover:border-orange-500/20 transition-all animate-slideUp" style={{animationDelay: '0.1s'}}>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">Restoranlar İçin Avantajlar</h3>
+              <p className="text-gray-400 leading-relaxed">
+                QR menü ile baskı maliyetlerinden kurtulun ve yıllık binlerce lira tasarruf edin. Temassız menü 
+                deneyimi ile hijyen standartlarınızı yükseltin. Anlık fiyat güncellemesi yapın, stok durumunu 
+                yönetin. Detaylı istatistiklerle en popüler ürünlerinizi keşfedin ve satışlarınızı artırın. 
+                Tek panelden tüm şubelerinizi yönetin.
+              </p>
+              <Link href="/blog/restoranlar-icin-qr-menu-avantajlari" className="inline-flex items-center gap-2 text-orange-400 font-medium mt-4 hover:text-orange-300 transition-colors">
+                Avantajları keşfet
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* Block 3 */}
+            <div className="glass-effect rounded-2xl p-8 border border-white/5 hover:border-orange-500/20 transition-all animate-slideUp" style={{animationDelay: '0.2s'}}>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">Ücretsiz Demo ile Başlayın</h3>
+              <p className="text-gray-400 leading-relaxed">
+                Menü Ben&apos;i denemek tamamen ücretsiz! Demo talebinizi gönderin, uzman ekibimiz sizi arasın 
+                ve size özel bir demo hazırlansın. 5 dakika içinde restoranınızın dijital menüsünü görün. 
+                Kurulum desteği, eğitim ve 7/24 teknik destek tamamen ücretsiz. Kredi kartı gerekmez, 
+                taahhüt yok.
+              </p>
+              <Link href="/demo" className="inline-flex items-center gap-2 text-orange-400 font-medium mt-4 hover:text-orange-300 transition-colors">
+                Hemen demo talep et
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+
+          {/* Blog Link */}
+          <div className="text-center mt-12">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center gap-2 px-6 py-3 glass-effect rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-orange-500/30 transition-all"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              Blogumuzda daha fazla rehber ve ipucu keşfedin
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* SSS Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-4xl">
