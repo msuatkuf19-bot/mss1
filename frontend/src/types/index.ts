@@ -55,8 +55,9 @@ export interface Category {
   updatedAt: string;
 }
 
-// Product type is now defined in ./product.ts - re-export for backwards compatibility
-export type { Product, ProductCategory, ProductWithCategory } from './product';
+// Product type is now defined in ./product.ts - import for local use and re-export
+import type { Product, ProductCategory, ProductWithCategory } from './product';
+export type { Product, ProductCategory, ProductWithCategory };
 export { normalizeProduct, normalizeProducts } from './product';
 
 export interface QRCode {
