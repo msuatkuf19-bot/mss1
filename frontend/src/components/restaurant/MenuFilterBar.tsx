@@ -1,29 +1,12 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import type { ProductWithCategory as Product, ProductCategory } from '@/types/product';
 
-// ========== TYPES ==========
-export interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image?: string;
-  imageUrl?: string;
-  isAvailable: boolean;
-  isActive?: boolean;
-  createdAt?: string;
-  category: {
-    id: string;
-    name: string;
-  };
-}
+// Category alias for component props (uses same structure as ProductCategory)
+type Category = ProductCategory;
 
-export interface Category {
-  id: string;
-  name: string;
-}
-
+// ========== FILTER STATE ==========
 export interface FilterState {
   search: string;
   categoryId: string;

@@ -8,23 +8,8 @@ import toast from 'react-hot-toast';
 import { DEFAULT_PRODUCT_IMAGE } from '@/lib/constants';
 import MenuFilterBar from '@/components/restaurant/MenuFilterBar';
 import ImagePicker from '@/components/common/ImagePicker';
-
-interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image?: string;
-  imageUrl?: string;
-  imageSource?: 'UPLOAD' | 'GALLERY';
-  galleryAssetId?: string | null;
-  isAvailable: boolean;
-  isActive: boolean;  // Admin kontrolü - pasifse QR'da görünmez
-  category: {
-    id: string;
-    name: string;
-  };
-}
+import type { ProductWithCategory as Product } from '@/types/product';
+import { normalizeProducts } from '@/types/product';
 
 interface Category {
   id: string;
@@ -92,7 +77,8 @@ export default function RestaurantMenu() {
       console.log('Products:', productsRes.data);
       console.log('Categories:', categoriesRes.data);
       
-      setProducts(productsRes.data || []);
+      // Normalize products to ensure isActive is boolean (not undefined)
+      setProducts(normalizeProducts(productsRes.data || []) as Product[]);
       setCategories(categoriesRes.data || []);
     } catch (error) {
       console.error('Veriler yüklenemedi:', error);

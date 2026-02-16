@@ -8,6 +8,7 @@ import { getTodayWorkingHours, isRestaurantOpen } from '@/lib/working-hours-util
 import { DEFAULT_PRODUCT_IMAGE } from '@/lib/constants';
 import RestaurantLogo from '@/components/RestaurantLogo';
 import MembershipExpired from '@/components/customer/MembershipExpired';
+import type { Product } from '@/types/product';
 
 /**
  * Normalize phone number to E.164 format for WhatsApp
@@ -32,24 +33,6 @@ function normalizePhoneForWhatsApp(phone: string | undefined): string {
   }
   
   return digits;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image?: string;
-  imageUrl?: string;
-  isAvailable: boolean;
-  isNew?: boolean;
-  isPopular?: boolean;
-  ingredients?: string;
-  allergens?: string;
-  isVegetarian?: boolean;
-  isVegan?: boolean;
-  isGlutenFree?: boolean;
-  isSpicy?: boolean;
 }
 
 interface Category {

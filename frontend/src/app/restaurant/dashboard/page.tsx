@@ -4,6 +4,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
+import type { Product } from '@/types/product';
 
 interface DashboardStats {
   categories: number;
@@ -26,14 +27,6 @@ interface Restaurant {
     name: string;
     _count: { products: number };
   }>;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  category: { name: string };
-  isAvailable: boolean;
 }
 
 // Skeleton component for loading states

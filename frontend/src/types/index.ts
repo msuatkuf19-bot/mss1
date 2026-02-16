@@ -55,32 +55,9 @@ export interface Category {
   updatedAt: string;
 }
 
-export interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image?: string;
-  imageUrl?: string;
-  isNew: boolean;
-  isPopular: boolean;
-  isDiscount: boolean;
-  discountPrice?: number;
-  isAvailable: boolean;
-  // İçerik ve Alerjen bilgileri
-  ingredients?: string; // İçindekiler (virgülle ayrılmış)
-  allergens?: string; // Alerjen uyarıları (virgülle ayrılmış)
-  // Diyet ve Özellik etiketleri
-  isVegetarian?: boolean;
-  isVegan?: boolean;
-  isGlutenFree?: boolean;
-  isSpicy?: boolean;
-  order: number;
-  categoryId: string;
-  category?: Category;
-  createdAt: string;
-  updatedAt: string;
-}
+// Product type is now defined in ./product.ts - re-export for backwards compatibility
+export type { Product, ProductCategory, ProductWithCategory } from './product';
+export { normalizeProduct, normalizeProducts } from './product';
 
 export interface QRCode {
   id: string;
