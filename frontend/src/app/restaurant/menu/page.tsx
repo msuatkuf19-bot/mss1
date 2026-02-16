@@ -157,7 +157,7 @@ export default function RestaurantMenu() {
       await apiClient.updateProduct(product.id, {
         isActive: !product.isActive,
       });
-      toast.success(product.isActive ? '🚫 Ürün pasif yapıldı (QR''da görünmez)' : '✅ Ürün aktif yapıldı (QR''da görünür)');
+      toast.success(product.isActive ? '🚫 Ürün pasif yapıldı (QR menüde görünmez)' : '✅ Ürün aktif yapıldı (QR menüde görünür)');
       await loadData();
     } catch (error: any) {
       toast.error('❌ Durum güncellenemedi');
