@@ -11,6 +11,7 @@ export interface Product {
   image?: string;
   imageUrl?: string;
   isAvailable: boolean;
+  isActive?: boolean;
   createdAt?: string;
   category: {
     id: string;
