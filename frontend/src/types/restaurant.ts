@@ -6,6 +6,25 @@
 export type BusinessType = 'RESTORAN' | 'KAFE' | 'OTEL' | 'DIGER';
 export type MembershipStatus = 'ACTIVE' | 'EXPIRED' | 'SUSPENDED';
 export type UserRole = 'SUPER_ADMIN' | 'RESTAURANT_ADMIN' | 'CUSTOMER';
+export type PlanCode = 'STARTER' | 'GOLD' | 'PLATIN';
+export type QrMode = 'SINGLE' | 'PER_TABLE';
+
+// Plan (Paket) interface
+export interface Plan {
+  id: string;
+  code: PlanCode;
+  name: string;
+  maxProducts: number | null; // null = unlimited
+  qrMode: QrMode;
+  adsEnabled: boolean;
+  reportingEnabled: boolean;
+  detailedReportingEnabled: boolean;
+  serviceAreasEnabled: boolean;
+  cartEnabled: boolean;
+  campaignCategoryEnabled: boolean;
+  mobilePanelEnabled: boolean;
+  isActive: boolean;
+}
 
 export interface Restaurant {
   id: string;
@@ -36,11 +55,13 @@ export interface Restaurant {
   createdAt: Date | string;
   updatedAt: Date | string;
   ownerId: string;
+  planId?: string | null;
   owner?: {
     id: string;
     name: string;
     email: string;
   };
+  plan?: Plan | null;
   qrCodes?: QRCode[];
   _count?: {
     categories?: number;
@@ -82,6 +103,9 @@ export interface CreateRestaurantInput {
   // Membership
   membershipStartDate: string;
   membershipEndDate: string;
+  
+  // Plan
+  planCode: PlanCode;
   
   // Owner
   ownerName: string;

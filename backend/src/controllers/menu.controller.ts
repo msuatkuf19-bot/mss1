@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import prisma from '../config/prisma';
 import { ApiError, sendSuccess } from '../utils/response';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { checkProductLimit } from '../middlewares/plan.middleware';
 
 // PostgreSQL UserRole enum values
 const UserRole = {
@@ -231,6 +232,8 @@ export const createProduct = async (
       price,
       image,
       imageUrl,
+      imageSource,
+      galleryAssetId,
       categoryId,
       isNew,
       isPopular,
@@ -256,8 +259,25 @@ export const createProduct = async (
       throw new ApiError(403, 'Bu kategoriye ürün ekleme yetkiniz yok');
     }
 
-    // Görsel varsa kaydet, yoksa boş bırak (frontend placeholder gösterecek)
-    const finalImageUrl = imageUrl?.trim() || image?.trim() || null;
+    // Plan ürün limit kontrolü - limit aşıldıysa hata fırlatır
+    await checkProductLimit(category.restaurantId);
+
+    // Görsel kaynağına göre işlem yap
+    let finalImageUrl = imageUrl?.trim() || image?.trim() || null;
+    let finalImageSource = 'UPLOAD';
+    let finalGalleryAssetId = null;
+
+    // Eğer galeriden seçildiyse
+    if (imageSource === 'GALLERY' && galleryAssetId) {
+      const galleryAsset = await prisma.galleryAsset.findUnique({
+        where: { id: galleryAssetId },
+      });
+      if (galleryAsset) {
+        finalImageUrl = galleryAsset.imageUrl;
+        finalImageSource = 'GALLERY';
+        finalGalleryAssetId = galleryAssetId;
+      }
+    }
 
     const product = await prisma.product.create({
       data: {
@@ -266,6 +286,8 @@ export const createProduct = async (
         price,
         image: finalImageUrl,
         imageUrl: finalImageUrl,
+        imageSource: finalImageSource as any,
+        galleryAssetId: finalGalleryAssetId,
         categoryId,
         isNew,
         isPopular,
@@ -281,6 +303,7 @@ export const createProduct = async (
       },
       include: {
         category: true,
+        galleryAsset: true,
       },
     });
 
@@ -304,12 +327,15 @@ export const updateProduct = async (
       price,
       image,
       imageUrl,
+      imageSource,
+      galleryAssetId,
       categoryId,
       isNew,
       isPopular,
       isDiscount,
       discountPrice,
       isAvailable,
+      isActive,  // Admin aktif/pasif kontrolü
       ingredients,
       allergens,
       isVegetarian,
@@ -344,10 +370,34 @@ export const updateProduct = async (
       }
     }
 
-    // Görsel varsa kaydet, yoksa null (frontend placeholder gösterecek)
-    const finalImageUrl = imageUrl !== undefined 
-      ? (imageUrl?.trim() || null)
-      : (image !== undefined ? (image?.trim() || null) : undefined);
+    // Görsel kaynağına göre işlem yap
+    let finalImageUrl: string | null | undefined = undefined;
+    let finalImageSource: string | undefined = undefined;
+    let finalGalleryAssetId: string | null | undefined = undefined;
+
+    // Eğer galeriden seçildiyse
+    if (imageSource === 'GALLERY' && galleryAssetId) {
+      const galleryAsset = await prisma.galleryAsset.findUnique({
+        where: { id: galleryAssetId },
+      });
+      if (galleryAsset) {
+        finalImageUrl = galleryAsset.imageUrl;
+        finalImageSource = 'GALLERY';
+        finalGalleryAssetId = galleryAssetId;
+      }
+    } else if (imageSource === 'UPLOAD') {
+      // Upload modunda
+      finalImageUrl = imageUrl !== undefined 
+        ? (imageUrl?.trim() || null)
+        : (image !== undefined ? (image?.trim() || null) : undefined);
+      finalImageSource = 'UPLOAD';
+      finalGalleryAssetId = null;
+    } else if (imageUrl !== undefined || image !== undefined) {
+      // Eski uyumluluk: sadece imageUrl veya image gönderilmişse
+      finalImageUrl = imageUrl !== undefined 
+        ? (imageUrl?.trim() || null)
+        : (image !== undefined ? (image?.trim() || null) : undefined);
+    }
 
     const updatedProduct = await prisma.product.update({
       where: { id },
@@ -357,12 +407,15 @@ export const updateProduct = async (
         price,
         ...(finalImageUrl !== undefined && { image: finalImageUrl }),
         ...(finalImageUrl !== undefined && { imageUrl: finalImageUrl }),
+        ...(finalImageSource !== undefined && { imageSource: finalImageSource as any }),
+        ...(finalGalleryAssetId !== undefined && { galleryAssetId: finalGalleryAssetId }),
         ...(categoryId && { categoryId }),
         isNew,
         isPopular,
         isDiscount,
         discountPrice,
         isAvailable,
+        isActive,  // Admin aktif/pasif kontrolü
         ingredients,
         allergens,
         isVegetarian,
@@ -373,6 +426,7 @@ export const updateProduct = async (
       },
       include: {
         category: true,
+        galleryAsset: true,
       },
     });
 

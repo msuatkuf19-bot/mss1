@@ -124,6 +124,27 @@ export default function NewRestaurantPage() {
               )}
             </div>
 
+            {/* Paket Seçimi */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Paket <span className="text-red-500">*</span>
+              </label>
+              <select
+                {...register('planCode')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="STARTER">Başlangıç Paketi (30 Ürün, Tek QR)</option>
+                <option value="GOLD">Gold Paket (Sınırsız Ürün, Masa Bazlı QR, Tüm Özellikler)</option>
+                <option value="PLATIN">Platin Paket (Sınırsız Ürün, Tek QR)</option>
+              </select>
+              {errors.planCode && (
+                <p className="mt-1 text-sm text-red-600">{errors.planCode.message}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500">
+                Seçilen paket restoranın ürün limiti, QR modu ve erişebileceği özellikleri belirler.
+              </p>
+            </div>
+
             {/* Restoran Adı */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

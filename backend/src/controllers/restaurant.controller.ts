@@ -18,6 +18,7 @@ import {
   generateQRCodeImage,
   calculateMembershipStatus,
 } from '../utils/restaurant.utils';
+import { getPlanByCode, PlanErrorCodes } from '../middlewares/plan.middleware';
 
 // PostgreSQL UserRole enum values
 const UserRole = {
@@ -50,6 +51,15 @@ export const getAllRestaurants = async (
             id: true,
             name: true,
             email: true,
+          },
+        },
+        plan: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            maxProducts: true,
+            qrMode: true,
           },
         },
         qrCodes: {
@@ -95,6 +105,22 @@ export const getRestaurant = async (
             id: true,
             name: true,
             email: true,
+          },
+        },
+        plan: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            maxProducts: true,
+            qrMode: true,
+            adsEnabled: true,
+            reportingEnabled: true,
+            detailedReportingEnabled: true,
+            serviceAreasEnabled: true,
+            cartEnabled: true,
+            campaignCategoryEnabled: true,
+            mobilePanelEnabled: true,
           },
         },
         categories: {
@@ -165,6 +191,9 @@ export const createRestaurant = async (
       ownerName,
       ownerEmail,
       ownerPassword,
+      
+      // Plan info
+      planCode,
     } = req.body;
 
     // Validation
@@ -172,8 +201,18 @@ export const createRestaurant = async (
       throw new ApiError(400, 'Restoran adı, sahip adı, email ve şifre zorunludur');
     }
 
+    if (!planCode) {
+      throw new ApiError(400, 'Paket seçimi zorunludur (planCode: STARTER, GOLD veya PLATIN)');
+    }
+
     if (!membershipStartDate || !membershipEndDate) {
       throw new ApiError(400, 'Üyelik başlangıç ve bitiş tarihleri zorunludur');
+    }
+
+    // Validate plan exists and is active
+    const plan = await getPlanByCode(planCode);
+    if (!plan) {
+      throw new ApiError(400, `Geçersiz paket kodu: ${planCode}. Geçerli değerler: STARTER, GOLD, PLATIN`, true, PlanErrorCodes.PLAN_NOT_FOUND);
     }
 
     // Parse and validate dates
@@ -288,6 +327,7 @@ export const createRestaurant = async (
           membershipStatus: membershipStatus as any,
           isActive: true,
           ownerId: owner.id,
+          planId: plan.id,
         },
       });
 
@@ -388,6 +428,7 @@ export const updateRestaurant = async (
       membershipEndDate,
       isActive,
       ownerPassword, // Optional: only update if provided
+      planCode, // Optional: change plan
     } = req.body;
 
     // Check restaurant exists with owner
@@ -469,6 +510,16 @@ export const updateRestaurant = async (
       hashedPassword = await hashPassword(ownerPassword);
     }
 
+    // Validate plan if provided
+    let newPlanId: string | undefined;
+    if (planCode) {
+      const plan = await getPlanByCode(planCode);
+      if (!plan) {
+        throw new ApiError(400, `Geçersiz paket kodu: ${planCode}. Geçerli değerler: STARTER, GOLD, PLATIN`, true, PlanErrorCodes.PLAN_NOT_FOUND);
+      }
+      newPlanId = plan.id;
+    }
+
     // Update owner password if provided (in a transaction)
     const result = await prisma.$transaction(async (tx) => {
       // Update owner password if provided
@@ -508,6 +559,7 @@ export const updateRestaurant = async (
           ...(endDate && { membershipEndDate: endDate }),
           ...(isActive !== undefined && { isActive }),
           ...(membershipStatus && { membershipStatus: membershipStatus as any }),
+          ...(newPlanId && { planId: newPlanId }),
         },
         include: {
           owner: {
@@ -515,6 +567,15 @@ export const updateRestaurant = async (
               id: true,
               name: true,
               email: true,
+            },
+          },
+          plan: {
+            select: {
+              id: true,
+              code: true,
+              name: true,
+              maxProducts: true,
+              qrMode: true,
             },
           },
           qrCodes: {

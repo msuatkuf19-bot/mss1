@@ -773,6 +773,198 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Paketlerimiz - 3 Kolonlu Fiyatlandırma */}
+      <section className="py-20 px-6 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent">
+        <div className="container mx-auto max-w-7xl">
+          {/* Section Header */}
+          <div className="text-center mb-16 animate-slideUp">
+            <div className="inline-block px-4 py-2 glass-effect rounded-full border border-purple-500/20 mb-4">
+              <span className="text-sm text-purple-400 font-medium">Paketlerimiz</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              İşletmenize Uygun <span className="gradient-text">Planı Seçin</span>
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+              İşletmenizin ihtiyacına göre en uygun planı seçin
+            </p>
+          </div>
+
+          {/* Pricing Cards */}
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+            
+            {/* Başlangıç Paket */}
+            <div className="relative group animate-slideUp" style={{animationDelay: '0.1s'}}>
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-600/30 to-gray-500/30 rounded-3xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+              <div className="relative h-full glass-effect rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/10 flex flex-col">
+                {/* Card Header */}
+                <div className="p-8 pb-4">
+                  <h3 className="text-2xl font-bold text-white mb-2">Başlangıç Paket</h3>
+                  <p className="text-gray-400 text-sm">Küçük işletmeler için ideal başlangıç</p>
+                </div>
+                
+                {/* Price */}
+                <div className="px-8 py-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-bold text-white">İşletmenize Özel</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-1">Fiyat teklifi alın</p>
+                </div>
+                
+                {/* Features */}
+                <div className="px-8 py-6 space-y-4 flex-grow">
+                  {[
+                    '1 – 30 Arası Ürün',
+                    'İşletmeye 1 QR Kod',
+                    'Reklamsız Kullanım',
+                    'Standart Raporlama',
+                    'Gerçek Zamanlı Güncelleme'
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="text-gray-300 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* CTA */}
+                <div className="p-8 pt-4">
+                  <Link 
+                    href="/demo"
+                    className="block w-full py-4 text-center border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+                  >
+                    Teklif Al
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Gold Paket - Önerilen */}
+            <div className="relative group animate-slideUp md:-mt-4 md:mb-4" style={{animationDelay: '0.2s'}}>
+              {/* Glowing border effect */}
+              <div className="absolute -inset-[2px] bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 rounded-3xl blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute -inset-[2px] bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 rounded-3xl opacity-75"></div>
+              
+              <div className="relative h-full glass-effect rounded-3xl overflow-hidden border border-white/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/30 flex flex-col" style={{background: 'linear-gradient(180deg, rgba(251, 146, 60, 0.1) 0%, rgba(0,0,0,0.9) 30%)'}}>
+                {/* Badge */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-0">
+                  <div className="px-6 py-2 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 rounded-b-xl">
+                    <span className="text-white text-sm font-bold uppercase tracking-wide">En Çok Tercih Edilen</span>
+                  </div>
+                </div>
+                
+                {/* Card Header */}
+                <div className="p-8 pb-4 pt-14">
+                  <h3 className="text-2xl font-bold gradient-text mb-2">Gold Paket</h3>
+                  <p className="text-gray-300 text-sm">En kapsamlı çözüm</p>
+                </div>
+                
+                {/* Price */}
+                <div className="px-8 py-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-bold gradient-text">İşletmenize Özel</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-1">Fiyat teklifi alın</p>
+                </div>
+                
+                {/* Features */}
+                <div className="px-8 py-6 space-y-4 flex-grow">
+                  {[
+                    'Sınırsız Ürün',
+                    'Her Masaya Özel QR Kod',
+                    'İşletmenin Hizmet Bölgeleri',
+                    'Sepet (Sipariş) Uygulaması',
+                    'Kampanya Kategorisi',
+                    'İşletme Mobil Uygulama Paneli',
+                    'Detaylı Raporlama',
+                    'Reklamsız Kullanım'
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="text-white text-sm font-medium">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* CTA */}
+                <div className="p-8 pt-4">
+                  <Link 
+                    href="/demo"
+                    className="block w-full py-4 text-center bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 hover:scale-105"
+                  >
+                    Hemen Başvur
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Platin Paket */}
+            <div className="relative group animate-slideUp" style={{animationDelay: '0.3s'}}>
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-600/30 to-gray-500/30 rounded-3xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+              <div className="relative h-full glass-effect rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/10 flex flex-col">
+                {/* Card Header */}
+                <div className="p-8 pb-4">
+                  <h3 className="text-2xl font-bold text-white mb-2">Platin Paket</h3>
+                  <p className="text-gray-400 text-sm">Orta ölçekli işletmeler için</p>
+                </div>
+                
+                {/* Price */}
+                <div className="px-8 py-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-bold text-white">İşletmenize Özel</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-1">Fiyat teklifi alın</p>
+                </div>
+                
+                {/* Features */}
+                <div className="px-8 py-6 space-y-4 flex-grow">
+                  {[
+                    'Sınırsız Ürün',
+                    'İşletmeye 1 QR Kod',
+                    'Reklamsız Kullanım',
+                    'Standart Raporlama',
+                    'Gerçek Zamanlı Güncelleme'
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="text-gray-300 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* CTA */}
+                <div className="p-8 pt-4">
+                  <Link 
+                    href="/demo"
+                    className="block w-full py-4 text-center border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+                  >
+                    Teklif Al
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Note */}
+          <div className="text-center mt-12 animate-slideUp" style={{animationDelay: '0.4s'}}>
+            <p className="text-gray-400 text-sm">
+              ✨ Kurulum ücretsizdir – Gizli maliyet yoktur
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* SEO Content Section */}
       <section className="py-20 px-6 bg-gradient-to-b from-transparent via-orange-500/5 to-transparent">
         <div className="container mx-auto max-w-6xl">

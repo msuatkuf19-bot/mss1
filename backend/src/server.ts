@@ -39,6 +39,8 @@ import demoRequestRoutes from './routes/demo-requests.routes';
 import healthRoutes from './routes/health.routes';
 import superAdminAnalyticsRoutes from './routes/superadmin-analytics.routes';
 import membershipRoutes from './routes/membership.routes';
+import galleryAssetsRoutes from './routes/galleryAssets.routes';
+import adminGalleryAssetsRoutes from './routes/admin.galleryAssets.routes';
 
 /**
  * Environment variables validasyonu
@@ -104,6 +106,8 @@ app.use('/api/public', publicRoutes);
 app.use('/api/demo-requests', demoRequestRoutes);
 app.use('/api/superadmin/analytics', superAdminAnalyticsRoutes);
 app.use('/api/admin/memberships', membershipRoutes);
+app.use('/api/gallery-assets', galleryAssetsRoutes);
+app.use('/api/admin/gallery-assets', adminGalleryAssetsRoutes);
 
 // Railway Deployment Test Endpoints
 app.use('/api/users/example', userExampleRoutes);

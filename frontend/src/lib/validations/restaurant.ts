@@ -10,6 +10,11 @@ export const businessTypeSchema = z.enum(['RESTORAN', 'KAFE', 'OTEL', 'DIGER'], 
   required_error: 'İşletme tipi seçilmelidir',
 });
 
+// Plan code enum
+export const planCodeSchema = z.enum(['STARTER', 'GOLD', 'PLATIN'], {
+  required_error: 'Paket seçimi zorunludur',
+});
+
 // Turkish phone number regex
 const phoneRegex = /^(\+90|0)?[1-9]\d{9}$/;
 
@@ -65,6 +70,9 @@ export const createRestaurantSchema = z.object({
     .regex(/^#[0-9A-Fa-f]{6}$/, 'Geçerli bir renk kodu giriniz (örn: #3B82F6)')
     .optional()
     .or(z.literal('')),
+  
+  // Plan Selection
+  planCode: planCodeSchema,
   
   // Membership Dates
   membershipStartDate: z.string()
@@ -146,6 +154,7 @@ export const updateRestaurantSchema = z.object({
     })
     .optional(),
   isActive: z.boolean().optional(),
+  planCode: planCodeSchema.optional(),
 });
 
 /**
@@ -182,6 +191,7 @@ export const defaultRestaurantFormValues: Partial<CreateRestaurantFormData> = {
   neighborhood: '',
   internalNote: '',
   themeColor: '#3B82F6',
+  planCode: 'STARTER',
   membershipStartDate: new Date().toISOString().split('T')[0],
   membershipEndDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // +1 year
   ownerName: '',

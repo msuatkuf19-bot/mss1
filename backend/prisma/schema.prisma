@@ -90,34 +90,40 @@ model ProductView {
 }
 
 model Product {
-  id            String        @id @default(uuid())
-  name          String
-  description   String?
-  price         Float
-  image         String?
-  imageUrl      String?
-  isNew         Boolean       @default(false)
-  isPopular     Boolean       @default(false)
-  isDiscount    Boolean       @default(false)
-  discountPrice Float?
-  isAvailable   Boolean       @default(true)
-  ingredients   String?
-  allergens     String?
-  isVegetarian  Boolean       @default(false)
-  isVegan       Boolean       @default(false)
-  isGlutenFree  Boolean       @default(false)
-  isSpicy       Boolean       @default(false)
-  order         Int           @default(0)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  categoryId    String
-  analytics     Analytics[]
-  productViews  ProductView[]
-  category      Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id             String        @id @default(uuid())
+  name           String
+  description    String?
+  price          Float
+  image          String?
+  imageUrl       String?
+  imageSource    ImageSource   @default(UPLOAD)
+  galleryAssetId String?
+  galleryAsset   GalleryAsset? @relation("ProductGalleryAsset", fields: [galleryAssetId], references: [id], onDelete: SetNull)
+  isNew          Boolean       @default(false)
+  isPopular      Boolean       @default(false)
+  isDiscount     Boolean       @default(false)
+  discountPrice  Float?
+  isAvailable    Boolean       @default(true)
+  isActive       Boolean       @default(true)  // Admin tarafından aktif/pasif - pasifse QR'da görünmez
+  ingredients    String?
+  allergens      String?
+  isVegetarian   Boolean       @default(false)
+  isVegan        Boolean       @default(false)
+  isGlutenFree   Boolean       @default(false)
+  isSpicy        Boolean       @default(false)
+  order          Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  categoryId     String
+  analytics      Analytics[]
+  productViews   ProductView[]
+  category       Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@index([categoryId])
   @@index([isAvailable])
+  @@index([isActive])
   @@index([order])
+  @@index([galleryAssetId])
   @@map("products")
 }
 
@@ -187,6 +193,11 @@ model Restaurant {
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   ownerId             String
+  
+  // Plan ilişkisi (paket zorunlu)
+  planId              String?
+  plan                Plan?                 @relation(fields: [planId], references: [id])
+  
   analytics           Analytics[]
   categories          Category[]
   images              Image[]
@@ -201,6 +212,7 @@ model Restaurant {
   @@index([memberNo])
   @@index([membershipEndDate])
   @@index([membershipStatus])
+  @@index([planId])
   @@map("restaurants")
 }
 
@@ -291,4 +303,101 @@ enum MembershipStatus {
   ACTIVE
   EXPIRED
   SUSPENDED
+}
+
+// =====================================================
+// PLAN SYSTEM - Paket Yönetimi
+// =====================================================
+
+enum PlanCode {
+  STARTER
+  GOLD
+  PLATIN
+}
+
+enum QrMode {
+  SINGLE      // İşletmeye tek QR
+  PER_TABLE   // Her masaya ayrı QR
+}
+
+model Plan {
+  id                       String      @id @default(uuid())
+  code                     PlanCode    @unique
+  name                     String
+  description              String?
+
+  // Ürün limiti (null = sınırsız)
+  maxProducts              Int?
+
+  // QR modu
+  qrMode                   QrMode      @default(SINGLE)
+
+  // Özellik bayrakları
+  adsEnabled               Boolean     @default(false)
+  reportingEnabled         Boolean     @default(true)
+  detailedReportingEnabled Boolean     @default(false)
+  serviceAreasEnabled      Boolean     @default(false)
+  cartEnabled              Boolean     @default(false)
+  campaignCategoryEnabled  Boolean     @default(false)
+  mobilePanelEnabled       Boolean     @default(false)
+
+  isActive                 Boolean     @default(true)
+
+  // Relations
+  restaurants              Restaurant[]
+
+  createdAt                DateTime    @default(now())
+  updatedAt                DateTime    @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@map("plans")
+}
+
+// =====================================================
+// GALLERY ASSET - Hazır görsel galerisi
+// =====================================================
+
+enum GalleryAssetType {
+  FOOD
+  DRINK
+  DESSERT
+  OTHER
+}
+
+enum GalleryAssetScope {
+  GLOBAL
+  RESTAURANT
+}
+
+enum ImageSource {
+  UPLOAD
+  GALLERY
+}
+
+model GalleryAsset {
+  id           String            @id @default(uuid())
+  title        String
+  type         GalleryAssetType  @default(FOOD)
+  category     String?           // Örn: "Pizza", "Burger", "Kahve"
+  tags         String[]          @default([])
+  imageUrl     String
+  thumbUrl     String?
+  width        Int?
+  height       Int?
+  isActive     Boolean           @default(true)
+  order        Int               @default(0)
+  scope        GalleryAssetScope @default(GLOBAL)
+  restaurantId String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  
+  // Relations
+  products     Product[]         @relation("ProductGalleryAsset")
+
+  @@index([scope, isActive, type])
+  @@index([scope, restaurantId, isActive])
+  @@index([category])
+  @@index([order])
+  @@map("gallery_assets")
 }

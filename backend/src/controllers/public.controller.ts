@@ -163,6 +163,7 @@ export const getPublicMenu = async (
         where: {
           categoryId: categoryId as string,
           isAvailable: true,
+          isActive: true,  // Admin pasif yaptıysa gösterme
         },
         orderBy: { order: 'asc' },
         take: limit ? parseInt(limit as string) : 50, // Varsayılan limit 50
@@ -210,6 +211,7 @@ export const getPublicMenu = async (
         products: {
           where: {
             isAvailable: true,
+            isActive: true,  // Admin pasif yaptıysa gösterme
           },
           orderBy: { order: 'asc' },
           // Lite modda sadece ilk birkaç ürün

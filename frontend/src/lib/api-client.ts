@@ -358,6 +358,80 @@ class ApiClient {
     });
     return data;
   }
+
+  // Gallery Assets
+  async getGalleryAssets(params?: {
+    q?: string;
+    type?: 'FOOD' | 'DRINK' | 'DESSERT' | 'OTHER';
+    category?: string;
+    tags?: string;
+    scope?: 'GLOBAL' | 'RESTAURANT';
+    isActive?: string;
+    page?: number;
+    limit?: number;
+    sort?: string;
+  }) {
+    const { data } = await this.client.get('/gallery-assets', { params });
+    return data;
+  }
+
+  async getGalleryCategories() {
+    const { data } = await this.client.get('/gallery-assets/categories');
+    return data;
+  }
+
+  async getGalleryTags() {
+    const { data } = await this.client.get('/gallery-assets/tags');
+    return data;
+  }
+
+  async getGalleryAsset(id: string) {
+    const { data } = await this.client.get(`/gallery-assets/${id}`);
+    return data;
+  }
+
+  // Gallery Assets Admin
+  async createGalleryAsset(assetData: {
+    title: string;
+    type: 'FOOD' | 'DRINK' | 'DESSERT' | 'OTHER';
+    category?: string;
+    tags?: string[];
+    imageUrl: string;
+    thumbUrl?: string;
+    isActive?: boolean;
+    order?: number;
+    scope: 'GLOBAL' | 'RESTAURANT';
+    restaurantId?: string;
+  }) {
+    const { data } = await this.client.post('/admin/gallery-assets', assetData);
+    return data;
+  }
+
+  async updateGalleryAsset(id: string, assetData: Partial<{
+    title: string;
+    type: 'FOOD' | 'DRINK' | 'DESSERT' | 'OTHER';
+    category?: string;
+    tags?: string[];
+    imageUrl: string;
+    thumbUrl?: string;
+    isActive?: boolean;
+    order?: number;
+    scope: 'GLOBAL' | 'RESTAURANT';
+    restaurantId?: string;
+  }>) {
+    const { data } = await this.client.put(`/admin/gallery-assets/${id}`, assetData);
+    return data;
+  }
+
+  async deleteGalleryAsset(id: string) {
+    const { data } = await this.client.delete(`/admin/gallery-assets/${id}`);
+    return data;
+  }
+
+  async toggleGalleryAsset(id: string) {
+    const { data } = await this.client.patch(`/admin/gallery-assets/${id}/toggle`);
+    return data;
+  }
 }
 
 export const apiClient = new ApiClient();

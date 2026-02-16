@@ -35,6 +35,13 @@ interface Restaurant {
     name: string;
     email: string;
   };
+  plan?: {
+    id: string;
+    code: 'STARTER' | 'GOLD' | 'PLATIN';
+    name: string;
+    maxProducts: number | null;
+    qrMode: 'SINGLE' | 'PER_TABLE';
+  } | null;
   _count: {
     categories: number;
     qrCodes: number;
@@ -65,6 +72,7 @@ interface FormData {
   ownerName: string;
   ownerEmail: string;
   ownerPassword: string;
+  planCode: 'STARTER' | 'GOLD' | 'PLATIN';
 }
 
 export default function AdminRestaurants() {
@@ -130,6 +138,7 @@ export default function AdminRestaurants() {
     ownerName: '',
     ownerEmail: '',
     ownerPassword: '',
+    planCode: 'STARTER',
   });
 
   useEffect(() => {
@@ -403,6 +412,7 @@ export default function AdminRestaurants() {
       ownerEmail: restaurant.owner.email,
       ownerName: restaurant.owner.name,
       ownerPassword: '',
+      planCode: restaurant.plan?.code || 'STARTER',
     });
     setShowModal(true);
   };
@@ -437,6 +447,7 @@ export default function AdminRestaurants() {
       ownerName: '',
       ownerEmail: '',
       ownerPassword: '',
+      planCode: 'STARTER',
     });
   };
 
@@ -849,6 +860,25 @@ export default function AdminRestaurants() {
                         {errors.businessType && (
                           <p className="mt-1 text-sm text-red-600">{errors.businessType}</p>
                         )}
+                      </div>
+
+                      {/* Paket Seçimi */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Paket <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          value={formData.planCode}
+                          onChange={(e) => setFormData({ ...formData, planCode: e.target.value as 'STARTER' | 'GOLD' | 'PLATIN' })}
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="STARTER">Başlangıç Paketi (30 Ürün, Tek QR)</option>
+                          <option value="GOLD">Gold Paket (Sınırsız, Masa QR, Tüm Özellikler)</option>
+                          <option value="PLATIN">Platin Paket (Sınırsız, Tek QR)</option>
+                        </select>
+                        <p className="mt-1 text-xs text-gray-500">
+                          Seçilen paket ürün limiti ve özellikleri belirler
+                        </p>
                       </div>
 
                       {/* Üye Numarası */}

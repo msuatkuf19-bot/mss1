@@ -1,10 +1,201 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import { PrismaClient, UserRole, GalleryAssetType, GalleryAssetScope, PlanCode, QrMode } from '@prisma/client';
 import { hashPassword } from '../src/utils/bcrypt';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Seeding database...');
+
+  // =====================================================
+  // PLANS - Paket Tanımları (Kritik: İlk çalışmalı)
+  // =====================================================
+  console.log('📦 Creating plans...');
+
+  const starterPlan = await prisma.plan.upsert({
+    where: { code: PlanCode.STARTER },
+    update: {
+      name: 'Başlangıç Paketi',
+      description: 'Küçük işletmeler için ideal başlangıç paketi',
+      maxProducts: 30,
+      qrMode: QrMode.SINGLE,
+      adsEnabled: false,
+      reportingEnabled: true,
+      detailedReportingEnabled: false,
+      serviceAreasEnabled: false,
+      cartEnabled: false,
+      campaignCategoryEnabled: false,
+      mobilePanelEnabled: false,
+      isActive: true,
+    },
+    create: {
+      code: PlanCode.STARTER,
+      name: 'Başlangıç Paketi',
+      description: 'Küçük işletmeler için ideal başlangıç paketi',
+      maxProducts: 30,
+      qrMode: QrMode.SINGLE,
+      adsEnabled: false,
+      reportingEnabled: true,
+      detailedReportingEnabled: false,
+      serviceAreasEnabled: false,
+      cartEnabled: false,
+      campaignCategoryEnabled: false,
+      mobilePanelEnabled: false,
+      isActive: true,
+    },
+  });
+
+  const goldPlan = await prisma.plan.upsert({
+    where: { code: PlanCode.GOLD },
+    update: {
+      name: 'Gold Paket',
+      description: 'Tam özellikli profesyonel paket - Masa bazlı QR ve tüm özellikler',
+      maxProducts: null, // Sınırsız
+      qrMode: QrMode.PER_TABLE,
+      adsEnabled: false,
+      reportingEnabled: true,
+      detailedReportingEnabled: true,
+      serviceAreasEnabled: true,
+      cartEnabled: true,
+      campaignCategoryEnabled: true,
+      mobilePanelEnabled: true,
+      isActive: true,
+    },
+    create: {
+      code: PlanCode.GOLD,
+      name: 'Gold Paket',
+      description: 'Tam özellikli profesyonel paket - Masa bazlı QR ve tüm özellikler',
+      maxProducts: null, // Sınırsız
+      qrMode: QrMode.PER_TABLE,
+      adsEnabled: false,
+      reportingEnabled: true,
+      detailedReportingEnabled: true,
+      serviceAreasEnabled: true,
+      cartEnabled: true,
+      campaignCategoryEnabled: true,
+      mobilePanelEnabled: true,
+      isActive: true,
+    },
+  });
+
+  const platinPlan = await prisma.plan.upsert({
+    where: { code: PlanCode.PLATIN },
+    update: {
+      name: 'Platin Paket',
+      description: 'Sınırsız ürün, tek QR - Orta ölçekli işletmeler için',
+      maxProducts: null, // Sınırsız
+      qrMode: QrMode.SINGLE,
+      adsEnabled: false,
+      reportingEnabled: true,
+      detailedReportingEnabled: false,
+      serviceAreasEnabled: false,
+      cartEnabled: false,
+      campaignCategoryEnabled: false,
+      mobilePanelEnabled: false,
+      isActive: true,
+    },
+    create: {
+      code: PlanCode.PLATIN,
+      name: 'Platin Paket',
+      description: 'Sınırsız ürün, tek QR - Orta ölçekli işletmeler için',
+      maxProducts: null, // Sınırsız
+      qrMode: QrMode.SINGLE,
+      adsEnabled: false,
+      reportingEnabled: true,
+      detailedReportingEnabled: false,
+      serviceAreasEnabled: false,
+      cartEnabled: false,
+      campaignCategoryEnabled: false,
+      mobilePanelEnabled: false,
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Plans created:', starterPlan.name, goldPlan.name, platinPlan.name);
+
+  // =====================================================
+  // Gallery Assets - Hazır görsel galerisi
+  // =====================================================
+  console.log('📸 Creating gallery assets...');
+
+  const galleryAssets = await Promise.all([
+    prisma.galleryAsset.upsert({
+      where: { id: 'gallery-pizza-1' },
+      update: {},
+      create: {
+        id: 'gallery-pizza-1',
+        title: 'Karışık Pizza',
+        type: GalleryAssetType.FOOD,
+        category: 'Pizza',
+        tags: ['italyan', 'peynir', 'sıcak', 'fırın'],
+        imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80',
+        thumbUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=60',
+        scope: GalleryAssetScope.GLOBAL,
+        order: 1,
+      },
+    }),
+    prisma.galleryAsset.upsert({
+      where: { id: 'gallery-burger-1' },
+      update: {},
+      create: {
+        id: 'gallery-burger-1',
+        title: 'Klasik Burger',
+        type: GalleryAssetType.FOOD,
+        category: 'Burger',
+        tags: ['amerikan', 'et', 'fast-food'],
+        imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80',
+        thumbUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=60',
+        scope: GalleryAssetScope.GLOBAL,
+        order: 2,
+      },
+    }),
+    prisma.galleryAsset.upsert({
+      where: { id: 'gallery-coffee-1' },
+      update: {},
+      create: {
+        id: 'gallery-coffee-1',
+        title: 'Cappuccino',
+        type: GalleryAssetType.DRINK,
+        category: 'Kahve',
+        tags: ['sıcak', 'kahve', 'süt'],
+        imageUrl: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=800&q=80',
+        thumbUrl: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&q=60',
+        scope: GalleryAssetScope.GLOBAL,
+        order: 3,
+      },
+    }),
+    prisma.galleryAsset.upsert({
+      where: { id: 'gallery-dessert-1' },
+      update: {},
+      create: {
+        id: 'gallery-dessert-1',
+        title: 'Çikolatalı Pasta',
+        type: GalleryAssetType.DESSERT,
+        category: 'Pasta',
+        tags: ['tatlı', 'çikolata', 'kek'],
+        imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80',
+        thumbUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=60',
+        scope: GalleryAssetScope.GLOBAL,
+        order: 4,
+      },
+    }),
+    prisma.galleryAsset.upsert({
+      where: { id: 'gallery-salad-1' },
+      update: {},
+      create: {
+        id: 'gallery-salad-1',
+        title: 'Sezar Salata',
+        type: GalleryAssetType.FOOD,
+        category: 'Salata',
+        tags: ['sağlıklı', 'sebze', 'hafif'],
+        imageUrl: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=800&q=80',
+        thumbUrl: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&q=60',
+        scope: GalleryAssetScope.GLOBAL,
+        order: 5,
+      },
+    }),
+  ]);
+
+  console.log(`✅ ${galleryAssets.length} gallery assets created`);
 
   // Süper Admin oluştur
   const superAdmin = await prisma.user.upsert({
@@ -34,7 +225,9 @@ async function main() {
 
   const restaurant1 = await prisma.restaurant.upsert({
     where: { slug: 'lezzetli-lokanta' },
-    update: {},
+    update: {
+      planId: starterPlan.id, // Mevcut restorana plan ekle
+    },
     create: {
       name: 'Lezzetli Lokanta',
       slug: 'lezzetli-lokanta',
@@ -44,6 +237,7 @@ async function main() {
       email: 'info@lezzetlilokanta.com',
       themeColor: '#E74C3C',
       ownerId: restaurant1Owner.id,
+      planId: starterPlan.id, // Başlangıç paketi
       workingHours: JSON.stringify({
         pazartesi: '09:00-22:00',
         sali: '09:00-22:00',

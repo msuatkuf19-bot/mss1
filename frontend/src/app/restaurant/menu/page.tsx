@@ -7,6 +7,7 @@ import { apiClient } from '@/lib/api-client';
 import toast from 'react-hot-toast';
 import { DEFAULT_PRODUCT_IMAGE } from '@/lib/constants';
 import MenuFilterBar from '@/components/restaurant/MenuFilterBar';
+import ImagePicker from '@/components/common/ImagePicker';
 
 interface Product {
   id: string;
@@ -15,7 +16,10 @@ interface Product {
   price: number;
   image?: string;
   imageUrl?: string;
+  imageSource?: 'UPLOAD' | 'GALLERY';
+  galleryAssetId?: string | null;
   isAvailable: boolean;
+  isActive: boolean;  // Admin kontrolü - pasifse QR'da görünmez
   category: {
     id: string;
     name: string;
@@ -41,6 +45,8 @@ export default function RestaurantMenu() {
     price: 0,
     categoryId: '',
     image: '',
+    imageSource: 'UPLOAD' as 'UPLOAD' | 'GALLERY',
+    galleryAssetId: null as string | null,
     isAvailable: true,
     ingredients: '',
     allergens: '',
@@ -99,11 +105,16 @@ export default function RestaurantMenu() {
     e.preventDefault();
     setSubmitting(true);
     try {
+      const payload = {
+        ...formData,
+        imageUrl: formData.image,
+      };
+      
       if (editingProduct) {
-        await apiClient.updateProduct(editingProduct.id, formData);
+        await apiClient.updateProduct(editingProduct.id, payload);
         toast.success('✅ Ürün başarıyla güncellendi!');
       } else {
-        await apiClient.createProduct(formData);
+        await apiClient.createProduct(payload);
         toast.success('✅ Ürün başarıyla oluşturuldu!');
       }
       setShowModal(false);
@@ -141,6 +152,18 @@ export default function RestaurantMenu() {
     }
   };
 
+  const toggleActive = async (product: Product) => {
+    try {
+      await apiClient.updateProduct(product.id, {
+        isActive: !product.isActive,
+      });
+      toast.success(product.isActive ? '🚫 Ürün pasif yapıldı (QR''da görünmez)' : '✅ Ürün aktif yapıldı (QR''da görünür)');
+      await loadData();
+    } catch (error: any) {
+      toast.error('❌ Durum güncellenemedi');
+    }
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -150,7 +173,7 @@ export default function RestaurantMenu() {
       const response = await apiClient.uploadFile(file, 'product');
       const imageUrl = response.data.url;
       
-      setFormData({ ...formData, image: imageUrl });
+      setFormData({ ...formData, image: imageUrl, imageSource: 'UPLOAD', galleryAssetId: null });
       setImagePreview(imageUrl);
       toast.success('✅ Görsel yüklendi!');
     } catch (error: any) {
@@ -158,6 +181,20 @@ export default function RestaurantMenu() {
     } finally {
       setUploadingImage(false);
     }
+  };
+
+  const handleImageChange = (data: {
+    imageUrl: string;
+    imageSource: 'UPLOAD' | 'GALLERY';
+    galleryAssetId: string | null;
+  }) => {
+    setFormData({
+      ...formData,
+      image: data.imageUrl,
+      imageSource: data.imageSource,
+      galleryAssetId: data.galleryAssetId,
+    });
+    setImagePreview(data.imageUrl);
   };
 
   const openEditModal = (product: any) => {
@@ -168,6 +205,8 @@ export default function RestaurantMenu() {
       price: product.price,
       categoryId: product.category.id,
       image: product.image || '',
+      imageSource: product.imageSource || 'UPLOAD',
+      galleryAssetId: product.galleryAssetId || null,
       isAvailable: product.isAvailable,
       ingredients: product.ingredients || '',
       allergens: product.allergens || '',
@@ -188,6 +227,8 @@ export default function RestaurantMenu() {
       price: 0,
       categoryId: categories[0]?.id || '',
       image: '',
+      imageSource: 'UPLOAD',
+      galleryAssetId: null,
       isAvailable: true,
       ingredients: '',
       allergens: '',
@@ -253,7 +294,8 @@ export default function RestaurantMenu() {
                     <th className="text-left py-4 px-6 font-semibold text-gray-700">Ürün</th>
                     <th className="text-left py-4 px-6 font-semibold text-gray-700">Kategori</th>
                     <th className="text-right py-4 px-6 font-semibold text-gray-700">Fiyat</th>
-                    <th className="text-center py-4 px-6 font-semibold text-gray-700">Durum</th>
+                    <th className="text-center py-4 px-6 font-semibold text-gray-700">Stok</th>
+                    <th className="text-center py-4 px-6 font-semibold text-gray-700">QR Görünürluğü</th>
                     <th className="text-right py-4 px-6 font-semibold text-gray-700">İşlemler</th>
                   </tr>
                 </thead>
@@ -297,6 +339,19 @@ export default function RestaurantMenu() {
                           }`}
                         >
                           {product.isAvailable ? 'Mevcut' : 'Tükendi'}
+                        </button>
+                      </td>
+                      <td className="py-4 px-6 text-center">
+                        <button
+                          onClick={() => toggleActive(product)}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            product.isActive !== false
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-gray-100 text-gray-500'
+                          }`}
+                          title={product.isActive !== false ? 'QR menüde görünür' : 'QR menüde görünmez'}
+                        >
+                          {product.isActive !== false ? '👁️ Görünür' : '🚫 Gizli'}
                         </button>
                       </td>
                       <td className="py-4 px-6">
@@ -359,51 +414,15 @@ export default function RestaurantMenu() {
                     />
                   </div>
 
-                  {/* Image Upload */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ürün Görseli
-                    </label>
-                    
-                    {imagePreview && (
-                      <div className="mb-3 relative">
-                        <img 
-                          src={imagePreview} 
-                          alt="Preview" 
-                          className="w-full h-48 object-cover rounded-lg border"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setFormData({ ...formData, image: '' });
-                            setImagePreview('');
-                          }}
-                          className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-lg"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    )}
-                    
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                        <p className="mb-2 text-sm text-gray-500">
-                          <span className="font-semibold">{uploadingImage ? 'Yükleniyor...' : 'Tıklayın veya sürükleyin'}</span>
-                        </p>
-                        <p className="text-xs text-gray-500">PNG, JPG, JPEG (MAX. 5MB)</p>
-                      </div>
-                      <input
-                        type="file"
-                        accept="image/png,image/jpeg,image/jpg"
-                        onChange={handleImageUpload}
-                        disabled={uploadingImage}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
+                  {/* Image Upload with Gallery Picker */}
+                  <ImagePicker
+                    value={formData.image}
+                    imageSource={formData.imageSource as 'UPLOAD' | 'GALLERY'}
+                    galleryAssetId={formData.galleryAssetId}
+                    onChange={handleImageChange}
+                    onUploadStart={() => setUploadingImage(true)}
+                    onUploadEnd={() => setUploadingImage(false)}
+                  />
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">

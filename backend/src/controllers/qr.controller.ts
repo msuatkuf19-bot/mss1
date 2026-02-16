@@ -3,6 +3,7 @@ import prisma from '../config/prisma';
 import { ApiError, sendSuccess } from '../utils/response';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { qrCodeService } from '../services/qr.service';
+import { checkQrMode, PlanErrorCodes } from '../middlewares/plan.middleware';
 import '../services/qr.service.helpers'; // Service'i genişlet
 
 // QR kod oluştur (CRUD - Create)
@@ -23,6 +24,9 @@ export const createQRCode = async (
     if (req.user?.role === 'RESTAURANT_ADMIN' && req.user.restaurantId !== restaurantId) {
       throw new ApiError(403, 'Bu restorana QR kod ekleme yetkiniz yok');
     }
+
+    // Plan QR mode kontrolü - SINGLE modda masa bazlı QR oluşturulamaz
+    await checkQrMode(restaurantId, tableNumber);
 
     const qrData = await qrCodeService.generateQRCode(
       restaurantId,
@@ -60,6 +64,9 @@ export const generateQRCode = async (
       throw new ApiError(400, 'Restoran ID gerekli');
     }
 
+    // Plan QR mode kontrolü - SINGLE modda masa bazlı QR oluşturulamaz
+    await checkQrMode(restaurantId, tableNumber as string);
+
     const qrData = await qrCodeService.generateQRCode(
       restaurantId,
       tableNumber as string,
@@ -96,6 +103,9 @@ export const generateBulkQRCodes = async (
       throw new ApiError(400, 'Başlangıç ve bitiş masa numarası gerekli');
     }
 
+    // Plan QR mode kontrolü - Toplu QR masa bazlı olduğu için SINGLE modda engellenmiştir
+    await checkQrMode(restaurantId, String(startTable));
+
     const qrCodes = await qrCodeService.generateBulkQRCodes(
       restaurantId,
       parseInt(startTable),
@@ -124,6 +134,11 @@ export const generateQRPDF = async (
 
     if (!tableNumbers || !Array.isArray(tableNumbers)) {
       throw new ApiError(400, 'Masa numaraları array olarak gönderilmeli');
+    }
+
+    // Plan QR mode kontrolü - PDF QR masa bazlı olduğu için SINGLE modda engellenmiştir
+    if (tableNumbers.length > 0) {
+      await checkQrMode(restaurantId, String(tableNumbers[0]));
     }
 
     const pdfBytes = await qrCodeService.generateQRPDF(restaurantId, tableNumbers);
