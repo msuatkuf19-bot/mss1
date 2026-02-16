@@ -398,7 +398,7 @@ export default function RestaurantDashboard() {
                         </div>
                         <div>
                           <h4 className="font-medium text-gray-900">{product.name}</h4>
-                          <p className="text-sm text-gray-500">{product.category.name}</p>
+                          <p className="text-sm text-gray-500">{product.category?.name || 'Kategorisiz'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
