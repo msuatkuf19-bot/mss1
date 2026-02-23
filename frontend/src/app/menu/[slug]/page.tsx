@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback, memo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
 import { buildTheme, getCardRadiusClass, getHeaderBackgroundStyle } from '@/lib/theme-utils';
-import { getTodayWorkingHours, isRestaurantOpen } from '@/lib/working-hours-utils';
+import { getTodayWorkingHours, getWeeklyWorkingHours, isRestaurantOpen } from '@/lib/working-hours-utils';
 import { DEFAULT_PRODUCT_IMAGE } from '@/lib/constants';
 import RestaurantLogo from '@/components/RestaurantLogo';
 import MembershipExpired from '@/components/customer/MembershipExpired';
@@ -72,6 +72,7 @@ export default function PublicMenu() {
   const [membershipData, setMembershipData] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showHoursPanel, setShowHoursPanel] = useState(false);
 
   // Memoized theme - restaurant değişmedikçe yeniden hesaplanmaz
   const theme = useMemo(() => 
@@ -82,6 +83,19 @@ export default function PublicMenu() {
   const cardRadiusClass = useMemo(() => 
     theme ? getCardRadiusClass(theme.cardRadius) : ''
   , [theme?.cardRadius]);
+
+  // Memoized working hours
+  const todayHours = useMemo(() => 
+    restaurant?.workingHours ? getTodayWorkingHours(restaurant.workingHours) : null
+  , [restaurant?.workingHours]);
+
+  const weeklyHours = useMemo(() => 
+    restaurant?.workingHours ? getWeeklyWorkingHours(restaurant.workingHours) : []
+  , [restaurant?.workingHours]);
+
+  const isOpen = useMemo(() => 
+    restaurant?.workingHours ? isRestaurantOpen(restaurant.workingHours) : null
+  , [restaurant?.workingHours]);
 
   // Memoized filtered categories - selectedCategory veya categories değişmedikçe yeniden hesaplanmaz
   // NOT: "Kampanya" kategorisi QR menüde gizleniyor (veri silinmiyor, sadece render edilmiyor)
@@ -168,9 +182,10 @@ export default function PublicMenu() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Menü yükleniyor...</p>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 px-10 py-8 text-center">
+          <div className="animate-spin rounded-full h-20 w-20 border-[5px] border-gray-200 border-t-orange-500 mx-auto mb-5"></div>
+          <p className="text-gray-700 font-semibold text-lg">Menü Hazırlanıyor...</p>
+          <p className="text-gray-400 text-sm mt-1">Lütfen bekleyin</p>
         </div>
       </div>
     );
@@ -202,25 +217,32 @@ export default function PublicMenu() {
       {/* Welcome Popup */}
       {showWelcome && theme.showWelcomePopup !== false && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn">
+          {/* Outer glow frame */}
           <div 
-            className="rounded-3xl shadow-2xl max-w-md w-full p-6 relative animate-scaleIn"
-            style={{ backgroundColor: theme.welcomeBackgroundColor || '#FFFFFF' }}
+            className="rounded-[28px] p-[3px] animate-scaleIn"
+            style={{ 
+              background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,
+              boxShadow: `0 0 30px ${theme.primaryColor}40, 0 0 60px ${theme.secondaryColor}30`
+            }}
           >
-
+            <div 
+              className="rounded-3xl shadow-2xl max-w-md w-full p-6 relative"
+              style={{ backgroundColor: theme.welcomeBackgroundColor || '#FFFFFF' }}
+            >
             <div className="text-center">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <RestaurantLogo 
                   name={restaurant.name}
                   logoUrl={logoUrl}
-                  size="lg"
+                  size="xl"
                   className="shadow-lg"
                 />
-                <h3 className="text-xl font-bold" style={{ color: theme.welcomeTitleColor || '#1F2937' }}>
-                  {restaurant.name}
-                </h3>
               </div>
+              <h3 className="text-xl font-bold mb-1" style={{ color: theme.welcomeTitleColor || '#1F2937' }}>
+                {restaurant.name}
+              </h3>
               <h2 
-                className="text-xl font-bold mb-2"
+                className="text-lg font-semibold mb-2"
                 style={{ color: theme.welcomeTitleColor || '#1F2937' }}
               >
                 {(theme.welcomeTitle || 'Hoşgeldiniz!').slice(0, 30)}
@@ -238,110 +260,181 @@ export default function PublicMenu() {
               )}
             </div>
           </div>
+          </div>
         </div>
       )}
 
-      {/* Header with Restaurant Info - Dynamic Theme */}
+      {/* ===== HEADER - Centered Logo & Name ===== */}
       <div 
-        className="shadow-md relative overflow-visible"
+        className="relative overflow-hidden"
         style={
           restaurant.headerImage
             ? {
                 backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.headerImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                minHeight: '240px',
               }
             : getHeaderBackgroundStyle(theme)
         }
       >
-        {(theme.showHeaderOverlay || restaurant.headerImage) && (
-          <div className="absolute inset-0 bg-black/40"></div>
-        )}
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
-          <div className="flex items-center justify-between gap-2 sm:gap-4">
-            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-              <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 shrink-0 flex items-center justify-center">
-                <RestaurantLogo 
-                  name={restaurant.name}
-                  logoUrl={logoUrl}
-                  size="lg"
-                  className="shadow-md border-2 border-white/20 !w-full !h-full"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h1 
-                  className="text-lg sm:text-xl md:text-2xl font-bold drop-shadow-lg leading-tight break-words line-clamp-2"
-                  style={{
-                    color: theme.headerBackgroundType === 'gradient' || theme.showHeaderOverlay
-                      ? '#ffffff'
-                      : theme.primaryColor
-                  }}
-                >
-                  {restaurant.name}
-                </h1>
-                {restaurant.description && (
-                  <p 
-                    className="text-xs sm:text-sm drop-shadow line-clamp-1 sm:line-clamp-2 opacity-90"
-                    style={{
-                      color: theme.headerBackgroundType === 'gradient' || theme.showHeaderOverlay
-                        ? '#ffffff'
-                        : '#6B7280'
-                    }}
-                  >
-                    {restaurant.description}
-                  </p>
-                )}
-              </div>
-            </div>
-            {tableNumber && (
-              <div 
-                className="hidden sm:block px-4 py-2 rounded-full font-medium shadow"
-                style={{
-                  backgroundColor: theme.primaryColor,
-                  color: '#ffffff'
-                }}
-              >
-                Masa {tableNumber}
-              </div>
-            )}
+        {/* Overlay  */}
+        <div className="absolute inset-0 bg-black/30"></div>
+
+        <div className="relative z-10 flex flex-col items-center justify-center py-5 px-4">
+          {/* Logo */}
+          <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full overflow-hidden border-2 border-white/40 shadow-xl mb-2">
+            <RestaurantLogo 
+              name={restaurant.name}
+              logoUrl={logoUrl}
+              size="lg"
+              className="!w-full !h-full !rounded-full"
+            />
           </div>
 
-          {/* Contact Info - Çalışma Saatleri (openingHoursText veya workingHours) */}
-          {(restaurant.openingHoursText || restaurant.workingHours) && (
+          {/* Restaurant Name */}
+          <h1 className="text-lg sm:text-xl font-bold text-white drop-shadow-lg text-center leading-tight">
+            {restaurant.name}
+          </h1>
+
+          {restaurant.description && (
+            <p className="text-white/70 text-xs mt-0.5 text-center max-w-xs line-clamp-1">
+              {restaurant.description}
+            </p>
+          )}
+
+          {tableNumber && (
             <div 
-              className="mt-4 flex items-center gap-2 text-sm drop-shadow"
-              style={{
-                color: theme.headerBackgroundType === 'gradient' || theme.showHeaderOverlay
-                  ? '#ffffff'
-                  : '#6B7280'
-              }}
+              className="mt-2 px-3 py-1 rounded-full text-xs font-semibold shadow"
+              style={{ backgroundColor: theme.primaryColor, color: '#fff' }}
             >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
-              </svg>
-              <span>{restaurant.openingHoursText || restaurant.workingHours}</span>
+              Masa {tableNumber}
             </div>
           )}
         </div>
       </div>
 
-      {/* Category Filter - Dynamic Theme */}
+      {/* ===== MESAİ SAATLERİ (Working Hours) ===== */}
+      {(restaurant.workingHours || restaurant.openingHoursText) && (
+        <div 
+          className="border-b"
+          style={{ 
+            backgroundColor: theme.preset === 'dark' ? '#1E293B' : '#FFFFFF',
+            borderColor: theme.preset === 'dark' ? '#334155' : '#F3F4F6'
+          }}
+        >
+          <div className="max-w-4xl mx-auto px-4">
+            {/* Today's hours - clickable to expand */}
+            <button
+              onClick={() => setShowHoursPanel(!showHoursPanel)}
+              className="w-full flex items-center justify-between py-2 group"
+            >
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-7 h-7 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: theme.primaryColor + '18' }}
+                >
+                  <svg className="w-3.5 h-3.5" style={{ color: theme.primaryColor }} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <span 
+                      className="text-xs font-semibold"
+                      style={{ color: theme.preset === 'dark' ? '#F1F5F9' : '#1F2937' }}
+                    >
+                      Mesai Saatleri
+                    </span>
+                    {isOpen !== null && (
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                        isOpen 
+                          ? 'bg-green-100 text-green-700' 
+                          : 'bg-red-100 text-red-600'
+                      }`}>
+                        {isOpen ? 'Açık' : 'Kapalı'}
+                      </span>
+                    )}
+                  </div>
+                  <span 
+                    className="text-xs"
+                    style={{ color: theme.preset === 'dark' ? '#94A3B8' : '#6B7280' }}
+                  >
+                    {restaurant.openingHoursText || todayHours || ''}
+                  </span>
+                </div>
+              </div>
+              <svg 
+                className={`w-4 h-4 transition-transform duration-200 ${showHoursPanel ? 'rotate-180' : ''}`}
+                style={{ color: theme.preset === 'dark' ? '#94A3B8' : '#9CA3AF' }}
+                fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+
+            {/* Expanded weekly hours */}
+            {showHoursPanel && weeklyHours.length > 0 && (
+              <div className="pb-3 pt-1">
+                <div 
+                  className="rounded-xl p-3 space-y-1.5"
+                  style={{ 
+                    backgroundColor: theme.preset === 'dark' ? '#0F172A' : '#F9FAFB',
+                    border: `1px solid ${theme.preset === 'dark' ? '#1E293B' : '#F3F4F6'}`
+                  }}
+                >
+                  {weeklyHours.map((wh, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`flex items-center justify-between py-1.5 px-2 rounded-lg text-sm ${
+                        wh.isToday ? 'font-semibold' : ''
+                      }`}
+                      style={{
+                        backgroundColor: wh.isToday ? theme.primaryColor + '12' : 'transparent',
+                        color: theme.preset === 'dark' ? '#E2E8F0' : '#374151'
+                      }}
+                    >
+                      <span className="flex items-center gap-2">
+                        {wh.isToday && (
+                          <span 
+                            className="w-1.5 h-1.5 rounded-full inline-block"
+                            style={{ backgroundColor: theme.primaryColor }}
+                          ></span>
+                        )}
+                        {wh.day}
+                      </span>
+                      <span className={wh.hours === 'Kapalı' ? 'text-red-500' : ''}>
+                        {wh.hours}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ===== CATEGORY FILTER TABS ===== */}
       <div 
-        className="sticky top-0 z-40 shadow-sm border-b overflow-x-auto"
-        style={{ backgroundColor: theme.backgroundColor }}
+        className="sticky top-0 z-40 shadow-sm border-b overflow-x-auto scrollbar-hide"
+        style={{ 
+          backgroundColor: theme.backgroundColor,
+          borderColor: theme.preset === 'dark' ? '#1E293B' : '#F3F4F6'
+        }}
       >
-        <div className="max-w-4xl mx-auto px-4 py-3 flex gap-2">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex gap-2 justify-center">
           <button
             onClick={() => handleCategorySelect('all')}
-            className="px-4 py-2 rounded-full font-medium whitespace-nowrap transition shadow-sm"
+            className="px-5 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-200 shadow-sm"
             style={{
-              backgroundColor: selectedCategory === 'all' ? theme.primaryColor : 'transparent',
+              background: selectedCategory === 'all' 
+                ? `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})` 
+                : 'transparent',
               color: selectedCategory === 'all' ? '#ffffff' : theme.primaryColor,
-              border: `2px solid ${theme.primaryColor}`
+              border: selectedCategory === 'all' ? 'none' : `2px solid ${theme.primaryColor}`,
             }}
           >
-            Tümü
+            Ana Yemekler
           </button>
           {categories
             .filter((category) => category.name.toLowerCase() !== 'kampanya')
@@ -349,11 +442,13 @@ export default function PublicMenu() {
             <button
               key={category.id}
               onClick={() => handleCategorySelect(category.id)}
-              className="px-4 py-2 rounded-full font-medium whitespace-nowrap transition shadow-sm"
+              className="px-5 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-200 shadow-sm"
               style={{
-                backgroundColor: selectedCategory === category.id ? theme.primaryColor : 'transparent',
+                background: selectedCategory === category.id 
+                  ? `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})` 
+                  : 'transparent',
                 color: selectedCategory === category.id ? '#ffffff' : theme.primaryColor,
-                border: `2px solid ${theme.primaryColor}`
+                border: selectedCategory === category.id ? 'none' : `2px solid ${theme.primaryColor}`,
               }}
             >
               {category.name}
@@ -362,251 +457,236 @@ export default function PublicMenu() {
         </div>
       </div>
 
-      {/* Menu Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* ===== MENU CONTENT - Product Cards ===== */}
+      <div className="max-w-4xl mx-auto px-4 py-6 pb-24">
         {filteredCategories.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">Henüz menü eklenmemiş</p>
+            <p className="text-gray-400 text-lg">Henüz menü eklenmemiş</p>
           </div>
         ) : (
           filteredCategories.map((category) => (
-            <div key={category.id} className="mb-8">
-              <div className="mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">{category.name}</h2>
+            <div key={category.id} className="mb-6">
+              {/* Category Header */}
+              <div className="mb-3 flex items-center gap-2">
+                <div 
+                  className="w-1 h-6 rounded-full"
+                  style={{ backgroundColor: theme.primaryColor }}
+                ></div>
+                <h2 
+                  className="text-lg font-bold"
+                  style={{ color: theme.preset === 'dark' ? '#F1F5F9' : '#1F2937' }}
+                >
+                  {category.name}
+                </h2>
                 {category.description && (
-                  <p className="text-gray-600 text-sm">{category.description}</p>
+                  <span 
+                    className="text-xs ml-1"
+                    style={{ color: theme.preset === 'dark' ? '#94A3B8' : '#9CA3AF' }}
+                  >
+                    — {category.description}
+                  </span>
                 )}
               </div>
 
-              <div className="space-y-4">
-                {category.products?.filter(p => p.isAvailable).map((product) => (
-                  <div
-                    key={product.id}
-                    className={'bg-white shadow-sm hover:shadow-md transition cursor-pointer overflow-hidden ' + cardRadiusClass}
-                    style={{ borderColor: theme.primaryColor + '20', borderWidth: '1px' }}
-                    onClick={() => handleProductClick(product.id, restaurant.id)}
-                  >
-                    <div className="flex gap-4 p-4">
-                      {theme.showProductImages && (() => {
-                        const imageUrl = product.imageUrl || product.image;
-                        const imageSrc = imageUrl
-                          ? imageUrl.startsWith('http')
-                            ? imageUrl
-                            : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`
-                          : DEFAULT_PRODUCT_IMAGE;
-                        
-                        return (
-                          <img
-                            src={imageSrc}
-                            alt={product.name}
-                            className={'w-24 h-24 object-cover flex-shrink-0 ' + cardRadiusClass}
-                            loading="lazy"
-                            onError={(e) => {
-                              e.currentTarget.src = DEFAULT_PRODUCT_IMAGE;
+              {/* Product Cards */}
+              <div className="space-y-3">
+                {category.products?.filter(p => p.isAvailable).map((product) => {
+                  const imageUrl = product.imageUrl || product.image;
+                  const imageSrc = imageUrl
+                    ? imageUrl.startsWith('http')
+                      ? imageUrl
+                      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${imageUrl}`
+                    : DEFAULT_PRODUCT_IMAGE;
+
+                  return (
+                    <div
+                      key={product.id}
+                      className="rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                      style={{ 
+                        backgroundColor: '#FFFFFF',
+                        border: '2px solid #1E293B'
+                      }}
+                      onClick={() => handleProductClick(product.id, restaurant.id)}
+                    >
+                      <div className="flex gap-0">
+                        {/* Product Image */}
+                        {theme.showProductImages && (
+                          <div 
+                            className="w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 relative overflow-hidden m-2 rounded-xl"
+                            style={{
+                              border: `2px solid ${theme.primaryColor}30`,
+                              boxShadow: `0 4px 12px ${theme.primaryColor}15, inset 0 0 20px ${theme.primaryColor}08`
                             }}
-                          />
-                        );
-                      })()}
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <h3 
-                            className="text-lg font-bold"
-                            style={{ color: theme.primaryColor }}
                           >
-                            {product.name}
-                          </h3>
-                          <div className="flex gap-1 ml-2">
-                            {product.isNew && (
-                              <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">YENİ</span>
-                            )}
-                            {product.isPopular && (
-                              <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">POPÜLER</span>
-                            )}
-                          </div>
-                        </div>
-                        {product.description && (
-                          <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-                        )}
-                        
-                        {/* Diyet Rozetleri */}
-                        {(product.isVegetarian || product.isVegan || product.isGlutenFree || product.isSpicy) && (
-                          <div className="flex flex-wrap gap-1.5 mt-2">
-                            {product.isVegetarian && (
-                              <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                                🥗 Vejetaryen
-                              </span>
-                            )}
-                            {product.isVegan && (
-                              <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                                🌱 Vegan
-                              </span>
-                            )}
-                            {product.isGlutenFree && (
-                              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                                🌾 Glütensiz
-                              </span>
-                            )}
-                            {product.isSpicy && (
-                              <span className="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-medium">
-                                🌶️ Acı
-                              </span>
-                            )}
+                            <img
+                              src={imageSrc}
+                              alt={product.name}
+                              className="w-full h-full object-cover rounded-lg"
+                              loading="lazy"
+                              onError={(e) => {
+                                e.currentTarget.src = DEFAULT_PRODUCT_IMAGE;
+                              }}
+                            />
                           </div>
                         )}
 
-                        {/* İçindekiler */}
-                        {product.ingredients && (
-                          <div className="mt-2 text-xs text-gray-500">
-                            <span className="font-semibold">İçindekiler:</span> {product.ingredients}
-                          </div>
-                        )}
+                        {/* Product Info */}
+                        <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between min-w-0">
+                          <div>
+                            <div className="flex items-start justify-between gap-1">
+                              <h3 
+                                className="text-base font-bold leading-tight line-clamp-1"
+                                style={{ color: theme.primaryColor }}
+                              >
+                                {product.name}
+                              </h3>
+                              <div className="flex gap-1 flex-shrink-0">
+                                {product.isNew && (
+                                  <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-semibold">YENİ</span>
+                                )}
+                                {product.isPopular && (
+                                  <span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded-full text-[10px] font-semibold">🔥</span>
+                                )}
+                              </div>
+                            </div>
+                            {product.description && (
+                              <p 
+                                className="text-xs mt-1 line-clamp-2 leading-relaxed"
+                                style={{ color: '#6B7280' }}
+                              >
+                                {product.description}
+                              </p>
+                            )}
 
-                        {/* Alerjenler */}
-                        {product.allergens && (
-                          <div className="mt-1 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                            <span className="font-semibold">⚠️ Alerjenler:</span> {product.allergens}
+                            {/* Diet Badges */}
+                            {(product.isVegetarian || product.isVegan || product.isGlutenFree || product.isSpicy) && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {product.isVegetarian && (
+                                  <span className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-[10px] font-medium">🥗 Vejetaryen</span>
+                                )}
+                                {product.isVegan && (
+                                  <span className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-[10px] font-medium">🌱 Vegan</span>
+                                )}
+                                {product.isGlutenFree && (
+                                  <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-medium">🌾 Glütensiz</span>
+                                )}
+                                {product.isSpicy && (
+                                  <span className="px-1.5 py-0.5 bg-red-50 text-red-600 rounded text-[10px] font-medium">🌶️ Acı</span>
+                                )}
+                              </div>
+                            )}
                           </div>
-                        )}
-                        
-                        <div className="mt-3 flex items-center justify-between">
-                          <span 
-                            className="text-xl font-bold"
-                            style={{ color: theme.secondaryColor }}
-                          >
-                            {product.price.toFixed(2)} ₺
-                          </span>
-                          {!product.isAvailable && (
-                            <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
-                              Tükendi
+
+                          {/* Price */}
+                          <div className="mt-2 flex items-center justify-between">
+                            <span 
+                              className="text-lg font-extrabold"
+                              style={{ color: theme.secondaryColor }}
+                            >
+                              {product.price.toFixed(2)} ₺
                             </span>
-                          )}
+                            {!product.isAvailable && (
+                              <span className="px-2 py-0.5 bg-red-100 text-red-600 rounded-full text-xs font-medium">
+                                Tükendi
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ))
         )}
       </div>
 
-      {/* Social Media & Contact Bar - Fixed Bottom - Premium Action Strip */}
+      {/* ===== BOTTOM BAR - Social & Contact ===== */}
       <div 
-        className="fixed bottom-0 left-0 right-0 shadow-lg z-50"
+        className="fixed bottom-0 left-0 right-0 z-50"
         style={{ 
-          backgroundColor: theme.preset === 'dark' ? '#1F2937' : 'white',
-          borderTop: `1px solid ${theme.preset === 'dark' ? '#374151' : '#E5E7EB'}`
+          backgroundColor: '#0F172A',
+          borderTop: '1px solid #1E293B',
+          boxShadow: '0 -4px 20px rgba(0,0,0,0.3)'
         }}
       >
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-center gap-8 sm:gap-10">
-            {/* WhatsApp - Only show if phone exists */}
+        <div className="max-w-4xl mx-auto px-4 py-2.5">
+          <div className="flex items-center justify-center gap-6 sm:gap-8">
+            {/* WhatsApp */}
             {restaurant.phone && (
-            <a 
-              href={`https://wa.me/${normalizePhoneForWhatsApp(restaurant.phone)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp ile iletişime geç"
-              title="WhatsApp"
-              className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl transition-all duration-200 hover:scale-[1.06] active:scale-95"
-              style={{ 
-                backgroundColor: theme.preset === 'dark' ? '#ffffff' : '#ffffff',
-                border: `1px solid ${theme.preset === 'dark' ? '#374151' : '#E5E7EB'}`
-              }}
-            >
-              <svg 
-                className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-200 group-hover:scale-105" 
-                fill="#22c55e" 
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+              <a 
+                href={`https://wa.me/${normalizePhoneForWhatsApp(restaurant.phone)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="flex items-center justify-center w-11 h-11 rounded-xl transition-all hover:scale-110 active:scale-95"
+                style={{ 
+                  backgroundColor: 'rgba(37, 211, 102, 0.15)',
+                  boxShadow: '0 0 12px rgba(37, 211, 102, 0.25), inset 0 0 8px rgba(37, 211, 102, 0.1)',
+                  border: '1px solid rgba(37, 211, 102, 0.3)'
+                }}
               >
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-              </svg>
-            </a>
+                <svg className="w-5 h-5" fill="#25D366" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+              </a>
             )}
 
-            {/* Telefon - Only show if phone exists */}
+            {/* Phone */}
             {restaurant.phone && (
-            <a 
-              href={`tel:${restaurant.phone}`}
-              aria-label="Telefon ile ara"
-              title="Ara"
-              className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl transition-all duration-200 hover:scale-[1.06] active:scale-95"
-              style={{ 
-                backgroundColor: theme.preset === 'dark' ? '#ffffff' : '#ffffff',
-                border: `1px solid ${theme.preset === 'dark' ? '#374151' : '#E5E7EB'}`
-              }}
-            >
-              <svg 
-                className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-200 group-hover:scale-105" 
-                fill="none" 
-                stroke="#3b82f6" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+              <a 
+                href={`tel:${restaurant.phone}`}
+                aria-label="Telefon"
+                className="flex items-center justify-center w-11 h-11 rounded-xl transition-all hover:scale-110 active:scale-95"
+                style={{ 
+                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  boxShadow: '0 0 12px rgba(59, 130, 246, 0.25), inset 0 0 8px rgba(59, 130, 246, 0.1)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)'
+                }}
               >
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
-            </a>
+                <svg className="w-5 h-5" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </a>
             )}
 
-            {/* Konum - Only show if googleMapsUrl exists */}
+            {/* Location */}
             {restaurant.googleMapsUrl && (
-            <a 
-              href={restaurant.googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Konumu görüntüle"
-              title="Konum"
-              className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl transition-all duration-200 hover:scale-[1.06] active:scale-95"
-              style={{ 
-                backgroundColor: theme.preset === 'dark' ? '#ffffff' : '#ffffff',
-                border: `1px solid ${theme.preset === 'dark' ? '#374151' : '#E5E7EB'}`
-              }}
-            >
-              <svg 
-                className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-200 group-hover:scale-105" 
-                fill="none" 
-                stroke="#ef4444" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+              <a 
+                href={restaurant.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Konum"
+                className="flex items-center justify-center w-11 h-11 rounded-xl transition-all hover:scale-110 active:scale-95"
+                style={{ 
+                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                  boxShadow: '0 0 12px rgba(239, 68, 68, 0.25), inset 0 0 8px rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)'
+                }}
               >
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
-            </a>
+                <svg className="w-5 h-5" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </a>
             )}
 
-            {/* Instagram - Only show if URL exists */}
+            {/* Instagram */}
             {restaurant.instagramUrl && (
               <a 
                 href={restaurant.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram'da takip et"
-                title="Instagram"
-                className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl transition-all duration-200 hover:scale-[1.06] active:scale-95"
+                aria-label="Instagram"
+                className="flex items-center justify-center w-11 h-11 rounded-xl transition-all hover:scale-110 active:scale-95"
                 style={{ 
-                  backgroundColor: theme.preset === 'dark' ? '#ffffff' : '#ffffff',
-                  border: `1px solid ${theme.preset === 'dark' ? '#374151' : '#E5E7EB'}`
+                  backgroundColor: 'rgba(225, 48, 108, 0.15)',
+                  boxShadow: '0 0 12px rgba(225, 48, 108, 0.25), inset 0 0 8px rgba(225, 48, 108, 0.1)',
+                  border: '1px solid rgba(225, 48, 108, 0.3)'
                 }}
               >
-                <svg 
-                  className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-200 group-hover:scale-105" 
-                  fill="none" 
-                  stroke="#e1306c" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="#E1306C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
@@ -614,26 +694,21 @@ export default function PublicMenu() {
               </a>
             )}
 
-            {/* Facebook - Only show if URL exists */}
+            {/* Facebook */}
             {restaurant.facebookUrl && (
               <a 
                 href={restaurant.facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Facebook'ta takip et"
-                title="Facebook"
-                className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl transition-all duration-200 hover:scale-[1.06] active:scale-95"
+                aria-label="Facebook"
+                className="flex items-center justify-center w-11 h-11 rounded-xl transition-all hover:scale-110 active:scale-95"
                 style={{ 
-                  backgroundColor: theme.preset === 'dark' ? '#ffffff' : '#ffffff',
-                  border: `1px solid ${theme.preset === 'dark' ? '#374151' : '#E5E7EB'}`
+                  backgroundColor: 'rgba(24, 119, 242, 0.15)',
+                  boxShadow: '0 0 12px rgba(24, 119, 242, 0.25), inset 0 0 8px rgba(24, 119, 242, 0.1)',
+                  border: '1px solid rgba(24, 119, 242, 0.3)'
                 }}
               >
-                <svg 
-                  className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-200 group-hover:scale-105" 
-                  fill="#1877F2" 
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
+                <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
               </a>
@@ -641,9 +716,6 @@ export default function PublicMenu() {
           </div>
         </div>
       </div>
-
-      {/* Spacer for fixed bottom bar - reduced height */}
-      <div className="h-16"></div>
     </div>
   );
 }
