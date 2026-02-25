@@ -57,6 +57,10 @@ interface Restaurant {
   themeSettings?: string;
   workingHours?: string;
   openingHoursText?: string;
+  plan?: {
+    code: string;
+    cartEnabled: boolean;
+  };
 }
 
 export default function PublicMenu() {
@@ -73,6 +77,8 @@ export default function PublicMenu() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showWelcome, setShowWelcome] = useState(true);
   const [showHoursPanel, setShowHoursPanel] = useState(false);
+  const [cart, setCart] = useState<Record<string, number>>({});
+  const [showCart, setShowCart] = useState(false);
 
   // Memoized theme - restaurant değişmedikçe yeniden hesaplanmaz
   const theme = useMemo(() => 
@@ -118,6 +124,44 @@ export default function PublicMenu() {
   const handleCategorySelect = useCallback((categoryId: string) => {
     setSelectedCategory(categoryId);
   }, []);
+
+  // Cart handlers
+  const addToCart = useCallback((productId: string) => {
+    setCart(prev => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + 1
+    }));
+    setShowCart(true);
+  }, []);
+
+  const removeFromCart = useCallback((productId: string) => {
+    setCart(prev => {
+      const newCart = { ...prev };
+      if (newCart[productId] > 1) {
+        newCart[productId] -= 1;
+      } else {
+        delete newCart[productId];
+      }
+      return newCart;
+    });
+  }, []);
+
+  // Cart totals
+  const cartItemCount = useMemo(() => 
+    Object.values(cart).reduce((sum, qty) => sum + qty, 0)
+  , [cart]);
+
+  const cartTotal = useMemo(() => {
+    let total = 0;
+    categories.forEach(cat => {
+      cat.products?.forEach(product => {
+        if (cart[product.id]) {
+          total += product.price * cart[product.id];
+        }
+      });
+    });
+    return total;
+  }, [cart, categories]);
 
   // Product click handler - analytics tracking
   const handleProductClick = useCallback((productId: string, restaurantId: string) => {
@@ -282,7 +326,7 @@ export default function PublicMenu() {
 
         <div className="relative z-10 flex flex-col items-center justify-center py-5 px-4">
           {/* Logo */}
-          <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full overflow-hidden border-2 border-white/40 shadow-xl mb-2">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/40 shadow-xl mb-2">
             <RestaurantLogo 
               name={restaurant.name}
               logoUrl={logoUrl}
@@ -292,12 +336,12 @@ export default function PublicMenu() {
           </div>
 
           {/* Restaurant Name */}
-          <h1 className="text-lg sm:text-xl font-bold text-white drop-shadow-lg text-center leading-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-white drop-shadow-lg text-center leading-tight">
             {restaurant.name}
           </h1>
 
           {restaurant.description && (
-            <p className="text-white/70 text-xs mt-0.5 text-center max-w-xs line-clamp-1">
+            <p className="text-white/80 text-sm mt-1 text-center max-w-xs line-clamp-1">
               {restaurant.description}
             </p>
           )}
@@ -338,29 +382,20 @@ export default function PublicMenu() {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <div className="flex items-center gap-2">
-                    <span 
-                      className="text-xs font-semibold"
-                      style={{ color: theme.preset === 'dark' ? '#F1F5F9' : '#1F2937' }}
-                    >
-                      Mesai Saatleri
-                    </span>
-                    {isOpen !== null && (
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                        isOpen 
-                          ? 'bg-green-100 text-green-700' 
-                          : 'bg-red-100 text-red-600'
-                      }`}>
-                        {isOpen ? 'Açık' : 'Kapalı'}
-                      </span>
-                    )}
-                  </div>
                   <span 
-                    className="text-xs"
-                    style={{ color: theme.preset === 'dark' ? '#94A3B8' : '#6B7280' }}
+                    className="text-xs font-semibold"
+                    style={{ color: theme.preset === 'dark' ? '#F1F5F9' : '#1F2937' }}
                   >
-                    {restaurant.openingHoursText || todayHours || ''}
+                    Mesai Saatleri
                   </span>
+                  <div>
+                    <span 
+                      className="text-xs"
+                      style={{ color: theme.preset === 'dark' ? '#94A3B8' : '#6B7280' }}
+                    >
+                      {restaurant.openingHoursText || todayHours || ''}
+                    </span>
+                  </div>
                 </div>
               </div>
               <svg 
@@ -416,16 +451,16 @@ export default function PublicMenu() {
 
       {/* ===== CATEGORY FILTER TABS ===== */}
       <div 
-        className="sticky top-0 z-40 shadow-sm border-b overflow-x-auto scrollbar-hide"
+        className="sticky top-0 z-40 shadow-sm border-b"
         style={{ 
           backgroundColor: theme.backgroundColor,
           borderColor: theme.preset === 'dark' ? '#1E293B' : '#F3F4F6'
         }}
       >
-        <div className="max-w-4xl mx-auto px-4 py-3 flex gap-2 justify-center">
+        <div className="max-w-4xl mx-auto px-2 py-2 flex gap-1.5 overflow-x-auto scrollbar-hide">
           <button
             onClick={() => handleCategorySelect('all')}
-            className="px-5 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-200 shadow-sm"
+            className="px-3 py-1.5 rounded-full font-semibold text-xs transition-all duration-200 shadow-sm flex-shrink-0"
             style={{
               background: selectedCategory === 'all' 
                 ? `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})` 
@@ -434,7 +469,7 @@ export default function PublicMenu() {
               border: selectedCategory === 'all' ? 'none' : `2px solid ${theme.primaryColor}`,
             }}
           >
-            Ana Yemekler
+            Tümü
           </button>
           {categories
             .filter((category) => category.name.toLowerCase() !== 'kampanya')
@@ -442,7 +477,7 @@ export default function PublicMenu() {
             <button
               key={category.id}
               onClick={() => handleCategorySelect(category.id)}
-              className="px-5 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-200 shadow-sm"
+              className="px-3 py-1.5 rounded-full font-semibold text-xs transition-all duration-200 shadow-sm flex-shrink-0"
               style={{
                 background: selectedCategory === category.id 
                   ? `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})` 
@@ -577,7 +612,7 @@ export default function PublicMenu() {
                             )}
                           </div>
 
-                          {/* Price */}
+                          {/* Price & Cart Controls */}
                           <div className="mt-2 flex items-center justify-between">
                             <span 
                               className="text-lg font-extrabold"
@@ -585,12 +620,54 @@ export default function PublicMenu() {
                             >
                               {product.price.toFixed(2)} ₺
                             </span>
-                            {!product.isAvailable && (
-                              <span className="px-2 py-0.5 bg-red-100 text-red-600 rounded-full text-xs font-medium">
-                                Tükendi
-                              </span>
+                            
+                            {/* Cart +/- Buttons - Only for Gold/Platin plans */}
+                            {restaurant.plan?.cartEnabled && (
+                              <div className="flex items-center gap-1">
+                                {cart[product.id] ? (
+                                  <>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); removeFromCart(product.id); }}
+                                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold transition-all hover:scale-110 active:scale-95"
+                                      style={{ backgroundColor: theme.secondaryColor }}
+                                    >
+                                      −
+                                    </button>
+                                    <span 
+                                      className="w-8 text-center font-bold text-sm"
+                                      style={{ color: theme.primaryColor }}
+                                    >
+                                      {cart[product.id]}
+                                    </span>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); addToCart(product.id); }}
+                                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold transition-all hover:scale-110 active:scale-95"
+                                      style={{ backgroundColor: theme.primaryColor }}
+                                    >
+                                      +
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); addToCart(product.id); }}
+                                    className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold transition-all hover:scale-110 active:scale-95 shadow-md"
+                                    style={{ 
+                                      background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,
+                                      boxShadow: `0 2px 8px ${theme.primaryColor}40`
+                                    }}
+                                  >
+                                    +
+                                  </button>
+                                )}
+                              </div>
                             )}
                           </div>
+                          
+                          {!product.isAvailable && (
+                            <span className="px-2 py-0.5 bg-red-100 text-red-600 rounded-full text-xs font-medium mt-1 inline-block">
+                              Tükendi
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -601,6 +678,107 @@ export default function PublicMenu() {
           ))
         )}
       </div>
+
+      {/* ===== CART PANEL ===== */}
+      {restaurant.plan?.cartEnabled && showCart && cartItemCount > 0 && (
+        <div 
+          className="fixed bottom-16 left-0 right-0 z-40 transition-all duration-300 animate-slideUp"
+          style={{ 
+            backgroundColor: '#0F172A',
+            borderTop: `2px solid ${theme.primaryColor}`,
+            boxShadow: `0 -8px 30px rgba(0,0,0,0.4), 0 -2px 20px ${theme.primaryColor}30`
+          }}
+        >
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            {/* Cart Header */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: theme.primaryColor }}
+                >
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  </svg>
+                </div>
+                <span className="text-white font-semibold">Sepetim</span>
+                <span 
+                  className="px-2 py-0.5 rounded-full text-xs font-bold text-white"
+                  style={{ backgroundColor: theme.secondaryColor }}
+                >
+                  {cartItemCount} ürün
+                </span>
+              </div>
+              <button
+                onClick={() => setShowCart(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Cart Items Preview */}
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              {categories.flatMap(cat => cat.products || []).filter(p => cart[p.id]).map(product => (
+                <div 
+                  key={product.id}
+                  className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
+                >
+                  <span className="text-white text-sm font-medium truncate max-w-[100px]">{product.name}</span>
+                  <span className="text-gray-400 text-xs">x{cart[product.id]}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Cart Total & Action */}
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+              <div>
+                <span className="text-gray-400 text-sm">Toplam</span>
+                <p 
+                  className="text-xl font-extrabold"
+                  style={{ color: theme.primaryColor }}
+                >
+                  {cartTotal.toFixed(2)} ₺
+                </p>
+              </div>
+              <button
+                className="px-6 py-2.5 rounded-xl font-bold text-white transition-all hover:scale-105 active:scale-95"
+                style={{ 
+                  background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,
+                  boxShadow: `0 4px 15px ${theme.primaryColor}40`
+                }}
+              >
+                Sipariş Ver
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Cart Button (when cart is closed but has items) */}
+      {!showCart && cartItemCount > 0 && (
+        <button
+          onClick={() => setShowCart(true)}
+          className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all hover:scale-110 active:scale-95 animate-bounce"
+          style={{ 
+            background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,
+            boxShadow: `0 4px 20px ${theme.primaryColor}50`
+          }}
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+          <span 
+            className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+            style={{ backgroundColor: theme.secondaryColor }}
+          >
+            {cartItemCount}
+          </span>
+        </button>
+      )}
 
       {/* ===== BOTTOM BAR - Social & Contact ===== */}
       <div 

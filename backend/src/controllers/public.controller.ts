@@ -105,6 +105,12 @@ export const getPublicMenu = async (
         membershipStatus: true,
         membershipEndDate: true,
         membershipStartDate: true,
+        plan: {
+          select: {
+            code: true,
+            cartEnabled: true,
+          }
+        },
       },
     });
     timing.breakdown.restaurantQuery = Date.now() - restaurantQueryStart;
