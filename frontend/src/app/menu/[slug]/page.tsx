@@ -597,10 +597,10 @@ export default function PublicMenu() {
                             {/* Ingredients / İçindekiler */}
                             {product.ingredients && (
                               <p 
-                                className="text-xs mt-1 line-clamp-3 leading-relaxed"
-                                style={{ color: '#4B5563' }}
+                                className="text-[10px] mt-1.5 leading-relaxed"
+                                style={{ color: '#6B7280' }}
                               >
-                                <span className="font-medium">İçindekiler:</span> {product.ingredients}
+                                <span className="font-semibold text-gray-600">İçindekiler:</span> {product.ingredients}
                               </p>
                             )}
 
