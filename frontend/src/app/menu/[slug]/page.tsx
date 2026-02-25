@@ -592,6 +592,16 @@ export default function PublicMenu() {
                                 {product.description}
                               </p>
                             )}
+                            
+                            {/* Ingredients / İçindekiler */}
+                            {product.ingredients && (
+                              <p 
+                                className="text-xs mt-1 line-clamp-2 leading-relaxed"
+                                style={{ color: '#9CA3AF' }}
+                              >
+                                <span className="font-medium">İçindekiler:</span> {product.ingredients}
+                              </p>
+                            )}
 
                             {/* Diet Badges */}
                             {(product.isVegetarian || product.isVegan || product.isGlutenFree || product.isSpicy) && (
