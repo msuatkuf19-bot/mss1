@@ -315,8 +315,9 @@ export default function PublicMenu() {
           restaurant.headerImage
             ? {
                 backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${restaurant.headerImage})`,
-                backgroundSize: 'cover',
+                backgroundSize: '100% 100%',
                 backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
               }
             : getHeaderBackgroundStyle(theme)
         }
