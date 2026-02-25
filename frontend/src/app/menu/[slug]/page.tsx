@@ -458,10 +458,10 @@ export default function PublicMenu() {
           borderColor: theme.preset === 'dark' ? '#1E293B' : '#F3F4F6'
         }}
       >
-        <div className="max-w-4xl mx-auto px-2 py-2 flex gap-1.5 overflow-x-auto scrollbar-hide">
+        <div className="max-w-4xl mx-auto px-2 py-2.5 flex gap-2 overflow-x-auto scrollbar-hide">
           <button
             onClick={() => handleCategorySelect('all')}
-            className="px-3 py-1.5 rounded-full font-semibold text-xs transition-all duration-200 shadow-sm flex-shrink-0"
+            className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-200 shadow-sm flex-shrink-0"
             style={{
               background: selectedCategory === 'all' 
                 ? `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})` 
@@ -478,7 +478,7 @@ export default function PublicMenu() {
             <button
               key={category.id}
               onClick={() => handleCategorySelect(category.id)}
-              className="px-3 py-1.5 rounded-full font-semibold text-xs transition-all duration-200 shadow-sm flex-shrink-0"
+              className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-200 shadow-sm flex-shrink-0"
               style={{
                 background: selectedCategory === category.id 
                   ? `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})` 
