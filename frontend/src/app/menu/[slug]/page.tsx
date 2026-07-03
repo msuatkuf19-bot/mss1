@@ -834,7 +834,7 @@ export default function PublicMenu() {
       {/* ===== WAITER CALL BUTTON (şimdilik gizli) ===== */}
       {false && (
         <WaiterCallButton 
-          restaurantId={restaurant.id} 
+          restaurantId={restaurant?.id || ''}
           tableNumber={tableNumber || undefined}
         />
       )}

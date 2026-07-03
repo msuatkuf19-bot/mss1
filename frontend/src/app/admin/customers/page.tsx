@@ -175,7 +175,7 @@ export default function AdminCustomers() {
   };
 
   return (
-    <ProtectedRoute roles={['SUPER_ADMIN']}>
+    <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
       <DashboardLayout title="Müşteriler">
         <div className="space-y-6">
           {/* HEADER */}
