@@ -7,7 +7,10 @@ import { buildTheme, getCardRadiusClass, getHeaderBackgroundStyle } from '@/lib/
 import { getTodayWorkingHours, getWeeklyWorkingHours, isRestaurantOpen } from '@/lib/working-hours-utils';
 import { DEFAULT_PRODUCT_IMAGE } from '@/lib/constants';
 import RestaurantLogo from '@/components/RestaurantLogo';
+import WaiterCallButton from '@/components/customer/WaiterCallButton';
 import MembershipExpired from '@/components/customer/MembershipExpired';
+import RestaurantInactive from '@/components/customer/RestaurantInactive';
+import RestaurantUpdating from '@/components/customer/RestaurantUpdating';
 import type { Product } from '@/types/product';
 
 /**
@@ -53,6 +56,7 @@ interface Restaurant {
   googleMapsUrl?: string;
   instagramUrl?: string;
   facebookUrl?: string;
+  textColor?: string;
   themeColor?: string;
   themeSettings?: string;
   workingHours?: string;
@@ -74,6 +78,8 @@ export default function PublicMenu() {
   const [loading, setLoading] = useState(true);
   const [membershipExpired, setMembershipExpired] = useState(false);
   const [membershipData, setMembershipData] = useState<any>(null);
+  const [restaurantStatus, setRestaurantStatus] = useState<'ACTIVE' | 'INACTIVE' | 'UPDATING'>('ACTIVE');
+  const [statusData, setStatusData] = useState<{ name: string; logo?: string | null } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showWelcome, setShowWelcome] = useState(true);
   const [showHoursPanel, setShowHoursPanel] = useState(false);
@@ -191,9 +197,23 @@ export default function PublicMenu() {
     try {
       setLoading(true);
       const response = await apiClient.getPublicMenu(slug, tableNumber || undefined);
+      
+      // Handle inactive/updating status from API
+      if (response.data?.status === 'INACTIVE') {
+        setRestaurantStatus('INACTIVE');
+        setStatusData(response.data.restaurant);
+        return;
+      }
+      if (response.data?.status === 'UPDATING') {
+        setRestaurantStatus('UPDATING');
+        setStatusData(response.data.restaurant);
+        return;
+      }
+      
       const restaurantData = response.data.restaurant;
       setRestaurant(restaurantData);
       setCategories(response.data.categories || []);
+      setRestaurantStatus('ACTIVE');
       
       // Track menu view analytics
       try {
@@ -241,6 +261,26 @@ export default function PublicMenu() {
       <MembershipExpired
         restaurantName={membershipData.restaurantName}
         membershipEndDate={membershipData.membershipEndDate}
+      />
+    );
+  }
+
+  // Show inactive screen
+  if (restaurantStatus === 'INACTIVE' && statusData) {
+    return (
+      <RestaurantInactive
+        restaurantName={statusData.name}
+        logo={statusData.logo}
+      />
+    );
+  }
+
+  // Show updating screen
+  if (restaurantStatus === 'UPDATING' && statusData) {
+    return (
+      <RestaurantUpdating
+        restaurantName={statusData.name}
+        logo={statusData.logo}
       />
     );
   }
@@ -510,7 +550,7 @@ export default function PublicMenu() {
                 ></div>
                 <h2 
                   className="text-lg font-bold"
-                  style={{ color: theme.preset === 'dark' ? '#F1F5F9' : '#1F2937' }}
+                  style={{ color: restaurant.textColor || (theme.preset === 'dark' ? '#F1F5F9' : '#1F2937') }}
                 >
                   {category.name}
                 </h2>
@@ -572,7 +612,7 @@ export default function PublicMenu() {
                             <div className="flex items-start justify-between gap-1">
                               <h3 
                                 className="text-base font-bold leading-tight line-clamp-1"
-                                style={{ color: theme.primaryColor }}
+                                style={{ color: restaurant.textColor || theme.primaryColor }}
                               >
                                 {product.name}
                               </h3>
@@ -789,6 +829,14 @@ export default function PublicMenu() {
             {cartItemCount}
           </span>
         </button>
+      )}
+
+      {/* ===== WAITER CALL BUTTON (şimdilik gizli) ===== */}
+      {false && (
+        <WaiterCallButton 
+          restaurantId={restaurant.id} 
+          tableNumber={tableNumber || undefined}
+        />
       )}
 
       {/* ===== BOTTOM BAR - Social & Contact ===== */}

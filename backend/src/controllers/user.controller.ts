@@ -31,6 +31,7 @@ export const getAllUsers = async (
         isActive: true,
         createdAt: true,
         updatedAt: true,
+        plainPassword: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -144,10 +145,11 @@ export const createUser = async (
 
     // ===== KULLANICI OLUŞTUR =====
     // Basit versiyon - assignedRestaurantId devre dışı (migration sonrası eklenecek)
-    const createData = {
+    const createData: any = {
       email: email.toLowerCase().trim(),
       name: name.trim(),
       password: hashedPassword,
+      plainPassword: password, // Admin görünürlüğü için açık şifre saklanır
       role: userRole as any,
       isActive: isActive !== false, // default true
     };
@@ -278,6 +280,37 @@ export const deleteUser = async (
     await prisma.user.delete({ where: { id } });
 
     sendSuccess(res, null, 'Kullanıcı başarıyla silindi');
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Şifre sıfırla (Süper Admin) - hem hash hem plainPassword günceller
+export const resetUserPassword = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password || typeof password !== 'string' || password.length < 6) {
+      throw new ApiError(400, 'Şifre en az 6 karakter olmalıdır');
+    }
+
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new ApiError(404, 'Kullanıcı bulunamadı');
+    }
+
+    const hashedPassword = await hashPassword(password);
+    await prisma.user.update({
+      where: { id },
+      data: { password: hashedPassword, plainPassword: password },
+    });
+
+    sendSuccess(res, { id }, 'Şifre başarıyla sıfırlandı');
   } catch (error) {
     next(error);
   }

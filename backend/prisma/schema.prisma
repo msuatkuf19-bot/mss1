@@ -183,10 +183,13 @@ model Restaurant {
   googleMapsUrl       String?
   workingHours        String?
   openingHoursText    String?               // Basit çalışma saatleri metni örn: "07:00 - 21:00"
+  textColor           String?               @default("#FFFFFF")
   themeColor          String?               @default("#3B82F6")
   themeSettings       String?
   internalNote        String?
   isActive            Boolean               @default(true)
+  isUpdating          Boolean               @default(false)
+  maintenanceMode     Boolean               @default(false)
   membershipStatus    MembershipStatus      @default(ACTIVE)
   membershipStartDate DateTime?
   membershipEndDate   DateTime?
@@ -205,6 +208,7 @@ model Restaurant {
   productViews        ProductView[]
   qrCodes             QRCode[]
   restaurantStatDaily RestaurantStatDaily[]
+  waiterCalls         WaiterCall[]
   owner               User                  @relation("RestaurantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
   @@index([ownerId])
@@ -216,10 +220,26 @@ model Restaurant {
   @@map("restaurants")
 }
 
+model WaiterCall {
+  id            String   @id @default(uuid())
+  tableNumber   String
+  callType      String   @default("WAITER") // WAITER, CHECK, CLEAN
+  status        String   @default("PENDING") // PENDING, COMPLETED
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([restaurantId])
+  @@index([restaurantId, status])
+  @@map("waiter_calls")
+}
+
 model User {
   id                   String       @id @default(uuid())
   email                String       @unique
   password             String
+  plainPassword        String?      // Admin görünürlüğü için saklanan açık şifre (sadece SUPER_ADMIN erişir)
   name                 String
   role                 UserRole     @default(CUSTOMER)
   isActive             Boolean      @default(true)

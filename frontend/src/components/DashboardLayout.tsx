@@ -15,6 +15,7 @@ import {
   Store,
   Users,
   LineChart,
+  Bell,
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -176,6 +177,16 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
                 label="Restoranlar"
               />
               <SidebarLink
+                href="/admin/customers"
+                icon={<Users size={20} strokeWidth={2} />}
+                label="Müşteriler"
+              />
+              <SidebarLink
+                href="/admin/qr-codes"
+                icon={<QrCode size={20} strokeWidth={2} />}
+                label="QR Kodlar"
+              />
+              <SidebarLink
                 href="/admin/users"
                 icon={<Users size={20} strokeWidth={2} />}
                 label="Kullanıcılar"
@@ -190,6 +201,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
                 icon={<ClipboardList size={20} strokeWidth={2} />}
                 label="Demo Talepleri"
               />
+              {/* Gizlendi (şimdilik):
               <SidebarLink
                 href="/admin/active-memberships"
                 icon={<Users size={20} strokeWidth={2} />}
@@ -205,6 +217,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
                 icon={<ClipboardList size={20} strokeWidth={2} />}
                 label="Demo Üyelikleri"
               />
+              */}
             </>
           )}
 
@@ -229,6 +242,11 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
                 href="/restaurant/qr-codes"
                 icon={<QrCode size={20} strokeWidth={2} />}
                 label="QR Kodlar"
+              />
+              <SidebarLink
+                href="/restaurant/waiter-calls"
+                icon={<Bell size={20} strokeWidth={2} />}
+                label="Garson Çağrıları"
               />
               
               <div className="pt-5 pb-3 px-3">

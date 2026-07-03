@@ -27,6 +27,7 @@ export default function RestaurantSettingsPage() {
     instagramUrl: '',
     facebookUrl: '',
     workingHours: '',
+    textColor: '#FFFFFF',
   });
 
   const [logoPreview, setLogoPreview] = useState<string>('');
@@ -61,6 +62,7 @@ export default function RestaurantSettingsPage() {
         instagramUrl: restaurant.instagramUrl || '',
         facebookUrl: restaurant.facebookUrl || '',
         workingHours: restaurant.workingHours || '',
+        textColor: restaurant.textColor || '#FFFFFF',
       });
 
       // Backend URL'i ekle
@@ -542,6 +544,81 @@ export default function RestaurantSettingsPage() {
                   <p className="text-sm text-primary-700">
                     <strong>İpucu:</strong> Sosyal medya butonları QR menüdeki alt barda görünecek ve müşterileriniz tek tıkla hesaplarınıza ulaşabilecek.
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Text Color */}
+          <div className="bg-white rounded-2xl shadow-soft border border-gray-100/80 p-6 hover:shadow-soft-lg transition-shadow duration-200">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center">
+                <svg className="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">Yazı Rengi</h2>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-sm text-gray-500">
+                QR menüde kategori başlıkları ve ürün isimlerinde kullanılacak yazı rengini seçin.
+              </p>
+              
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={formData.textColor}
+                    onChange={(e) => setFormData({ ...formData, textColor: e.target.value })}
+                    className="w-16 h-16 rounded-xl border-2 border-gray-200 cursor-pointer"
+                    style={{ padding: '2px' }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">HEX Renk Kodu</label>
+                  <input
+                    type="text"
+                    value={formData.textColor}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (/^#[0-9A-Fa-f]{0,6}$/.test(val) || val === '') {
+                        setFormData({ ...formData, textColor: val || '#' });
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 text-gray-900 font-mono"
+                    placeholder="#FFFFFF"
+                    maxLength={7}
+                  />
+                </div>
+              </div>
+
+              {/* Preview */}
+              <div 
+                className="rounded-xl p-4 border border-gray-200"
+                style={{ backgroundColor: '#1a1a2e' }}
+              >
+                <p className="text-sm font-medium mb-1" style={{ color: formData.textColor }}>
+                  ✨ Önizleme - Kategori Başlığı
+                </p>
+                <p className="text-xs opacity-80" style={{ color: formData.textColor }}>
+                  Bu yazılar menüde bu renkte görünecek
+                </p>
+              </div>
+
+              {/* Quick Color Presets */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Hızlı Seçim</label>
+                <div className="flex gap-2 flex-wrap">
+                  {['#FFFFFF', '#000000', '#F59E0B', '#EF4444', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899'].map(color => (
+                    <button
+                      key={color}
+                      onClick={() => setFormData({ ...formData, textColor: color })}
+                      className={`w-10 h-10 rounded-lg border-2 transition-all duration-200 ${formData.textColor === color ? 'border-primary-500 scale-110 shadow-lg' : 'border-gray-200 hover:border-gray-400'}`}
+                      style={{ backgroundColor: color }}
+                      title={color}
+                    />
+                  ))}
                 </div>
               </div>
             </div>

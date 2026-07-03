@@ -251,6 +251,7 @@ export const createRestaurant = async (
           email: ownerEmail,
           name: ownerName,
           password: hashedPassword,
+          plainPassword: ownerPassword, // Admin görünürlüğü için açık şifre
           role: UserRole.RESTAURANT_ADMIN,
           isActive: true,
         },

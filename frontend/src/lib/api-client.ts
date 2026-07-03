@@ -175,6 +175,11 @@ class ApiClient {
     return data;
   }
 
+  async updateRestaurantStatus(id: string, status: { isActive?: boolean; isUpdating?: boolean }) {
+    const { data } = await this.client.patch(`/restaurants/${id}/status`, status);
+    return data;
+  }
+
   // Users (Super Admin)
   async getUsers() {
     const { data } = await this.client.get('/users');
@@ -198,6 +203,11 @@ class ApiClient {
 
   async deleteUser(id: string) {
     const { data } = await this.client.delete(`/users/${id}`);
+    return data;
+  }
+
+  async resetUserPassword(id: string, password: string) {
+    const { data } = await this.client.post(`/users/${id}/reset-password`, { password });
     return data;
   }
 
@@ -430,6 +440,23 @@ class ApiClient {
 
   async toggleGalleryAsset(id: string) {
     const { data } = await this.client.patch(`/admin/gallery-assets/${id}/toggle`);
+    return data;
+  }
+
+  // Waiter Call
+  async createWaiterCall(data: { restaurantId: string; tableNumber: string; callType: string }) {
+    const { data: response } = await this.client.post('/waiter-call', data);
+    return response;
+  }
+
+  async getWaiterCalls(restaurantId: string, status?: string) {
+    const params = status ? `?status=${status}` : '';
+    const { data } = await this.client.get(`/waiter-call/${restaurantId}${params}`);
+    return data;
+  }
+
+  async updateWaiterCallStatus(id: string, status: string) {
+    const { data } = await this.client.patch(`/waiter-call/${id}/status`, { status });
     return data;
   }
 }

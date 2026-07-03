@@ -7,6 +7,7 @@ import {
   updateUser,
   deleteUser,
   getUserStats,
+  resetUserPassword,
 } from '../controllers/user.controller';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
 
@@ -52,5 +53,13 @@ router.put(
 
 // Kullanıcı sil (Süper Admin)
 router.delete('/:id', authorize('SUPER_ADMIN'), deleteUser);
+
+// Şifre sıfırla (Süper Admin)
+router.post(
+  '/:id/reset-password',
+  authorize('SUPER_ADMIN'),
+  [body('password').isLength({ min: 6 }).withMessage('Şifre en az 6 karakter olmalıdır')],
+  resetUserPassword
+);
 
 export default router;

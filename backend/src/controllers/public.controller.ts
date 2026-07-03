@@ -86,7 +86,7 @@ export const getPublicMenu = async (
     // Restoran kontrolü
     const restaurantQueryStart = Date.now();
     const restaurant = await prisma.restaurant.findUnique({
-      where: { slug, isActive: true },
+      where: { slug },
       select: {
         id: true,
         name: true,
@@ -101,7 +101,10 @@ export const getPublicMenu = async (
         instagramUrl: true,
         facebookUrl: true,
         themeColor: true,
+        textColor: true,
         themeSettings: true,
+        isActive: true,
+        isUpdating: true,
         membershipStatus: true,
         membershipEndDate: true,
         membershipStartDate: true,
@@ -117,6 +120,44 @@ export const getPublicMenu = async (
 
     if (!restaurant) {
       throw new ApiError(404, 'Restoran bulunamadı');
+    }
+
+    // Restoran pasif durumda
+    if (!restaurant.isActive) {
+      timing.t2_queryEnd = Date.now();
+      timing.t3_responseSent = Date.now();
+      logTiming(timing, slug);
+      
+      return res.status(200).json({
+        success: true,
+        data: {
+          status: 'INACTIVE',
+          restaurant: {
+            name: restaurant.name,
+            logo: restaurant.logo,
+          },
+          message: 'Bu restoran şu anda hizmet vermemektedir',
+        },
+      });
+    }
+
+    // Menü güncelleniyor durumu
+    if (restaurant.isUpdating) {
+      timing.t2_queryEnd = Date.now();
+      timing.t3_responseSent = Date.now();
+      logTiming(timing, slug);
+      
+      return res.status(200).json({
+        success: true,
+        data: {
+          status: 'UPDATING',
+          restaurant: {
+            name: restaurant.name,
+            logo: restaurant.logo,
+          },
+          message: 'Size daha iyi hizmet verebilmek için menümüz güncelleniyor',
+        },
+      });
     }
 
     // Membership kontrolü - Üyelik durumunu ve tarihini kontrol et

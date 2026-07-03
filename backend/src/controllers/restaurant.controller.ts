@@ -51,6 +51,7 @@ export const getAllRestaurants = async (
             id: true,
             name: true,
             email: true,
+            plainPassword: true,
           },
         },
         plan: {
@@ -297,6 +298,7 @@ export const createRestaurant = async (
           email: ownerEmail,
           name: ownerName,
           password: hashedPassword,
+          plainPassword: ownerPassword, // Admin görünürlüğü için açık şifre
           role: UserRole.RESTAURANT_ADMIN,
           isActive: true,
         },
@@ -417,6 +419,7 @@ export const updateRestaurant = async (
       logo,
       workingHours,
       openingHoursText,
+      textColor,
       themeColor,
       themeSettings,
       headerImage,
@@ -526,7 +529,7 @@ export const updateRestaurant = async (
       if (hashedPassword && restaurant.ownerId) {
         await tx.user.update({
           where: { id: restaurant.ownerId },
-          data: { password: hashedPassword },
+          data: { password: hashedPassword, plainPassword: ownerPassword },
         });
       }
 
@@ -554,6 +557,7 @@ export const updateRestaurant = async (
           ...(workingHoursStr !== undefined && { workingHours: workingHoursStr }),
           ...(openingHoursText !== undefined && { openingHoursText }),
           ...(themeColor && { themeColor }),
+          ...(textColor !== undefined && { textColor }),
           ...(themeSettingsString !== undefined && { themeSettings: themeSettingsString }),
           ...(startDate && { membershipStartDate: startDate }),
           ...(endDate && { membershipEndDate: endDate }),
@@ -667,6 +671,63 @@ export const getMyRestaurant = async (
     }
 
     sendSuccess(res, restaurant);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Check if slug is available
+ * GET /api/admin/restaurants/check-slug?slug=my-restaurant&excludeId=uuid
+ */
+export const updateRestaurantStatus = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { isActive, isUpdating } = req.body;
+
+    // Validation: en az bir alan gönderilmeli
+    if (isActive === undefined && isUpdating === undefined) {
+      throw new ApiError(400, 'En az bir alan gerekli: isActive veya isUpdating');
+    }
+
+    // Tip kontrolü
+    if (isActive !== undefined && typeof isActive !== 'boolean') {
+      throw new ApiError(400, 'isActive boolean olmalıdır');
+    }
+    if (isUpdating !== undefined && typeof isUpdating !== 'boolean') {
+      throw new ApiError(400, 'isUpdating boolean olmalıdır');
+    }
+
+    // Restoran var mı kontrol
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!restaurant) {
+      throw new ApiError(404, 'Restoran bulunamadı');
+    }
+
+    // Tek query ile güncelle
+    const updated = await prisma.restaurant.update({
+      where: { id },
+      data: {
+        ...(isActive !== undefined && { isActive }),
+        ...(isUpdating !== undefined && { isUpdating }),
+      },
+      select: {
+        id: true,
+        name: true,
+        isActive: true,
+        isUpdating: true,
+      },
+    });
+
+    sendSuccess(res, updated, 'Restoran durumu güncellendi');
   } catch (error) {
     next(error);
   }

@@ -7,6 +7,7 @@ import { apiClient } from '@/lib/api-client';
 import QrBox from '@/components/QrBox';
 import { slugifyTR } from '@/utils/slugify';
 import { Store, Plus, Pencil, Trash2, User, Phone, Mail, MapPin, Eye, EyeOff, Copy, RefreshCw, Download, CheckCircle, X, QrCode, ChevronDown } from 'lucide-react';
+import StatusToggle from '@/components/StatusToggle';
 import { getCities, getDistrictsByCity } from '@/data/turkey-cities';
 
 interface Restaurant {
@@ -31,6 +32,8 @@ interface Restaurant {
   internalNote?: string;
   membershipStartDate?: string | null;
   membershipEndDate?: string | null;
+  isActive: boolean;
+  isUpdating: boolean;
   owner: {
     name: string;
     email: string;
@@ -95,6 +98,12 @@ export default function AdminRestaurants() {
       }
   >(null);
   
+  // Plan filter
+  const [planFilter, setPlanFilter] = useState<'ALL' | 'STARTER' | 'GOLD' | 'PLATIN'>('ALL');
+
+  // Confirmation step before create
+  const [pendingConfirmation, setPendingConfirmation] = useState(false);
+
   // Success state for showing QR after creation
   const [createdRestaurant, setCreatedRestaurant] = useState<{
     id: string;
@@ -329,12 +338,24 @@ export default function AdminRestaurants() {
       return;
     }
 
+    // For edit mode → submit directly
+    // For create mode → show confirmation step (double-check email etc.)
+    if (editingRestaurant) {
+      await performSubmit(normalizedSlug);
+    } else {
+      setPendingConfirmation(true);
+    }
+  };
+
+  const performSubmit = async (normalizedSlug?: string) => {
+    const slug = normalizedSlug || slugifyTR(formData.slug);
+
     try {
       setSubmitting(true);
       
       if (editingRestaurant) {
         // Update modunda şifre boşsa gönderme
-        const updateData = { ...formData, slug: normalizedSlug };
+        const updateData = { ...formData, slug };
         if (!updateData.ownerPassword) {
           delete (updateData as any).ownerPassword;
         }
@@ -344,7 +365,7 @@ export default function AdminRestaurants() {
         loadRestaurants();
         alert('Restoran başarıyla güncellendi!');
       } else {
-        const response = await apiClient.createRestaurant({ ...formData, slug: normalizedSlug });
+        const response = await apiClient.createRestaurant({ ...formData, slug });
         
         // Set created restaurant data for QR preview
         if (response.data) {
@@ -364,7 +385,7 @@ export default function AdminRestaurants() {
             },
           });
         }
-        
+        setPendingConfirmation(false);
         loadRestaurants();
       }
     } catch (error: any) {
@@ -424,6 +445,7 @@ export default function AdminRestaurants() {
     setSlugCheck(null);
     setErrors({});
     setCreatedRestaurant(null);
+    setPendingConfirmation(false);
     setFormData({
       businessType: 'RESTORAN',
       memberNo: '',
@@ -486,6 +508,31 @@ export default function AdminRestaurants() {
     setFormData(prev => ({ ...prev, ownerPassword: shuffled }));
   };
 
+  // Status toggle handler (optimistic update)
+  const [statusLoading, setStatusLoading] = useState<Record<string, boolean>>({});
+
+  const handleStatusToggle = async (restaurantId: string, field: 'isActive' | 'isUpdating', value: boolean) => {
+    const loadingKey = `${restaurantId}-${field}`;
+    
+    // Optimistic update
+    setRestaurants(prev => prev.map(r => 
+      r.id === restaurantId ? { ...r, [field]: value } : r
+    ));
+    setStatusLoading(prev => ({ ...prev, [loadingKey]: true }));
+
+    try {
+      await apiClient.updateRestaurantStatus(restaurantId, { [field]: value });
+    } catch (error: any) {
+      // Rollback on error
+      setRestaurants(prev => prev.map(r => 
+        r.id === restaurantId ? { ...r, [field]: !value } : r
+      ));
+      alert(error.response?.data?.message || 'Durum güncellenemedi');
+    } finally {
+      setStatusLoading(prev => ({ ...prev, [loadingKey]: false }));
+    }
+  };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     alert('Kopyalandı!');
@@ -505,6 +552,19 @@ export default function AdminRestaurants() {
   const closeModalAndReset = () => {
     setShowModal(false);
     resetForm();
+  };
+
+  // Filter by plan
+  const filteredRestaurants = planFilter === 'ALL'
+    ? restaurants
+    : restaurants.filter(r => r.plan?.code === planFilter);
+
+  // Plan badge style helper
+  const planBadge = (code?: 'STARTER' | 'GOLD' | 'PLATIN' | null) => {
+    if (code === 'GOLD')   return { label: 'Gold',      cls: 'bg-amber-50 text-amber-700 ring-amber-200' };
+    if (code === 'PLATIN') return { label: 'Platin',    cls: 'bg-violet-50 text-violet-700 ring-violet-200' };
+    if (code === 'STARTER')return { label: 'Başlangıç', cls: 'bg-sky-50 text-sky-700 ring-sky-200' };
+    return                        { label: 'Paket Yok', cls: 'bg-slate-50 text-slate-500 ring-slate-200' };
   };
 
   return (
@@ -542,8 +602,36 @@ export default function AdminRestaurants() {
           </div>
         </div>
 
+        {/* Plan Filter Tabs */}
+        {!loading && restaurants.length > 0 && (
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            {([
+              { key: 'ALL',     label: 'Tümü',      activeCls: 'bg-slate-800 text-white border-slate-800 shadow-sm',   count: restaurants.length },
+              { key: 'STARTER', label: 'Başlangıç', activeCls: 'bg-sky-600 text-white border-sky-600 shadow-sm',       count: restaurants.filter(r => r.plan?.code === 'STARTER').length },
+              { key: 'GOLD',    label: 'Gold',      activeCls: 'bg-amber-500 text-white border-amber-500 shadow-sm',   count: restaurants.filter(r => r.plan?.code === 'GOLD').length },
+              { key: 'PLATIN',  label: 'Platin',    activeCls: 'bg-violet-600 text-white border-violet-600 shadow-sm', count: restaurants.filter(r => r.plan?.code === 'PLATIN').length },
+            ] as const).map(opt => {
+              const active = planFilter === opt.key;
+              const cls = active ? opt.activeCls : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50';
+              return (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setPlanFilter(opt.key as any)}
+                  className={`h-9 px-4 rounded-xl border text-sm font-semibold inline-flex items-center gap-2 transition-all ${cls}`}
+                >
+                  <span>{opt.label}</span>
+                  <span className={`inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-[11px] font-bold ${active ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                    {opt.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* Restaurants - Mobile Cards / Desktop Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden lg:-mx-4 xl:-mx-6">
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -552,15 +640,30 @@ export default function AdminRestaurants() {
             <div className="text-center py-12">
               <p className="text-slate-600 text-base sm:text-lg">Henüz restoran eklenmemiş</p>
             </div>
+          ) : filteredRestaurants.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-slate-600 text-base sm:text-lg">Bu pakette restoran bulunmuyor</p>
+              <button
+                onClick={() => setPlanFilter('ALL')}
+                className="mt-3 text-sm font-semibold text-blue-600 hover:text-blue-700"
+              >
+                Tüm restoranları göster
+              </button>
+            </div>
           ) : (
             <>
               {/* Mobile Cards */}
               <div className="lg:hidden divide-y divide-slate-200/70">
-                {restaurants.map((restaurant) => (
+                {filteredRestaurants.map((restaurant) => {
+                  const pb = planBadge(restaurant.plan?.code);
+                  return (
                   <div key={restaurant.id} className="p-4 sm:p-5 space-y-3 hover:bg-slate-50/70 transition-colors">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-[14px] font-semibold text-slate-900">{restaurant.name}</h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-[14px] font-semibold text-slate-900">{restaurant.name}</h3>
+                          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold ring-1 ring-inset ${pb.cls}`}>{pb.label}</span>
+                        </div>
                         <p className="mt-0.5 text-[12px] text-slate-500">/{restaurant.slug}</p>
                         {restaurant.memberNo && (
                           <p className="mt-0.5 text-[12px] text-blue-600 font-mono">#{restaurant.memberNo}</p>
@@ -607,96 +710,143 @@ export default function AdminRestaurants() {
                         Sil
                       </button>
                     </div>
+                    <div className="flex items-center gap-4 pt-1">
+                      <StatusToggle
+                        enabled={restaurant.isActive}
+                        loading={!!statusLoading[`${restaurant.id}-isActive`]}
+                        onToggle={(val) => handleStatusToggle(restaurant.id, 'isActive', val)}
+                        label={restaurant.isActive ? 'Aktif' : 'Pasif'}
+                        activeColor="bg-emerald-500"
+                      />
+                      <StatusToggle
+                        enabled={restaurant.isUpdating}
+                        loading={!!statusLoading[`${restaurant.id}-isUpdating`]}
+                        onToggle={(val) => handleStatusToggle(restaurant.id, 'isUpdating', val)}
+                        label="Güncelleniyor"
+                        activeColor="bg-amber-500"
+                      />
+                    </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Desktop Table */}
               <div className="hidden lg:block overflow-x-auto">
-                <table className="min-w-full divide-y divide-slate-200/70">
+                <table className="w-full divide-y divide-slate-200/70 table-fixed">
                   <thead className="bg-slate-50/70">
                     <tr>
-                      <th className="py-3 px-6 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      <th className="py-3 px-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-[16%]">
                         Restoran
                       </th>
-                      <th className="py-3 px-6 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      <th className="py-3 px-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-[10%]">
+                        Paket
+                      </th>
+                      <th className="py-3 px-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-[14%]">
                         Sahip
                       </th>
-                      <th className="py-3 px-6 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      <th className="py-3 px-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider w-[18%]">
                         İletişim
                       </th>
-                      <th className="py-3 px-6 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      <th className="py-3 px-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-[11%]">
                         İstatistik
                       </th>
-                      <th className="py-3 px-6 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      <th className="py-3 px-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider w-[14%]">
+                        Durum
+                      </th>
+                      <th className="py-3 px-3 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider w-[17%]">
                         İşlemler
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-200/70">
-                    {restaurants.map((restaurant) => (
+                    {filteredRestaurants.map((restaurant) => {
+                      const pb = planBadge(restaurant.plan?.code);
+                      return (
                       <tr key={restaurant.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="py-4 px-6">
-                          <div>
-                            <div className="font-semibold text-slate-900">{restaurant.name}</div>
-                            <div className="text-sm text-slate-500">/{restaurant.slug}</div>
+                        <td className="py-3 px-3">
+                          <div className="min-w-0">
+                            <div className="font-semibold text-slate-900 truncate">{restaurant.name}</div>
+                            <div className="text-sm text-slate-500 truncate">/{restaurant.slug}</div>
                             {restaurant.memberNo && (
                               <div className="text-xs text-blue-600 font-mono mt-0.5">#{restaurant.memberNo}</div>
                             )}
                           </div>
                         </td>
-                        <td className="py-4 px-6">
-                          <div>
-                            <div className="text-sm font-medium text-slate-900">{restaurant.owner.name}</div>
-                            <div className="text-sm text-slate-500">{restaurant.owner.email}</div>
+                        <td className="py-3 px-3 text-center">
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ring-1 ring-inset ${pb.cls}`}>{pb.label}</span>
+                        </td>
+                        <td className="py-3 px-3">
+                          <div className="min-w-0">
+                            <div className="text-sm font-medium text-slate-900 truncate">{restaurant.owner.name}</div>
+                            <div className="text-sm text-slate-500 truncate">{restaurant.owner.email}</div>
                           </div>
                         </td>
-                        <td className="py-4 px-6">
-                          <div className="space-y-1">
+                        <td className="py-3 px-3">
+                          <div className="space-y-1 min-w-0">
                             {restaurant.phone && (
-                              <div className="flex items-center gap-2 text-sm text-slate-600">
-                                <Phone className="h-3.5 w-3.5 text-slate-400" />
-                                {restaurant.phone}
+                              <div className="flex items-center gap-1.5 text-sm text-slate-600">
+                                <Phone className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
+                                <span className="truncate">{restaurant.phone}</span>
                               </div>
                             )}
                             {restaurant.email && (
-                              <div className="flex items-center gap-2 text-sm text-slate-600">
-                                <Mail className="h-3.5 w-3.5 text-slate-400" />
-                                {restaurant.email}
+                              <div className="flex items-center gap-1.5 text-sm text-slate-600">
+                                <Mail className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
+                                <span className="truncate">{restaurant.email}</span>
                               </div>
                             )}
                           </div>
                         </td>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center justify-center gap-2">
-                            <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200/80">
-                              {restaurant._count.categories} Kategori
+                        <td className="py-3 px-3">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200/80">
+                              {restaurant._count.categories} Kat
                             </span>
-                            <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-violet-50 text-violet-700 ring-1 ring-inset ring-violet-200/80">
+                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-violet-50 text-violet-700 ring-1 ring-inset ring-violet-200/80">
                               {restaurant._count.qrCodes} QR
                             </span>
                           </div>
                         </td>
-                        <td className="py-4 px-6">
-                          <div className="flex justify-end gap-2">
+                        <td className="py-3 px-3">
+                          <div className="flex flex-col items-center gap-2">
+                            <StatusToggle
+                              enabled={restaurant.isActive}
+                              loading={!!statusLoading[`${restaurant.id}-isActive`]}
+                              onToggle={(val) => handleStatusToggle(restaurant.id, 'isActive', val)}
+                              label={restaurant.isActive ? 'Aktif' : 'Pasif'}
+                              activeColor="bg-emerald-500"
+                            />
+                            <StatusToggle
+                              enabled={restaurant.isUpdating}
+                              loading={!!statusLoading[`${restaurant.id}-isUpdating`]}
+                              onToggle={(val) => handleStatusToggle(restaurant.id, 'isUpdating', val)}
+                              label="Güncelleniyor"
+                              activeColor="bg-amber-500"
+                            />
+                          </div>
+                        </td>
+                        <td className="py-3 px-3">
+                          <div className="flex justify-end gap-1.5">
                             <button
                               onClick={() => openEditModal(restaurant)}
-                              className="h-9 px-3.5 rounded-xl border border-primary-200 text-primary-700 bg-primary-50/40 hover:bg-primary-50 hover:shadow-sm transition-all duration-200 text-sm font-semibold inline-flex items-center gap-2"
+                              className="h-8 px-3 rounded-lg border border-primary-200 text-primary-700 bg-primary-50/40 hover:bg-primary-50 hover:shadow-sm transition-all duration-200 text-sm font-semibold inline-flex items-center gap-1.5"
                             >
-                              <Pencil className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                              <Pencil className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
                               Düzenle
                             </button>
                             <button
                               onClick={() => handleDelete(restaurant.id)}
-                              className="h-9 px-3.5 rounded-xl border border-rose-200 text-rose-700 bg-rose-50/40 hover:bg-rose-50 hover:shadow-sm transition-all duration-200 text-sm font-semibold inline-flex items-center gap-2"
+                              className="h-8 px-3 rounded-lg border border-rose-200 text-rose-700 bg-rose-50/40 hover:bg-rose-50 hover:shadow-sm transition-all duration-200 text-sm font-semibold inline-flex items-center gap-1.5"
                             >
-                              <Trash2 className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                              <Trash2 className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
                               Sil
                             </button>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -713,11 +863,13 @@ export default function AdminRestaurants() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                      {createdRestaurant ? '✅ Restoran Oluşturuldu!' : editingRestaurant ? 'Restoran Düzenle' : 'Yeni Restoran Ekle'}
+                      {createdRestaurant ? '✅ Restoran Oluşturuldu!' : pendingConfirmation ? '🔍 Bilgileri Doğrula' : editingRestaurant ? 'Restoran Düzenle' : 'Yeni Restoran Ekle'}
                     </h2>
                     <p className="text-sm text-gray-600 mt-0.5">
                       {createdRestaurant
                         ? 'Restoran başarıyla oluşturuldu. QR kodunu indirebilirsiniz.'
+                        : pendingConfirmation
+                        ? 'Lütfen restoran ve sahip e-posta bilgilerini son kez kontrol edin.'
                         : editingRestaurant
                         ? 'Restoran bilgilerini güncelleyin'
                         : 'Yeni restoran kaydı oluşturmak için bilgileri doldurun'}
@@ -830,6 +982,138 @@ export default function AdminRestaurants() {
                       </p>
                     </div>
                   </div>
+                ) : pendingConfirmation ? (
+                  /* === ÇİFT DOĞRULAMA EKRANI === */
+                  <div className="space-y-6">
+                    {/* Banner */}
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+                      <CheckCircle className="h-6 w-6 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="font-semibold text-amber-900">Lütfen bilgileri doğrulayın</h3>
+                        <p className="text-sm text-amber-800 mt-1">
+                          Restoran oluşturulmadan önce, özellikle <strong>sahip e-posta adresini</strong> kontrol edin.
+                          Onaylandıktan sonra bu adrese hoşgeldin ve giriş bilgileri e-postası gönderilecektir.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Owner Email - Highlighted Card */}
+                    <div className="rounded-2xl border-2 border-blue-500 bg-blue-50/60 p-5 shadow-sm">
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700 mb-2">
+                        <Mail className="h-4 w-4" />
+                        Sahip E-posta (E-posta buraya gönderilecek)
+                      </div>
+                      <div className="flex items-center justify-between gap-3 flex-wrap">
+                        <p className="text-2xl font-bold text-blue-900 break-all">{formData.ownerEmail}</p>
+                        <button
+                          type="button"
+                          onClick={() => setPendingConfirmation(false)}
+                          className="text-sm font-semibold text-blue-700 underline hover:text-blue-900"
+                        >
+                          Düzelt
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Summary Cards */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="rounded-xl border border-gray-200 bg-white p-4">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-2">
+                          <Store className="h-3.5 w-3.5" /> İşletme Bilgileri
+                        </h4>
+                        <dl className="space-y-2 text-sm">
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Restoran</dt>
+                            <dd className="text-gray-900 font-semibold text-right">{formData.name}</dd>
+                          </div>
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Tip</dt>
+                            <dd className="text-gray-900 text-right">{formData.businessType}</dd>
+                          </div>
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Paket</dt>
+                            <dd className="text-right">
+                              {(() => {
+                                const pb = planBadge(formData.planCode);
+                                return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ring-1 ring-inset ${pb.cls}`}>{pb.label}</span>;
+                              })()}
+                            </dd>
+                          </div>
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Üye No</dt>
+                            <dd className="text-gray-900 font-mono text-right">#{formData.memberNo}</dd>
+                          </div>
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Slug</dt>
+                            <dd className="text-blue-600 font-mono text-right break-all">/{slugifyTR(formData.slug)}</dd>
+                          </div>
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Telefon</dt>
+                            <dd className="text-gray-900 text-right">{formData.phone}</dd>
+                          </div>
+                          {formData.email && (
+                            <div className="flex justify-between gap-2">
+                              <dt className="text-gray-500">İşletme E-posta</dt>
+                              <dd className="text-gray-900 text-right break-all">{formData.email}</dd>
+                            </div>
+                          )}
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Adres</dt>
+                            <dd className="text-gray-900 text-right">{formData.city} / {formData.district}</dd>
+                          </div>
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Üyelik</dt>
+                            <dd className="text-gray-900 text-right text-xs">
+                              {formData.membershipStartDate} → {formData.membershipEndDate}
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                      <div className="rounded-xl border border-gray-200 bg-white p-4">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-2">
+                          <User className="h-3.5 w-3.5" /> Sahip Bilgileri
+                        </h4>
+                        <dl className="space-y-2 text-sm">
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">Ad Soyad</dt>
+                            <dd className="text-gray-900 font-semibold text-right">{formData.ownerName}</dd>
+                          </div>
+                          <div className="flex justify-between gap-2">
+                            <dt className="text-gray-500">E-posta</dt>
+                            <dd className="text-blue-700 font-semibold text-right break-all">{formData.ownerEmail}</dd>
+                          </div>
+                          <div className="flex justify-between gap-2 items-center">
+                            <dt className="text-gray-500">Şifre</dt>
+                            <dd className="text-right flex items-center gap-2">
+                              <code className="px-2 py-1 rounded bg-gray-100 text-gray-900 font-mono text-xs">
+                                {showOwnerPassword ? formData.ownerPassword : '•'.repeat(formData.ownerPassword.length)}
+                              </code>
+                              <button
+                                type="button"
+                                onClick={() => setShowOwnerPassword(!showOwnerPassword)}
+                                className="text-gray-500 hover:text-gray-700"
+                                title={showOwnerPassword ? 'Gizle' : 'Göster'}
+                              >
+                                {showOwnerPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => copyToClipboard(formData.ownerPassword)}
+                                className="text-gray-500 hover:text-gray-700"
+                                title="Şifreyi kopyala"
+                              >
+                                <Copy className="h-4 w-4" />
+                              </button>
+                            </dd>
+                          </div>
+                        </dl>
+                        <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">
+                          ⚠️ Onayladıktan sonra restoran kalıcı olarak oluşturulacak ve <strong>{formData.ownerEmail}</strong> adresine bilgilendirme e-postası gönderilecektir.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
 
                 <form id="restaurant-form" onSubmit={handleSubmit} className="space-y-8">
@@ -863,7 +1147,7 @@ export default function AdminRestaurants() {
                       </div>
 
                       {/* Paket Seçimi */}
-                      <div>
+                      <div className="mb-12">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Paket <span className="text-red-500">*</span>
                         </label>
@@ -873,8 +1157,8 @@ export default function AdminRestaurants() {
                           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                           <option value="STARTER">Başlangıç Paketi (30 Ürün, Tek QR)</option>
-                          <option value="GOLD">Gold Paket (Sınırsız, Masa QR, Tüm Özellikler)</option>
                           <option value="PLATIN">Platin Paket (Sınırsız, Tek QR)</option>
+                          <option value="GOLD">Gold Paket (Sınırsız, Masa QR, Tüm Özellikler)</option>
                         </select>
                         <p className="mt-1 text-xs text-gray-500">
                           Seçilen paket ürün limiti ve özellikleri belirler
@@ -1499,6 +1783,36 @@ export default function AdminRestaurants() {
                       className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 font-semibold transition-all"
                     >
                       Kapat
+                    </button>
+                  </div>
+                ) : pendingConfirmation ? (
+                  /* Confirmation Footer */
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="button"
+                      onClick={() => performSubmit()}
+                      disabled={submitting}
+                      className="flex-1 px-6 py-3.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 font-semibold text-base shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {submitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <span>Oluşturuluyor & E-posta gönderiliyor...</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="h-5 w-5" />
+                          <span>Onayla ve Restoranı Oluştur</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingConfirmation(false)}
+                      disabled={submitting}
+                      className="flex-1 px-6 py-3.5 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 font-semibold text-base transition-all disabled:opacity-50"
+                    >
+                      ← Geri Dön ve Düzenle
                     </button>
                   </div>
                 ) : (

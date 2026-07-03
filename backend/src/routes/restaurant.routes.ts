@@ -4,6 +4,7 @@ import {
   getRestaurant,
   createRestaurant,
   updateRestaurant,
+  updateRestaurantStatus,
   deleteRestaurant,
   getMyRestaurant,
   checkSlugAvailability,
@@ -47,6 +48,9 @@ router.post(
 
 // Restoran güncelle
 router.put('/:id', authorize('SUPER_ADMIN', 'RESTAURANT_ADMIN'), updateRestaurant);
+
+// Restoran durum güncelle (Aktif/Pasif, Güncelleniyor) - Sadece Süper Admin
+router.patch('/:id/status', authorize('SUPER_ADMIN'), updateRestaurantStatus);
 
 // Restoran sil (Süper Admin)
 router.delete('/:id', authorize('SUPER_ADMIN'), deleteRestaurant);

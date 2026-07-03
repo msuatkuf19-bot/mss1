@@ -41,6 +41,7 @@ import superAdminAnalyticsRoutes from './routes/superadmin-analytics.routes';
 import membershipRoutes from './routes/membership.routes';
 import galleryAssetsRoutes from './routes/galleryAssets.routes';
 import adminGalleryAssetsRoutes from './routes/admin.galleryAssets.routes';
+import waiterCallRoutes from './routes/waiter-call.routes';
 
 /**
  * Environment variables validasyonu
@@ -108,6 +109,7 @@ app.use('/api/superadmin/analytics', superAdminAnalyticsRoutes);
 app.use('/api/admin/memberships', membershipRoutes);
 app.use('/api/gallery-assets', galleryAssetsRoutes);
 app.use('/api/admin/gallery-assets', adminGalleryAssetsRoutes);
+app.use('/api/waiter-call', waiterCallRoutes);
 
 // Railway Deployment Test Endpoints
 app.use('/api/users/example', userExampleRoutes);
